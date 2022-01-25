@@ -21,3 +21,10 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'build'
+- task: Gradle@2
+  displayName: 'Build docker image'
+  inputs:
+    gradleWrapperFile: 'gradlew'
+    tasks: 'bootBuildImage'
+    publishJUnitResults: false
+    jdkVersionOption: '1.11'
