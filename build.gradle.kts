@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
 	id("org.springframework.boot") version "2.6.3"
@@ -34,6 +35,27 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.h2database:h2")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+}
+
+//This layering should be done on default by spring boot
+//But this is to show how it makes layered jars and in which order
+tasks.getByName<BootJar>("bootJar") {
+	layered {
+		isEnabled = true
+		application {
+			intoLayer("spring-boot-loader") {
+				include("org/springframework/boot/loader/**")
+			}
+			intoLayer("application")
+		}
+		dependencies {
+			intoLayer("snapshot-dependencies") {
+				include("*:*:*SNAPSHOT")
+			}
+			intoLayer("dependencies")
+		}
+		layerOrder = listOf("dependencies", "spring-boot-loader", "snapshot-dependencies", "application")
+	}
 }
 
 tasks.withType<KotlinCompile> {
