@@ -31,8 +31,8 @@ class ProfileController {
         return profile;
 
     }
-
-    @GetMapping("{userid}/profile")
+    
+    @GetMapping("user/{userid}/profile")
     fun getProfile(@RequestHeader("Authorization") authorization: String, @PathVariable userid: String) : Profile {
         var profile: Profile = getProfileXsi(authorization, userid);
         return profile;
