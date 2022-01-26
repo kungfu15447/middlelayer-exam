@@ -28,3 +28,9 @@ steps:
     tasks: 'bootBuildImage'
     publishJUnitResults: false
     jdkVersionOption: '1.11'
+- task: Docker@2
+  inputs:
+    containerRegistry: 'dockerhub-connect'
+    repository: 'kungfu15447/middlelayer-repo'
+    command: 'push'
+    tags: 'latest'
