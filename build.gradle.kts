@@ -37,7 +37,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.getByName<BootBuildImage>("bootBuildImage") {
-	imageName = "kungfu15447/middlelayer-repo:${project.name}"
+	imageName = "kungfu15447/middlelayer-repo"
 }
 
 tasks.withType<Test> {
