@@ -29,6 +29,7 @@ steps:
     publishJUnitResults: false
     jdkVersionOption: '1.11'
 - task: Docker@2
+  displayName: 'Push docker image'
   inputs:
     containerRegistry: 'dockerhub-connect'
     repository: 'kungfu15447/middlelayer-repo'
