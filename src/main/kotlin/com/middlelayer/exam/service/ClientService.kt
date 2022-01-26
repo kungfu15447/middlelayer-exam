@@ -5,5 +5,4 @@ import org.springframework.stereotype.Service
 
 @Service
 class ClientService {
-    lateinit var webClient: IntegrationProperties.RSocket.Client
 }

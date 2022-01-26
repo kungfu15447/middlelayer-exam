@@ -25,7 +25,7 @@ class ProfileController {
         // Xml String
         val responseBody = response.body!!.string()
 
-        val mapper: XmlMapper = XmlMapper();
+        val mapper = XmlMapper();
 
         val profile: Profile = mapper.readValue(responseBody)
         return profile;
