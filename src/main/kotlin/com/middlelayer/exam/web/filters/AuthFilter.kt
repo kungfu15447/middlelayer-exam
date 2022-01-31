@@ -6,10 +6,9 @@ import javax.servlet.ServletRequest
 import javax.servlet.ServletResponse
 
 
-class TestFilter : GenericFilterBean() {
+class AuthFilter : GenericFilterBean() {
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
-        println("Processing saying hello...")
+        println("Im doing auth stuff right here")
         chain?.doFilter(request, response)
-        println("Hello!")
     }
 }

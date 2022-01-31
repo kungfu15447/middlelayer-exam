@@ -25,4 +25,9 @@ class ProfileController {
 
         return ResponseEntity.ok(profileRepository.getProfileXsi(jwtAuthorization,userid))
     }
+
+    @GetMapping("user/test")
+    fun getTest(): String {
+        return "This is a test"
+    }
 }
