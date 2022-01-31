@@ -1,6 +1,5 @@
 package com.middlelayer.exam.web
 
-import com.middlelayer.exam.web.filters.AuthFilter
 import com.middlelayer.exam.web.filters.TestFilter
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
