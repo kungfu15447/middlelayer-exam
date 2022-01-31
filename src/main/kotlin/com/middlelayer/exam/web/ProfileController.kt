@@ -42,9 +42,9 @@ class ProfileController {
             return ResponseEntity.status(401).body(jwtToken);
         }
 
-        val body = Jwts.parser().setSigningKey("cfd0209b-7a93-482f-97d0-cd9d368a5533").parseClaimsJws(jwt).body
-        println(body["authorization"]);
+        val jwtBody = Jwts.parser().setSigningKey("cfd0209b-7a93-482f-97d0-cd9d368a5533").parseClaimsJws(jwt).body
+        val jwtAuthorization: String = jwtBody["authorization"].toString()
 
-        return ResponseEntity.ok(getProfileXsi(authorization,userid))
+        return ResponseEntity.ok(getProfileXsi(jwtAuthorization,userid))
     }
 }
