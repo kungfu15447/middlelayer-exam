@@ -4,9 +4,7 @@ import com.middlelayer.exam.core.interfaces.service.IAuthService
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Service
-import java.security.Key
 import java.util.*
-import javax.crypto.SecretKey
 
 @Service
 class AuthService : IAuthService {

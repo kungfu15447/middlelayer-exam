@@ -2,8 +2,6 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IProfileService
 import org.springframework.web.bind.annotation.*
-import com.middlelayer.exam.service.AuthService
-import com.middlelayer.exam.service.ProfileService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
