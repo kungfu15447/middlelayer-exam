@@ -1,5 +1,6 @@
 package com.middlelayer.exam.web
 
+import com.middlelayer.exam.web.filters.AuthFilter
 import com.middlelayer.exam.web.filters.TestFilter
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -11,8 +12,9 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity?) {
-        http?.cors()
-
-        http?.addFilterAfter(TestFilter(), BasicAuthenticationFilter::class.java)
+        http?.cors {
+            it.and()
+                ?.addFilterAfter(AuthFilter(), BasicAuthenticationFilter::class.java)
+        }
     }
 }
