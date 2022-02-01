@@ -1,5 +1,6 @@
 package com.middlelayer.exam.service
 
+import com.middlelayer.exam.core.interfaces.service.IAuthService
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.stereotype.Service
@@ -8,9 +9,8 @@ import java.util.*
 import javax.crypto.SecretKey
 
 @Service
-class AuthService {
-
-    fun register(authorization: String, userid: String): String {
+class AuthService : IAuthService {
+    override fun register(authorization: String, userid: String): String {
         return Jwts.builder()
             .setIssuer(userid)
             .setExpiration(Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))

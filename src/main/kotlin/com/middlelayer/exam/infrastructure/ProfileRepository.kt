@@ -6,8 +6,10 @@ import com.middlelayer.exam.core.interfaces.infrastructure.IProfileRepository
 import com.middlelayer.exam.core.models.Profile
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.springframework.stereotype.Component
 import java.net.URL
 
+@Component
 class ProfileRepository : IProfileRepository {
 
     override fun getProfileXsi(authorization: String, userid: String): Profile {
