@@ -34,7 +34,6 @@ class AuthFilter : GenericFilterBean {
                     var jws = Jwts.parser()
                         .setSigningKey("cfd0209b-7a93-482f-97d0-cd9d368a5533")
                         .parseClaimsJws(token)
-                    println(jws)
                 } else {
                     isAuthorized = false
                 }
