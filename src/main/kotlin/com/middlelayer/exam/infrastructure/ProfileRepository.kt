@@ -21,10 +21,14 @@ class ProfileRepository : IProfileRepository {
             .build()
         val response = client.newCall(request).execute()
 
-        val responseBody = response.body!!.string()
+        if (response.code == 200) {
+            val responseBody = response.body!!.string()
 
-        val mapper = XmlMapper();
+            val mapper = XmlMapper();
 
-        return mapper.readValue(responseBody);
+            return mapper.readValue(responseBody);
+        } else {
+            throw Exception("Unauthorized access")
+        }
     }
 }

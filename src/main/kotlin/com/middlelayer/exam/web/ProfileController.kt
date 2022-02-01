@@ -1,10 +1,8 @@
 package com.middlelayer.exam.web
-import com.middlelayer.exam.core.interfaces.infrastructure.IProfileRepository
-import com.middlelayer.exam.core.models.Profile
-import com.middlelayer.exam.infrastructure.ProfileRepository
+import com.middlelayer.exam.core.interfaces.service.IProfileService
 import org.springframework.web.bind.annotation.*
 import com.middlelayer.exam.service.AuthService
-import io.jsonwebtoken.Jwts
+import com.middlelayer.exam.service.ProfileService
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,17 +11,20 @@ import org.springframework.http.ResponseEntity
 class ProfileController {
 
     private val auth: AuthService = AuthService()
-    private val profileRepository: IProfileRepository = ProfileRepository()
+    private val profileService: IProfileService = ProfileService()
 
     @GetMapping("user/{userid}/profile")
-    fun getProfile(@RequestHeader("Authorization") authorization: String, @PathVariable userid: String) : ResponseEntity<Profile> {
+    fun getProfile(@RequestHeader("Authorization") authorization: String, @PathVariable userid: String) : ResponseEntity<Any> {
 
-        val profile = profileRepository.getProfileXsi(authorization, userid)
-        val headers = HttpHeaders()
-        headers.add("Authorization", "Bearer ${auth.register(authorization, userid)}")
-        var response = ResponseEntity<Profile>(profile, headers,HttpStatus.OK)
+        try {
+            val profile = profileService.getProfile(authorization, userid)
+            val headers = HttpHeaders()
+            headers.add("Authorization", "Bearer ${auth.register(authorization, userid)}")
+            return ResponseEntity<Any>(profile, headers,HttpStatus.OK)
+        } catch (ex: Exception) {
+            return ResponseEntity<Any>(ex.message, HttpStatus.UNAUTHORIZED)
+        }
 
-        return response
     }
 
     @GetMapping("user/test")
