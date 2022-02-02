@@ -2,6 +2,7 @@ package com.middlelayer.exam.web.filters
 
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
+import org.springframework.core.env.Environment
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.security.web.util.matcher.RequestMatcher
 import org.springframework.web.filter.GenericFilterBean
@@ -14,9 +15,11 @@ import javax.servlet.http.HttpServletResponse
 
 class AuthFilter : GenericFilterBean {
 
-    var filterUrl: RequestMatcher? = null
+    private var filterUrl: RequestMatcher? = null
+    private var secretKey: String = ""
 
-    constructor() {
+    constructor(env: Environment) {
+        secretKey = env.getProperty("jwt.secret.key", "")
         filterUrl = AntPathRequestMatcher("/user/**/profile")
     }
 
@@ -30,7 +33,7 @@ class AuthFilter : GenericFilterBean {
                 if (token != null) {
                     token = token.replace("Bearer", "")
                     var jws = Jwts.parser()
-                        .setSigningKey("cfd0209b-7a93-482f-97d0-cd9d368a5533")
+                        .setSigningKey(secretKey)
                         .parseClaimsJws(token)
                 } else {
                     isAuthorized = false

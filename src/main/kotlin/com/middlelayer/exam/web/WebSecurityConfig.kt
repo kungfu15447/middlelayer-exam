@@ -1,7 +1,9 @@
 package com.middlelayer.exam.web
 
 import com.middlelayer.exam.web.filters.AuthFilter
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.env.Environment
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
@@ -12,13 +14,19 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+class WebSecurityConfig : WebSecurityConfigurerAdapter {
+
+    private var env: Environment
+    @Autowired
+    constructor(env: Environment) {
+        this.env = env
+    }
     override fun configure(http: HttpSecurity?) {
         http
             ?.csrf()?.disable()
             ?.cors()?.configurationSource(setCors())
             ?.and()
-            ?.addFilterAfter(AuthFilter(), BasicAuthenticationFilter::class.java)
+            ?.addFilterAfter(AuthFilter(env), BasicAuthenticationFilter::class.java)
     }
 
     private fun setCors(): CorsConfigurationSource {
