@@ -13,7 +13,7 @@ import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 class WebSecurityConfig : WebSecurityConfigurerAdapter {
 
     private var env: Environment
@@ -27,6 +27,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter {
             ?.cors()?.configurationSource(setCors())
             ?.and()
             ?.addFilterAfter(AuthFilter(env), BasicAuthenticationFilter::class.java)
+            ?.logout()?.disable()
     }
 
     private fun setCors(): CorsConfigurationSource {
