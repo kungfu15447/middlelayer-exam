@@ -3,6 +3,7 @@ package com.middlelayer.exam.service
 import com.middlelayer.exam.core.interfaces.infrastructure.IProfileRepository
 import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.core.models.xsi.Profile
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import com.middlelayer.exam.core.models.xsi.Service as ServiceModel
 
@@ -11,6 +12,7 @@ class ProfileService : IProfileService {
 
     private val profileRepository: IProfileRepository
 
+    @Autowired
     constructor(profileRepository: IProfileRepository) {
         this.profileRepository = profileRepository
     }
