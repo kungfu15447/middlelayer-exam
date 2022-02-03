@@ -1,6 +1,6 @@
 package com.middlelayer.exam.core.interfaces.infrastructure
-import com.middlelayer.exam.core.models.Profile
-import com.middlelayer.exam.core.models.Service
+import com.middlelayer.exam.core.models.xsi.Profile
+import com.middlelayer.exam.core.models.xsi.Service
 
 interface IProfileRepository {
     fun getProfileXsi(basicAuthToken: String, userId: String): Profile

@@ -1,4 +1,4 @@
-package com.middlelayer.exam.core.models
+package com.middlelayer.exam.core.models.xsi
 
 data class Service(
     val name: String? = null,

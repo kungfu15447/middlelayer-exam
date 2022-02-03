@@ -3,8 +3,8 @@ package com.middlelayer.exam.infrastructure
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.middlelayer.exam.core.interfaces.infrastructure.IProfileRepository
-import com.middlelayer.exam.core.models.Profile
-import com.middlelayer.exam.core.models.Service
+import com.middlelayer.exam.core.models.xsi.Profile
+import com.middlelayer.exam.core.models.xsi.Service
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.springframework.stereotype.Component
