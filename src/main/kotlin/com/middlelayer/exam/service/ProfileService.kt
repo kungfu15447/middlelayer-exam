@@ -4,6 +4,7 @@ import com.middlelayer.exam.core.interfaces.infrastructure.IProfileRepository
 import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.core.models.Profile
 import org.springframework.stereotype.Service
+import com.middlelayer.exam.core.models.Service as ServiceModel
 
 @Service
 class ProfileService : IProfileService {
@@ -15,5 +16,9 @@ class ProfileService : IProfileService {
     }
     override fun getProfile(authorization: String, userid: String): Profile {
         return profileRepository.getProfileXsi(authorization, userid)
+    }
+
+    override fun getServicesFromProfile(basicAuthToken: String, userId: String): List<ServiceModel> {
+        return profileRepository.getServicesFromProfileXsi(basicAuthToken, userId)
     }
 }

@@ -20,13 +20,14 @@ class ProfileController {
 
     @GetMapping("user/{userid}/profile")
     fun getProfile(@RequestHeader("Authorization") authorization: String, @PathVariable userid: String) : ResponseEntity<Any> {
-        try {
+        return try {
             val profile = profileService.getProfile(authorization, userid)
+            val services = profileService.getServicesFromProfile(authorization, userid)
             val headers = HttpHeaders()
-            headers.add("Authorization", "Bearer ${authService.register(authorization, userid)}")
-            return ResponseEntity<Any>(profile, headers,HttpStatus.OK)
+            headers.add("Authorization", "Bearer ${authService.register(authorization, profile, services)}")
+            ResponseEntity<Any>(profile, headers,HttpStatus.OK)
         } catch (ex: Exception) {
-            return ResponseEntity<Any>(ex.message, HttpStatus.UNAUTHORIZED)
+            ResponseEntity<Any>(ex.message, HttpStatus.UNAUTHORIZED)
         }
 
     }
