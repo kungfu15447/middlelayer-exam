@@ -10,7 +10,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import org.springframework.web.client.RestTemplate
 import java.net.URL
 
 @Component
@@ -23,7 +22,7 @@ class ProfileRepository : IProfileRepository {
         this.xsiClient = xsiClient
     }
     override fun getProfileXsi(basicAuthToken: String, userId: String): Profile {
-        val responseBody = xsiClient.get("com.broadsoft.xsi-actions/v2.0/user/$userId/services", basicAuthToken)
+        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/$userId/profile", basicAuthToken)
         val mapper = XmlMapper()
         return mapper.readValue(responseBody)
     }
