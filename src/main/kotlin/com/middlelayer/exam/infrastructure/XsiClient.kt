@@ -14,26 +14,23 @@ import reactor.core.publisher.Mono
 @Component
 class XsiClient : IXsiClient {
 
-    //TODO Look up how to implement WebClient in Spring Boot. RestTemplate will sooner or later be deprecated
-    @Value("\${server.url}")
-    private val server: String = ""
-
     private val webClient: WebClient
 
-    constructor() {
+    constructor(@Value("\${server.url}") server: String) {
         print(server)
         webClient = WebClient
                         .builder()
-                        .baseUrl("https://scalexi-pp-xsp2.tdc.dk")
+                        .baseUrl(server)
                         .build()
     }
 
-    override fun get(uri: String, auth: String?): String {
+    override fun get(uri: String, auth: String?): String? {
         val response = webClient.get()
             .uri(uri)
             .header("Authorization", auth)
             .retrieve()
-            .bodyToMono<String>().block()
-        return response!!
+            .bodyToMono<String>()
+            .block()
+        return response
     }
 }

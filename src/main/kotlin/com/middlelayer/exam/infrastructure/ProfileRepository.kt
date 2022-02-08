@@ -23,26 +23,19 @@ class ProfileRepository : IProfileRepository {
     }
     override fun getProfileXsi(basicAuthToken: String, userId: String): Profile {
         val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/$userId/profile", basicAuthToken)
-        val mapper = XmlMapper()
-        return mapper.readValue(responseBody)
+        return tryMapValue(responseBody)
     }
 
     override fun getServicesFromProfileXsi(basicAuthToken: String, userId: String): List<Service> {
-        val client = OkHttpClient()
-        val url = URL("https://scalexi-pp-xsp2.tdc.dk/com.broadsoft.xsi-actions/v2.0/user/$userId/services")
-        val request = Request.Builder()
-            .url(url)
-            .get()
-            .header("Authorization", basicAuthToken)
-            .build()
-        val response = client.newCall(request).execute()
+        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/$userId/services", basicAuthToken)
+        return tryMapValue(responseBody)
+    }
 
-        if (response.code == 200) {
-            val responseBody = response.body!!.string()
+    private inline fun <reified T>tryMapValue(response: String?): T {
+        response?.let {
             val mapper = XmlMapper()
-            return mapper.readValue(responseBody)
-        } else {
-            throw Exception("Unauthorized access")
+            return mapper.readValue<T>(it)
         }
+        throw Exception("No body to map was returned!")
     }
 }
