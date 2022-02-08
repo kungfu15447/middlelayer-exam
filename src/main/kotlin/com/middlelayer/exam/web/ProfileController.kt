@@ -1,40 +1,38 @@
 package com.middlelayer.exam.web
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import com.middlelayer.exam.core.interfaces.service.IAuthService
+import com.middlelayer.exam.core.interfaces.service.IProfileService
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-import java.net.URL
-import com.fasterxml.jackson.databind.node.*
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.middlelayer.exam.core.models.Profile
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 
 @RestController
 class ProfileController {
+    private val profileService: IProfileService
+    private val authService: IAuthService
 
-    fun getProfileXsi(authorization: String, userid: String) : Profile {
-        val client = OkHttpClient()
-        val url = URL("https://scalexi-pp-xsp2.tdc.dk/com.broadsoft.xsi-actions/v2.0/user/$userid/profile/")
+    @Autowired
+    constructor(profileService: IProfileService, authService: IAuthService) {
+        this.profileService = profileService
+        this.authService = authService
+    }
 
-        val request = Request.Builder()
-            .url(url)
-            .get()
-            .header("Authorization", authorization)
-            .build()
-        val response = client.newCall(request).execute()
-
-        // Xml String
-        val responseBody = response.body!!.string()
-
-        val mapper = XmlMapper();
-
-        val profile: Profile = mapper.readValue(responseBody)
-        return profile;
+    @GetMapping("user/{userid}/profile")
+    fun getProfile(@RequestHeader("Authorization") authorization: String, @PathVariable userid: String) : ResponseEntity<Any> {
+        try {
+            val profile = profileService.getProfile(authorization, userid)
+            val headers = HttpHeaders()
+            headers.add("Authorization", "Bearer ${authService.register(authorization, userid)}")
+            return ResponseEntity<Any>(profile, headers,HttpStatus.OK)
+        } catch (ex: Exception) {
+            return ResponseEntity<Any>(ex.message, HttpStatus.UNAUTHORIZED)
+        }
 
     }
-    
-    @GetMapping("user/{userid}/profile")
-    fun getProfile(@RequestHeader("Authorization") authorization: String, @PathVariable userid: String) : Profile {
-        var profile: Profile = getProfileXsi(authorization, userid);
-        return profile;
+
+    @GetMapping("user/test")
+    fun getTest(): String {
+        return "This is a test"
     }
 }
