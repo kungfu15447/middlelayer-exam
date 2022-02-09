@@ -1,6 +1,7 @@
 package com.middlelayer.exam.infrastructure
 
 import com.middlelayer.exam.core.exceptions.BadRequestException
+import com.middlelayer.exam.core.exceptions.ISEException
 import com.middlelayer.exam.core.exceptions.NotFoundException
 import com.middlelayer.exam.core.exceptions.UnauthorizedException
 import com.middlelayer.exam.core.interfaces.infrastructure.IXsiClient
@@ -26,11 +27,20 @@ class XsiClient : IXsiClient {
     }
 
     private fun handleApiErrorResponse(clientResponse: ClientResponse): Mono<ClientResponse> {
-        println("Something something")
         var statusCode = clientResponse.statusCode()
-        when(statusCode) {
-            HttpStatus.NOT_FOUND -> throw NotFoundException("Route could not be found")
-            HttpStatus.UNAUTHORIZED -> throw UnauthorizedException("Tried to access unauthorized route")
+        println(statusCode)
+        if (statusCode.isError) {
+            println("This was an error")
+            return clientResponse.bodyToMono(String::class.java).flatMap {
+                when(statusCode) {
+                    HttpStatus.NOT_FOUND -> Mono.error(NotFoundException(it))
+                    HttpStatus.UNAUTHORIZED -> Mono.error(UnauthorizedException(it))
+                    HttpStatus.INTERNAL_SERVER_ERROR -> Mono.error(ISEException(it))
+                    else -> {
+                        Mono.error(BadRequestException(it))
+                    }
+                }
+            }
         }
         return Mono.just(clientResponse)
     }

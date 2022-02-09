@@ -44,8 +44,7 @@ class AuthFilter : GenericFilterBean {
         }
         if (!isAuthorized) {
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized access")
-        }else {
-            chain?.doFilter(req, res)
         }
+        chain?.doFilter(req, res)
     }
 }
