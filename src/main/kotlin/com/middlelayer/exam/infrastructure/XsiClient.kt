@@ -31,7 +31,7 @@ class XsiClient : IXsiClient {
         println(statusCode)
         if (statusCode.isError) {
             println("This was an error")
-            return clientResponse.bodyToMono(String::class.java).flatMap {
+            return clientResponse.bodyToMono(String::class.java).flatMap<ClientResponse?> {
                 when(statusCode) {
                     HttpStatus.NOT_FOUND -> Mono.error(NotFoundException(it))
                     HttpStatus.UNAUTHORIZED -> Mono.error(UnauthorizedException(it))
@@ -40,7 +40,7 @@ class XsiClient : IXsiClient {
                         Mono.error(BadRequestException(it))
                     }
                 }
-            }
+            }.switchIfEmpty(Mono.error(UnauthorizedException("Unauthorized access")))
         }
         return Mono.just(clientResponse)
     }
