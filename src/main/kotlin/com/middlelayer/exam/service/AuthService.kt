@@ -45,7 +45,7 @@ class AuthService : IAuthService {
         } else {
             auth = "${user}:${password}"
         }
-        return Base64.getEncoder().encodeToString(auth.toByteArray())
+        return "Basic ${Base64.getEncoder().encodeToString(auth.toByteArray())}"
     }
 
     private fun formatUsername(username: String): String {

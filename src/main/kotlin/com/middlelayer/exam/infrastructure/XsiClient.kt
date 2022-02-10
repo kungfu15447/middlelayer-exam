@@ -50,6 +50,9 @@ class XsiClient : IXsiClient {
             .header("Authorization", auth)
             .retrieve()
             .bodyToMono<String>()
+            .doOnNext {
+                println("endpoint was requested")
+            }
         return response
     }
 }
