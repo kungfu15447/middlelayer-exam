@@ -25,7 +25,6 @@ class ProfileController {
             val headers = HttpHeaders()
             headers.add("Authorization", "Bearer ${authService.register(authorization, profile, services)}")
             return ResponseEntity<Any>(profile, headers,HttpStatus.OK)
-
     }
 
     @GetMapping("user/test")
