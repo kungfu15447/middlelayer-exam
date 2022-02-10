@@ -2,6 +2,8 @@ package com.middlelayer.exam.service
 
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.models.auth.ProfileTokenObject
+import com.middlelayer.exam.core.models.domain.DProfile
+import com.middlelayer.exam.core.models.domain.DService
 import com.middlelayer.exam.core.models.xsi.Profile
 import com.middlelayer.exam.core.models.xsi.Service as ServiceModel
 import io.jsonwebtoken.Jwts
@@ -16,23 +18,24 @@ class AuthService : IAuthService {
     @Value("\${jwt.secret.key}")
     private val secretKey: String = ""
 
-    override fun register(basicAuthToken: String, profile: Profile, services: List<ServiceModel>): String {
-        val availableServices: List<ServiceModel> = services.filter { it.uri != null }
-        val details = profile.details
-        val additionalDetails = profile.additionalDetails
+    override fun register(basicAuthToken: String, profile: DProfile, services: List<DService>): String {
         val profileClaim = ProfileTokenObject(
-            details.userId!!,
-            details.groupId!!,
-            details.firstName!! + details.lastName!!,
-            additionalDetails.emailAddress!!
+            profile.userId,
+            profile.groupId,
+            "${profile.firstName} ${profile.lastName}",
+            profile.email
         )
 
+        val servicesString = services.map {
+            it.name
+        }.filterNotNull()
+
         return Jwts.builder()
-            .setIssuer(profile.details.userId)
+            .setIssuer(profile.userId)
             .setExpiration(Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .claim("basicToken", basicAuthToken)
-            .claim("services", availableServices)
+            .claim("services", servicesString)
             .claim("profileInfo", profileClaim)
             .compact();
     }
