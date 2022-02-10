@@ -4,8 +4,6 @@ import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.models.auth.ProfileTokenObject
 import com.middlelayer.exam.core.models.domain.DProfile
 import com.middlelayer.exam.core.models.domain.DService
-import com.middlelayer.exam.core.models.xsi.Profile
-import com.middlelayer.exam.core.models.xsi.Service as ServiceModel
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value

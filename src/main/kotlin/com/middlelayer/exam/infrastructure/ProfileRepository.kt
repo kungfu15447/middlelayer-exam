@@ -6,12 +6,9 @@ import com.middlelayer.exam.core.interfaces.infrastructure.IProfileRepository
 import com.middlelayer.exam.core.interfaces.infrastructure.IXsiClient
 import com.middlelayer.exam.core.models.xsi.Profile
 import com.middlelayer.exam.core.models.xsi.Service
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
-import java.net.URL
 
 @Component
 class ProfileRepository : IProfileRepository {
