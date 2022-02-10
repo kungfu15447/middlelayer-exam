@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import reactor.core.publisher.Mono
 
 @RestController
 class ProfileController {
@@ -19,16 +20,18 @@ class ProfileController {
     }
 
     @GetMapping("user/{userid}/profile")
-    fun getProfile(@RequestHeader("Authorization") authorization: String, @PathVariable userid: String) : ResponseEntity<Any> {
-            val profile = profileService.getProfile(authorization, userid).block()
-            val services = profileService.getServicesFromProfile(authorization, userid).block()
-            if (profile != null && services != null) {
+    fun getProfile(@RequestHeader("Authorization") authorization: String, @PathVariable userid: String) : Mono<ResponseEntity<Any>> {
+            val profile = profileService.getProfile(authorization, userid)
+            val services = profileService.getServicesFromProfile(authorization, userid)
+
+            val response = profile.zipWith(services).flatMap {
+                val profile = it.t1
+                val services = it.t2
                 val headers = HttpHeaders()
                 headers.add("Authorization", "Bearer ${authService.register(authorization, profile, services)}")
-                return ResponseEntity<Any>(profile, headers,HttpStatus.OK)
-            } else {
-                return ResponseEntity("Could not find profile and/or service for user", HttpStatus.NOT_FOUND)
+                Mono.just(ResponseEntity<Any>(profile, headers,HttpStatus.OK))
             }
+            return response
     }
 
     @GetMapping("user/test")
