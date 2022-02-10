@@ -27,22 +27,21 @@ class ProfileController {
             val basicAuthToken = authService.createBasicAuthToken(loginDTO.username, loginDTO.password, true)
             val profile = profileService.getProfile(basicAuthToken, loginDTO.username)
 
-            val response = profile.flatMap {
-                val newToken = authService.createBasicAuthToken(it.userId, loginDTO.password)
-                profileService.getServicesFromProfile(newToken, it.userId)
-            }.zipWith(profile).flatMap {
-                val profile = it.t2
-                val services = it.t1
-                val headers = HttpHeaders()
-                headers.add("Authorization", "Bearer ${authService.register("authorization", profile, services)}")
-                Mono.just(ResponseEntity<Any>(profile, headers,HttpStatus.OK))
+            val response = profile.flatMap { profile->
+                val newToken = authService.createBasicAuthToken(profile.userId, loginDTO.password)
+                profileService.getServicesFromProfile(newToken, profile.userId).flatMap { s ->
+                    val headers = HttpHeaders()
+                    headers.add("Authorization", "Bearer ${authService.register(newToken, profile, s)}")
+                    Mono.just(ResponseEntity<Any>(profile, headers,HttpStatus.OK))
+                }
             }
             return response
+        } else {
+            return Mono.just(ResponseEntity("Username and/or password cannot be null or empty", HttpStatus.BAD_REQUEST))
         }
-        return Mono.just(ResponseEntity("Username and/or password cannot be null or empty", HttpStatus.BAD_REQUEST))
     }
 
-    @GetMapping("user/test")
+    @GetMapping("api/user/test")
     fun getTest(): String {
         return "This is a test"
     }
