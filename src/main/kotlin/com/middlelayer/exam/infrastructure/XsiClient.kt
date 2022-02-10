@@ -8,7 +8,6 @@ import com.middlelayer.exam.core.interfaces.infrastructure.IXsiClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.reactive.function.client.*
 import reactor.core.publisher.Mono
 
@@ -45,13 +44,12 @@ class XsiClient : IXsiClient {
         return Mono.just(clientResponse)
     }
 
-    override fun get(uri: String, auth: String?): String? {
+    override fun get(uri: String, auth: String?): Mono<String> {
         val response = webClient.get()
             .uri(uri)
             .header("Authorization", auth)
             .retrieve()
             .bodyToMono<String>()
-            .block()
         return response
     }
 }

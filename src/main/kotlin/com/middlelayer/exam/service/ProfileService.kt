@@ -5,6 +5,7 @@ import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.core.models.xsi.Profile
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 import com.middlelayer.exam.core.models.xsi.Service as ServiceModel
 
 @Service
@@ -16,11 +17,11 @@ class ProfileService : IProfileService {
     constructor(profileRepository: IProfileRepository) {
         this.profileRepository = profileRepository
     }
-    override fun getProfile(authorization: String, userid: String): Profile {
+    override fun getProfile(authorization: String, userid: String): Mono<Profile> {
         return profileRepository.getProfileXsi(authorization, userid)
     }
 
-    override fun getServicesFromProfile(basicAuthToken: String, userId: String): List<ServiceModel> {
+    override fun getServicesFromProfile(basicAuthToken: String, userId: String): Mono<List<ServiceModel>> {
         return profileRepository.getServicesFromProfileXsi(basicAuthToken, userId)
     }
 }

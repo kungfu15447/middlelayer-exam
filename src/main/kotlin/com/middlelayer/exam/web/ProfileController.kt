@@ -20,11 +20,15 @@ class ProfileController {
 
     @GetMapping("user/{userid}/profile")
     fun getProfile(@RequestHeader("Authorization") authorization: String, @PathVariable userid: String) : ResponseEntity<Any> {
-            val profile = profileService.getProfile(authorization, userid)
-            val services = profileService.getServicesFromProfile(authorization, userid)
-            val headers = HttpHeaders()
-            headers.add("Authorization", "Bearer ${authService.register(authorization, profile, services)}")
-            return ResponseEntity<Any>(profile, headers,HttpStatus.OK)
+            val profile = profileService.getProfile(authorization, userid).block()
+            val services = profileService.getServicesFromProfile(authorization, userid).block()
+            if (profile != null && services != null) {
+                val headers = HttpHeaders()
+                headers.add("Authorization", "Bearer ${authService.register(authorization, profile, services)}")
+                return ResponseEntity<Any>(profile, headers,HttpStatus.OK)
+            } else {
+                return ResponseEntity("Could not find profile and/or service for user", HttpStatus.NOT_FOUND)
+            }
     }
 
     @GetMapping("user/test")
