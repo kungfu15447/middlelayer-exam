@@ -17,14 +17,14 @@ class ProfileService : IProfileService {
     constructor(profileRepository: IProfileRepository) {
         this.profileRepository = profileRepository
     }
-    override fun getProfile(userid: String): Mono<DProfile> {
-        return profileRepository.getProfileXsi(userid).flatMap {
+    override fun getProfile(authorization: String, userid: String): Mono<DProfile> {
+        return profileRepository.getProfileXsi(authorization, userid).flatMap {
             Mono.just(DProfile(it))
         }
     }
 
-    override fun getServicesFromProfile(userId: String): Mono<List<DService>> {
-        return profileRepository.getServicesFromProfileXsi(userId).flatMap { services ->
+    override fun getServicesFromProfile(basicAuthToken: String, userId: String): Mono<List<DService>> {
+        return profileRepository.getServicesFromProfileXsi(basicAuthToken, userId).flatMap { services ->
             Mono.just(services.map { service ->
                 DService(service)
             })

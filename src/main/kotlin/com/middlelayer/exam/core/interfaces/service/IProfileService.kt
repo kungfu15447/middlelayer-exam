@@ -5,6 +5,6 @@ import com.middlelayer.exam.core.models.domain.DService
 import reactor.core.publisher.Mono
 
 interface IProfileService {
-    fun getProfile(userid: String): Mono<DProfile>
-    fun getServicesFromProfile(userId: String): Mono<List<DService>>
+    fun getProfile(authorization: String, userid: String): Mono<DProfile>
+    fun getServicesFromProfile(basicAuthToken: String, userId: String): Mono<List<DService>>
 }
