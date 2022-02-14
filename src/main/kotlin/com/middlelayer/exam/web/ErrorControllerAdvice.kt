@@ -1,9 +1,6 @@
 package com.middlelayer.exam.web
 
-import com.middlelayer.exam.core.exceptions.BadRequestException
-import com.middlelayer.exam.core.exceptions.ISEException
-import com.middlelayer.exam.core.exceptions.NotFoundException
-import com.middlelayer.exam.core.exceptions.UnauthorizedException
+import com.middlelayer.exam.core.exceptions.*
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -40,6 +37,15 @@ class ErrorControllerAdvice {
 
     @ExceptionHandler(ISEException::class)
     fun handleInternalServerErrorException(e: ISEException): ResponseEntity<String> {
+        return if (e.message != null) {
+            ResponseEntity(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
+        } else {
+            ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+    }
+
+    @ExceptionHandler(InvalidMapException::class)
+    fun handleInvalidMapException(e: InvalidMapException): ResponseEntity<String> {
         return if (e.message != null) {
             ResponseEntity(e.message, HttpStatus.INTERNAL_SERVER_ERROR)
         } else {
