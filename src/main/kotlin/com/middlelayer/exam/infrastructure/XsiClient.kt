@@ -27,19 +27,10 @@ class XsiClient : IXsiClient {
 
     private fun handleApiErrorResponse(clientResponse: ClientResponse): Mono<ClientResponse> {
         var statusCode = clientResponse.statusCode()
-        println(statusCode)
         if (statusCode.isError) {
-            println("This was an error")
             return clientResponse.bodyToMono(String::class.java).flatMap<ClientResponse?> {
-                when(statusCode) {
-                    HttpStatus.NOT_FOUND -> Mono.error(NotFoundException(it))
-                    HttpStatus.UNAUTHORIZED -> Mono.error(UnauthorizedException(it))
-                    HttpStatus.INTERNAL_SERVER_ERROR -> Mono.error(ISEException(it))
-                    else -> {
-                        Mono.error(BadRequestException(it))
-                    }
-                }
-            }.switchIfEmpty(Mono.error(UnauthorizedException("Unauthorized access")))
+                createExceptionForStatus(it, clientResponse.statusCode())
+            }.switchIfEmpty(createExceptionForStatus(null, clientResponse.statusCode()))
         }
         return Mono.just(clientResponse)
     }
@@ -54,5 +45,31 @@ class XsiClient : IXsiClient {
                 println("endpoint was requested")
             }
         return response
+    }
+
+    private fun createExceptionForStatus(body: String?, statusCode: HttpStatus): Mono<ClientResponse> {
+        var ex: Mono<ClientResponse>
+        body.let {
+            if (it != null) {
+                when (statusCode) {
+                    HttpStatus.NOT_FOUND -> ex =  Mono.error(NotFoundException(it))
+                    HttpStatus.UNAUTHORIZED -> ex = Mono.error(UnauthorizedException(it))
+                    HttpStatus.INTERNAL_SERVER_ERROR -> ex = Mono.error(ISEException(it))
+                    else -> {
+                        ex = Mono.error(BadRequestException(it))
+                    }
+                }
+            } else {
+                when (statusCode) {
+                    HttpStatus.NOT_FOUND -> ex =  Mono.error(NotFoundException("Tried to call non-existing endpoint"))
+                    HttpStatus.UNAUTHORIZED -> ex = Mono.error(UnauthorizedException("Tried to access unauthorized endpoint"))
+                    HttpStatus.INTERNAL_SERVER_ERROR -> ex = Mono.error(ISEException("Internal error at server endpoint"))
+                    else -> {
+                        ex = Mono.error(BadRequestException("Not supported request body"))
+                    }
+                }
+            }
+        }
+        return ex
     }
 }
