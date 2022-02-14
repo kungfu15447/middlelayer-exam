@@ -51,21 +51,21 @@ class XsiClient : IXsiClient {
         var ex: Mono<ClientResponse>
         body.let {
             if (it != null) {
-                when (statusCode) {
-                    HttpStatus.NOT_FOUND -> ex =  Mono.error(NotFoundException(it))
-                    HttpStatus.UNAUTHORIZED -> ex = Mono.error(UnauthorizedException(it))
-                    HttpStatus.INTERNAL_SERVER_ERROR -> ex = Mono.error(ISEException(it))
+                ex = when (statusCode) {
+                    HttpStatus.NOT_FOUND -> Mono.error(NotFoundException(it))
+                    HttpStatus.UNAUTHORIZED -> Mono.error(UnauthorizedException(it))
+                    HttpStatus.INTERNAL_SERVER_ERROR -> Mono.error(ISEException(it))
                     else -> {
-                        ex = Mono.error(BadRequestException(it))
+                        Mono.error(BadRequestException(it))
                     }
                 }
             } else {
-                when (statusCode) {
-                    HttpStatus.NOT_FOUND -> ex =  Mono.error(NotFoundException("Tried to call non-existing endpoint"))
-                    HttpStatus.UNAUTHORIZED -> ex = Mono.error(UnauthorizedException("Tried to access unauthorized endpoint"))
-                    HttpStatus.INTERNAL_SERVER_ERROR -> ex = Mono.error(ISEException("Internal error at server endpoint"))
+                ex = when (statusCode) {
+                    HttpStatus.NOT_FOUND -> Mono.error(NotFoundException("Tried to call non-existing endpoint"))
+                    HttpStatus.UNAUTHORIZED -> Mono.error(UnauthorizedException("Tried to access unauthorized endpoint"))
+                    HttpStatus.INTERNAL_SERVER_ERROR -> Mono.error(ISEException("Internal error at server endpoint"))
                     else -> {
-                        ex = Mono.error(BadRequestException("Not supported request body"))
+                        Mono.error(BadRequestException("Not supported request body"))
                     }
                 }
             }
