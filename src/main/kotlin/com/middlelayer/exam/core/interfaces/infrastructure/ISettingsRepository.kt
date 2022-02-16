@@ -1,5 +1,8 @@
 package com.middlelayer.exam.core.interfaces.infrastructure
 
-interface ISettingsRepository {
+import com.middlelayer.exam.core.models.xsi.PersonalAssistant
+import reactor.core.publisher.Mono
 
+interface ISettingsRepository {
+    fun getPersonalAssistant(token: String, userId: String): Mono<PersonalAssistant>
 }
