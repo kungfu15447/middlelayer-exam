@@ -2,6 +2,7 @@ package com.middlelayer.exam.web
 
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
+import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -24,9 +25,19 @@ class SettingsController {
     @GetMapping("api/user/settings")
     fun getSettings(@RequestHeader("Authorization") token: String): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
 
-        return this.settingsService.getPersonalAssistant(claims.basicToken, claims.profileObj.userId).flatMap {
-            Mono.just(ResponseEntity(it, HttpStatus.OK))
+        val personalAssistant = settingsService.getPersonalAssistant(basicToken, userId)
+        val exclusionNumbers = settingsService.getPAExclusionNumbers(basicToken, userId)
+
+        val response = Mono.zip(personalAssistant, exclusionNumbers)
+        return response.flatMap {
+            val pa = it.t1
+            val en = it.t2
+
+            val responseBody: GetSettingsResponseDTO = GetSettingsResponseDTO(pa, en)
+            Mono.just(ResponseEntity(responseBody, HttpStatus.OK))
         }
     }
 }
