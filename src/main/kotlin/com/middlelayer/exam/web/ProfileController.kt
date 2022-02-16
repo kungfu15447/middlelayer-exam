@@ -2,6 +2,7 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.web.dto.profile.LoginDTO
+import okhttp3.internal.format
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.HttpHeaders
@@ -24,8 +25,9 @@ class ProfileController {
     @PostMapping("api/user/profile")
     fun getProfile(@RequestBody loginDTO: LoginDTO) : Mono<ResponseEntity<Any>> {
         if (!loginDTO.username.isNullOrEmpty() && !loginDTO.password.isNullOrEmpty()) {
-            val basicAuthToken = authService.createBasicAuthToken(loginDTO.username, loginDTO.password, true)
-            val profile = profileService.getProfile(basicAuthToken, loginDTO.username)
+            val formattedUsername = formatUsername(loginDTO.username)
+            val basicAuthToken = authService.createBasicAuthToken(formattedUsername, loginDTO.password)
+            val profile = profileService.getProfile(basicAuthToken, formattedUsername)
 
             val response = profile.flatMap { profile->
                 val newToken = authService.createBasicAuthToken(profile.userId, loginDTO.password)
@@ -39,6 +41,19 @@ class ProfileController {
         } else {
             return Mono.just(ResponseEntity("Username and/or password cannot be null or empty", HttpStatus.BAD_REQUEST))
         }
+    }
+
+    private fun formatUsername(username: String): String {
+        var formattedUserName = username
+            .replace("+45", "")
+            .replace(" ", "")
+
+        //Is username numeric?
+        if (formattedUserName.matches(Regex("[0-9]+"))) {
+            formattedUserName = "PA_45$formattedUserName"
+        }
+
+        return formattedUserName
     }
 
     @GetMapping("api/user/test")

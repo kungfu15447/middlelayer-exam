@@ -38,26 +38,8 @@ class AuthService : IAuthService {
             .compact()
     }
 
-    override fun createBasicAuthToken(user: String, password: String, withFormat: Boolean): String {
-        var auth = ""
-        if (withFormat) {
-            auth = "${formatUsername(user)}:${password}"
-        } else {
-            auth = "${user}:${password}"
-        }
+    override fun createBasicAuthToken(user: String, password: String): String {
+        val auth = "${user}:${password}"
         return "Basic ${Base64.getEncoder().encodeToString(auth.toByteArray())}"
-    }
-
-    private fun formatUsername(username: String): String {
-        var formattedUserName = username
-            .replace("+45", "")
-            .replace(" ", "")
-
-        //Is username numeric?
-        if (formattedUserName.matches(Regex("[0-9]+"))) {
-            formattedUserName = "PA_$formattedUserName"
-        }
-
-        return formattedUserName
     }
 }
