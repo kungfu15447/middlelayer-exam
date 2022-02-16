@@ -55,7 +55,7 @@ class AuthService : IAuthService {
 
         //Is username numeric?
         if (formattedUserName.matches(Regex("[0-9]+"))) {
-            formattedUserName = "PA_$formattedUserName"
+            formattedUserName = "PA_45$formattedUserName"
         }
 
         return formattedUserName
