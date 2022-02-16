@@ -23,10 +23,9 @@ class SettingsController {
 
     @GetMapping("api/user/settings")
     fun getSettings(@RequestHeader("Authorization") token: String): Mono<ResponseEntity<Any>> {
-        val userId = ""
-        val basicToken = ""
+        val claims = authService.getClaimsFromJWTToken(token)
 
-        return this.settingsService.getPersonalAssistant(basicToken, userId).flatMap {
+        return this.settingsService.getPersonalAssistant(claims.basicToken, claims.profileObj.userId).flatMap {
             Mono.just(ResponseEntity(it, HttpStatus.OK))
         }
     }
