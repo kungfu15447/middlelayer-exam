@@ -2,8 +2,7 @@ package com.middlelayer.exam.infrastructure
 
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.infrastructure.IXsiClient
-import com.middlelayer.exam.core.models.xsi.ExclusionNumber
-import com.middlelayer.exam.core.models.xsi.PersonalAssistant
+import com.middlelayer.exam.core.models.xsi.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Mono
@@ -30,6 +29,13 @@ class SettingsRepository : ISettingsRepository {
         val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumberlist", token)
         return responseBody.flatMap {
             Mono.just(xmlParser.tryMapValue<List<ExclusionNumber>>(it))
+        }
+    }
+
+    override fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<PersonalAssistantAssignedCallToNumbers> {
+        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/assignedcalltonumbers", token)
+        return responseBody.flatMap {
+            Mono.just(xmlParser.tryMapValue<PersonalAssistantAssignedCallToNumbers>(it))
         }
     }
 

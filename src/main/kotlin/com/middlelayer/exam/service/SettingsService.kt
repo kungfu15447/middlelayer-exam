@@ -2,6 +2,8 @@ package com.middlelayer.exam.service
 
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
+import com.middlelayer.exam.core.models.domain.DCallToNumber
+import com.middlelayer.exam.core.models.xsi.CallToNumberList
 import com.middlelayer.exam.core.models.xsi.ExclusionNumber
 import com.middlelayer.exam.core.models.xsi.PersonalAssistant
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,5 +25,13 @@ class SettingsService : ISettingsService {
 
     override fun getPAExclusionNumbers(token: String, userId: String): Mono<List<ExclusionNumber>> {
         return settingsRepo.getPAExclusionNumbers(token, userId)
+    }
+
+    override fun getPaAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
+        return settingsRepo.getPAAssignedCallToNumbers(token, userId).flatMap {
+            Mono.just(it.callToNumberList.callToNumbers.map { ctn ->
+                DCallToNumber(ctn.type ?: "")
+            })
+        }
     }
 }
