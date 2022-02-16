@@ -3,34 +3,35 @@ package com.middlelayer.exam.infrastructure
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.middlelayer.exam.core.interfaces.infrastructure.IProfileRepository
-import com.middlelayer.exam.core.models.Profile
-import okhttp3.OkHttpClient
-import okhttp3.Request
+import com.middlelayer.exam.core.interfaces.infrastructure.IXsiClient
+import com.middlelayer.exam.core.models.xsi.Profile
+import com.middlelayer.exam.core.models.xsi.Service
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
-import java.net.URL
+import reactor.core.publisher.Mono
 
 @Component
 class ProfileRepository : IProfileRepository {
 
-    override fun getProfileXsi(authorization: String, userid: String): Profile {
-        val client = OkHttpClient()
-        val url = URL("https://scalexi-pp-xsp2.tdc.dk/com.broadsoft.xsi-actions/v2.0/user/$userid/profile/")
+    private val xsiClient: IXsiClient
+    private val xmlParser: XmlParser
 
-        val request = Request.Builder()
-            .url(url)
-            .get()
-            .header("Authorization", authorization)
-            .build()
-        val response = client.newCall(request).execute()
+    @Autowired
+    constructor(xsiClient: IXsiClient, xmlParser: XmlParser) {
+        this.xsiClient = xsiClient
+        this.xmlParser = xmlParser
+    }
+    override fun getProfileXsi(basicAuthToken: String, userId: String): Mono<Profile> {
+        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/$userId/profile", basicAuthToken)
+        return responseBody.flatMap {
+            Mono.just(xmlParser.tryMapValue<Profile>(it))
+        }
+    }
 
-        if (response.code == 200) {
-            val responseBody = response.body!!.string()
-
-            val mapper = XmlMapper();
-
-            return mapper.readValue(responseBody);
-        } else {
-            throw Exception("Unauthorized access")
+    override fun getServicesFromProfileXsi(basicAuthToken: String, userId: String): Mono<List<Service>> {
+        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/$userId/services", basicAuthToken)
+        return responseBody.flatMap {
+            Mono.just(xmlParser.tryMapValue<List<Service>>(it))
         }
     }
 }

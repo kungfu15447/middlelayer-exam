@@ -20,7 +20,7 @@ class AuthFilter : GenericFilterBean {
 
     constructor(env: Environment) {
         secretKey = env.getProperty("jwt.secret.key", "")
-        filterUrl = AntPathRequestMatcher("/user/**/profile")
+        filterUrl = AntPathRequestMatcher("/api/user/profile")
     }
 
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
@@ -44,7 +44,7 @@ class AuthFilter : GenericFilterBean {
         }
         if (!isAuthorized) {
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized access")
-        }else {
+        } else {
             chain?.doFilter(req, res)
         }
     }

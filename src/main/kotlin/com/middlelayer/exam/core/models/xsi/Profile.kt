@@ -1,7 +1,6 @@
-package com.middlelayer.exam.core.models
+package com.middlelayer.exam.core.models.xsi
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText
-import java.util.*
 
 data class Profile(
     val details: UserDetails = UserDetails(),
