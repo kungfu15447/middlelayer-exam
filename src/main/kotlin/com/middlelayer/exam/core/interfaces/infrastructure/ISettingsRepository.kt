@@ -12,4 +12,7 @@ interface ISettingsRepository {
     fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice>
     fun getNumberDisplayStatus(token: String, userId: String): Mono<NumberDisplayHidden>
     fun getNumberDisplay(token: String, userId: String): Mono<NumberDisplay>
+    fun getCallForwardingAlways(token: String, userId: String): Mono<CallForwardingAlways>
+    fun getCallForwardingNoAnswer(token: String, userId: String): Mono<CallForwardingNoAnswer>
+    fun getCallForwardingBusy(token: String, userId: String): Mono<CallForwardingBusy>
 }

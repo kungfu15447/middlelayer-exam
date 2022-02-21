@@ -2,10 +2,7 @@ package com.middlelayer.exam.core.interfaces.service
 
 import com.middlelayer.exam.core.models.domain.DCallToNumber
 import com.middlelayer.exam.core.models.ims.NumberDisplay
-import com.middlelayer.exam.core.models.xsi.ExclusionNumber
-import com.middlelayer.exam.core.models.xsi.NumberDisplayHidden
-import com.middlelayer.exam.core.models.xsi.PersonalAssistant
-import com.middlelayer.exam.core.models.xsi.RemoteOffice
+import com.middlelayer.exam.core.models.xsi.*
 import reactor.core.publisher.Mono
 
 interface ISettingsService {
@@ -16,4 +13,5 @@ interface ISettingsService {
     fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice>
     fun getNumberDisplayStatus(token: String, userId: String): Mono<NumberDisplayHidden>
     fun getNumberDisplay(token: String, userId: String): Mono<NumberDisplay>
+    fun getCallForwardingAlways(token: String, userId: String): Mono<CallForwardingAlways>
 }

@@ -4,10 +4,7 @@ import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.DCallToNumber
 import com.middlelayer.exam.core.models.ims.NumberDisplay
-import com.middlelayer.exam.core.models.xsi.ExclusionNumber
-import com.middlelayer.exam.core.models.xsi.NumberDisplayHidden
-import com.middlelayer.exam.core.models.xsi.PersonalAssistant
-import com.middlelayer.exam.core.models.xsi.RemoteOffice
+import com.middlelayer.exam.core.models.xsi.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -55,5 +52,9 @@ class SettingsService : ISettingsService {
 
     override fun getNumberDisplay(token: String, userId: String): Mono<NumberDisplay> {
         return settingsRepo.getNumberDisplay(token, userId)
+    }
+
+    override fun getCallForwardingAlways(token: String, userId: String): Mono<CallForwardingAlways> {
+        return settingsRepo.getCallForwardingAlways(token, userId)
     }
 }
