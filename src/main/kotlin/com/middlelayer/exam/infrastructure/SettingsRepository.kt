@@ -10,53 +10,55 @@ import reactor.core.publisher.Mono
 @Repository
 class SettingsRepository : ISettingsRepository {
     private val xsiClient: IClient
-    private val xmlParser: XmlParser
+    private val imsClient: IClient
+    private val objectParser: ObjectParser
 
     @Autowired
-    constructor(xsiClient: IClient, xmlParser: XmlParser) {
+    constructor(xsiClient: IClient, imsClient: IClient, objectParser: ObjectParser) {
         this.xsiClient = xsiClient
-        this.xmlParser = xmlParser
+        this.imsClient = imsClient
+        this.objectParser = objectParser
     }
 
     override fun getPersonalAssistant(token: String, userId: String): Mono<PersonalAssistant> {
         val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant", token)
         return responseBody.flatMap {
-            Mono.just(xmlParser.tryMapValue(it))
+            Mono.just(objectParser.tryMapXml(it))
         }
     }
 
     override fun getPAExclusionNumbers(token: String, userId: String): Mono<List<ExclusionNumber>> {
         val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumberlist", token)
         return responseBody.flatMap {
-            Mono.just(xmlParser.tryMapValue(it))
+            Mono.just(objectParser.tryMapXml(it))
         }
     }
 
     override fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<AssignedCallToNumbers> {
         val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/assignedcalltonumbers", token)
         return responseBody.flatMap {
-            Mono.just(xmlParser.tryMapValue(it))
+            Mono.just(objectParser.tryMapXml(it))
         }
     }
 
     override fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<AvailableCallToNumbers> {
         val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/availablecalltonumbers", token)
         return responseBody.flatMap {
-            Mono.just(xmlParser.tryMapValue(it))
+            Mono.just(objectParser.tryMapXml(it))
         }
     }
 
     override fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice> {
         val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/remoteoffice", token)
         return responseBody.flatMap {
-            Mono.just(xmlParser.tryMapValue(it))
+            Mono.just(objectParser.tryMapXml(it))
         }
     }
 
     override fun getNumberDisplayStatus(token: String, userId: String): Mono<NumberDisplayHidden> {
         val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/CallingLineIDDeliveryBlocking", token)
         return responseBody.flatMap {
-            Mono.just(xmlParser.tryMapValue(it))
+            Mono.just(objectParser.tryMapXml(it))
         }
     }
 }
