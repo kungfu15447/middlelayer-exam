@@ -65,4 +65,8 @@ class SettingsService : ISettingsService {
     override fun getCallForwardingBusy(token: String, userId: String): Mono<CallForwardingBusy> {
         return settingsRepo.getCallForwardingBusy(token, userId)
     }
+
+    override fun getVoiceMessaging(token: String, userId: String): Mono<VoiceMessaging> {
+        return settingsRepo.getVoiceMessaging(token, userId)
+    }
 }

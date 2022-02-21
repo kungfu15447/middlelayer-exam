@@ -41,6 +41,7 @@ class SettingsController {
         val callForwardingAlways = settingsService.getCallForwardingAlways(basicToken, userId)
         val callForwardingBusy = settingsService.getCallForwardingBusy(basicToken, userId)
         val callForwardingNoAnswer = settingsService.getCallForwardingNoAnswer(basicToken, userId)
+        val voiceMessaging = settingsService.getVoiceMessaging(basicToken, userId)
 
         val personalAssistantZip = Mono.zip(
             personalAssistant,
@@ -60,16 +61,23 @@ class SettingsController {
             callForwardingNoAnswer
         )
 
+        val voiceMessagingZip = Mono.zip(
+            voiceMessaging,
+            voiceMessaging
+        )
+
         val response = Mono.zip(
             personalAssistantZip,
             remoteOffice,
             numberDisplayZip,
-            callForwardZip
+            callForwardZip,
+            voiceMessagingZip
         )
         return response.flatMap {
             val paZip = it.t1
             val ndZip = it.t3
             val cfZip = it.t4
+            val vmZip = it.t5
 
             //Personal Assistant settings
             val pa: PersonalAssistant = paZip.t1
@@ -88,6 +96,9 @@ class SettingsController {
             val cfa: CallForwardingAlways = cfZip.t1
             val cfb: CallForwardingBusy = cfZip.t2
             val cfna: CallForwardingNoAnswer = cfZip.t3
+
+            //Voice Messaging settings
+            val vm: VoiceMessaging = vmZip.t1
 
             val responseBody = GetSettingsResponseDTO(
                 pa,
