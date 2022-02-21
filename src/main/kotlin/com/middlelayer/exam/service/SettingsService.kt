@@ -3,9 +3,9 @@ package com.middlelayer.exam.service
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.DCallToNumber
-import com.middlelayer.exam.core.models.xsi.CallToNumberList
 import com.middlelayer.exam.core.models.xsi.ExclusionNumber
 import com.middlelayer.exam.core.models.xsi.PersonalAssistant
+import com.middlelayer.exam.core.models.xsi.RemoteOffice
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -41,5 +41,9 @@ class SettingsService : ISettingsService {
                 DCallToNumber(ctn.type ?: "")
             })
         }
+    }
+
+    override fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice> {
+        return settingsRepo.getRemoteOffice(token, userId)
     }
 }

@@ -32,19 +32,29 @@ class SettingsController {
         val exclusionNumbers = settingsService.getPAExclusionNumbers(basicToken, userId)
         val assignedCallToNumbers = settingsService.getPAAssignedCallToNumbers(basicToken, userId)
         val availableCallToNumbers = settingsService.getPAAvailableCallToNumbers(basicToken, userId)
+        val remoteOffice = settingsService.getRemoteOffice(basicToken, userId)
 
         val response = Mono.zip(
             personalAssistant,
             exclusionNumbers,
             assignedCallToNumbers,
-            availableCallToNumbers
+            availableCallToNumbers,
+            remoteOffice
         )
         return response.flatMap {
             val pa = it.t1
             val en = it.t2
             val actn = it.t3
             val avctn = it.t4
-            val responseBody: GetSettingsResponseDTO = GetSettingsResponseDTO(pa, en, actn, avctn)
+            val ro = it.t5
+
+            val responseBody: GetSettingsResponseDTO = GetSettingsResponseDTO(
+                pa,
+                en,
+                actn,
+                avctn,
+                ro
+            )
             Mono.just(ResponseEntity(responseBody, HttpStatus.OK))
         }
     }

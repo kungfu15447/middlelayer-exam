@@ -46,7 +46,7 @@ class SettingsRepository : ISettingsRepository {
         }
     }
 
-    override fun getRemoteOFfice(token: String, userId: String): Mono<RemoteOffice> {
+    override fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice> {
         val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/remoteoffice", token)
         return responseBody.flatMap {
             Mono.just(xmlParser.tryMapValue(it))

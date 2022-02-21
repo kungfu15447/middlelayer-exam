@@ -8,5 +8,5 @@ interface ISettingsRepository {
     fun getPAExclusionNumbers(token: String, userId: String): Mono<List<ExclusionNumber>>
     fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<AssignedCallToNumbers>
     fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<AvailableCallToNumbers>
-    fun getRemoteOFfice(token: String, userId: String): Mono<RemoteOffice>
+    fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice>
 }
