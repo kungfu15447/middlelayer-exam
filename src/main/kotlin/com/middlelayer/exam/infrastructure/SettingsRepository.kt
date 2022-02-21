@@ -1,7 +1,7 @@
 package com.middlelayer.exam.infrastructure
 
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
-import com.middlelayer.exam.core.interfaces.infrastructure.IXsiClient
+import com.middlelayer.exam.core.interfaces.infrastructure.IClient
 import com.middlelayer.exam.core.models.xsi.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
@@ -9,11 +9,11 @@ import reactor.core.publisher.Mono
 
 @Repository
 class SettingsRepository : ISettingsRepository {
-    private val xsiClient: IXsiClient
+    private val xsiClient: IClient
     private val xmlParser: XmlParser
 
     @Autowired
-    constructor(xsiClient: IXsiClient, xmlParser: XmlParser) {
+    constructor(xsiClient: IClient, xmlParser: XmlParser) {
         this.xsiClient = xsiClient
         this.xmlParser = xmlParser
     }

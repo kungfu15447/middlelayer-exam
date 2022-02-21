@@ -4,7 +4,7 @@ import com.middlelayer.exam.core.exceptions.BadRequestException
 import com.middlelayer.exam.core.exceptions.ISEException
 import com.middlelayer.exam.core.exceptions.NotFoundException
 import com.middlelayer.exam.core.exceptions.UnauthorizedException
-import com.middlelayer.exam.core.interfaces.infrastructure.IXsiClient
+import com.middlelayer.exam.core.interfaces.infrastructure.IClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.*
 import reactor.core.publisher.Mono
 
 @Component
-class XsiClient : IXsiClient {
+class XsiClient : IClient {
 
     private val webClient: WebClient
 

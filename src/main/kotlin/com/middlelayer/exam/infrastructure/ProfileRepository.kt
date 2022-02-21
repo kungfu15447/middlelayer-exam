@@ -1,9 +1,7 @@
 package com.middlelayer.exam.infrastructure
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import com.middlelayer.exam.core.interfaces.infrastructure.IProfileRepository
-import com.middlelayer.exam.core.interfaces.infrastructure.IXsiClient
+import com.middlelayer.exam.core.interfaces.infrastructure.IClient
 import com.middlelayer.exam.core.models.xsi.Profile
 import com.middlelayer.exam.core.models.xsi.Service
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,11 +11,11 @@ import reactor.core.publisher.Mono
 @Component
 class ProfileRepository : IProfileRepository {
 
-    private val xsiClient: IXsiClient
+    private val xsiClient: IClient
     private val xmlParser: XmlParser
 
     @Autowired
-    constructor(xsiClient: IXsiClient, xmlParser: XmlParser) {
+    constructor(xsiClient: IClient, xmlParser: XmlParser) {
         this.xsiClient = xsiClient
         this.xmlParser = xmlParser
     }
