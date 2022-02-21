@@ -9,4 +9,5 @@ interface ISettingsRepository {
     fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<AssignedCallToNumbers>
     fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<AvailableCallToNumbers>
     fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice>
+    fun getNumberDisplayStatus(token: String, userId: String): Mono<NumberDisplayHidden>
 }

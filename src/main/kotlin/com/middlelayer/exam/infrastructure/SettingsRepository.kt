@@ -52,4 +52,11 @@ class SettingsRepository : ISettingsRepository {
             Mono.just(xmlParser.tryMapValue(it))
         }
     }
+
+    override fun getNumberDisplayStatus(token: String, userId: String): Mono<NumberDisplayHidden> {
+        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/CallingLineIDDeliveryBlocking", token)
+        return responseBody.flatMap {
+            Mono.just(xmlParser.tryMapValue(it))
+        }
+    }
 }
