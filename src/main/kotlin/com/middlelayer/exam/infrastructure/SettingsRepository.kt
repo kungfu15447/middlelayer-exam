@@ -85,7 +85,7 @@ class SettingsRepository : ISettingsRepository {
     }
 
     override fun getCallForwardingBusy(token: String, userId: String): Mono<CallForwardingBusy> {
-        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/callforwardingnbusy", token)
+        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/callforwardingbusy", token)
         return responseBody.flatMap {
             Mono.just(objectParser.tryMapXml(it))
         }

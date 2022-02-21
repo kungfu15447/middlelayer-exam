@@ -2,6 +2,9 @@ package com.middlelayer.exam.web
 
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
+import com.middlelayer.exam.core.models.domain.DCallToNumber
+import com.middlelayer.exam.core.models.ims.NumberDisplay
+import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -35,32 +38,64 @@ class SettingsController {
         val remoteOffice = settingsService.getRemoteOffice(basicToken, userId)
         val numberDisplayStatus = settingsService.getNumberDisplayStatus(basicToken, userId)
         val numberDisplay = settingsService.getNumberDisplay(basicToken, userId)
+        val callForwardingAlways = settingsService.getCallForwardingAlways(basicToken, userId)
+        val callForwardingBusy = settingsService.getCallForwardingBusy(basicToken, userId)
+        val callForwardingNoAnswer = settingsService.getCallForwardingNoAnswer(basicToken, userId)
 
-        val response = Mono.zip(
+        val personalAssistantZip = Mono.zip(
             personalAssistant,
             exclusionNumbers,
             assignedCallToNumbers,
-            availableCallToNumbers,
-            remoteOffice,
+            availableCallToNumbers
+        )
+
+        val numberDisplayZip = Mono.zip(
             numberDisplayStatus,
             numberDisplay
         )
-        return response.flatMap {
-            val pa = it.t1
-            val en = it.t2
-            val actn = it.t3
-            val avctn = it.t4
-            val ro = it.t5
-            val nds = it.t6
-            val nd = it.t7
 
-            val responseBody: GetSettingsResponseDTO = GetSettingsResponseDTO(
+        val callForwardZip = Mono.zip(
+            callForwardingAlways,
+            callForwardingBusy,
+            callForwardingNoAnswer
+        )
+
+        val response = Mono.zip(
+            personalAssistantZip,
+            remoteOffice,
+            numberDisplayZip,
+            callForwardZip
+        )
+        return response.flatMap {
+            val paZip = it.t1
+            val ndZip = it.t3
+            val cfZip = it.t4
+
+            //Personal Assistant settings
+            val pa: PersonalAssistant = paZip.t1
+            val en: List<ExclusionNumber> = paZip.t2
+            val asctn: List<DCallToNumber> = paZip.t3
+            val avctn: List<DCallToNumber> = paZip.t4
+
+            //Number Display settings
+            val ndh: NumberDisplayHidden = ndZip.t1
+            val nd: NumberDisplay = ndZip.t2
+
+            //Remote Office settings
+            val ro: RemoteOffice = it.t2
+
+            //Call Forwarding settings
+            val cfa: CallForwardingAlways = cfZip.t1
+            val cfb: CallForwardingBusy = cfZip.t2
+            val cfna: CallForwardingNoAnswer = cfZip.t3
+
+            val responseBody = GetSettingsResponseDTO(
                 pa,
                 en,
-                actn,
+                asctn,
                 avctn,
                 ro,
-                nds,
+                ndh,
                 nd
             )
             Mono.just(ResponseEntity(responseBody, HttpStatus.OK))
