@@ -27,9 +27,17 @@ class SettingsService : ISettingsService {
         return settingsRepo.getPAExclusionNumbers(token, userId)
     }
 
-    override fun getPaAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
+    override fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
         return settingsRepo.getPAAssignedCallToNumbers(token, userId).flatMap {
             Mono.just(it.callToNumberList.callToNumbers.map { ctn ->
+                DCallToNumber(ctn.type ?: "")
+            })
+        }
+    }
+
+    override fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
+        return settingsRepo.getPAAvailableCallToNumbers(token, userId).flatMap {
+            Mono.just(it.callToNumbers.map { ctn ->
                 DCallToNumber(ctn.type ?: "")
             })
         }

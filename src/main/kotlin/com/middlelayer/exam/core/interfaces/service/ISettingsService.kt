@@ -8,5 +8,6 @@ import reactor.core.publisher.Mono
 interface ISettingsService {
     fun getPersonalAssistant(token: String, userId: String): Mono<PersonalAssistant>
     fun getPAExclusionNumbers(token: String, userId: String): Mono<List<ExclusionNumber>>
-    fun getPaAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>>
+    fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>>
+    fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>>
 }
