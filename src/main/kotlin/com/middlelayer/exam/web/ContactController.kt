@@ -25,8 +25,10 @@ class ContactController {
     @GetMapping("/api/user/contact")
     fun getContacts(@RequestParam userId : String): Mono<ResponseEntity<Any>> {
         val response = contactService.getEnterpriseContacts(authService.createBasicAuthToken(userId, password = "111111"),userId)
-        return Mono.just(ResponseEntity<Any>(response, HttpStatus.OK))
-
+            .flatMap {
+                Mono.just(ResponseEntity<Any>(it, HttpStatus.OK))
+            }
+        return response
     }
 
 }

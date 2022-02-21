@@ -21,7 +21,7 @@ class ContactRepository : IContactRepository {
 
 
     override fun getEnterpriseContacts(basicAuthToken: String, userId: String) : Mono<Enterprise> {
-        val responseBody = xsiClient.get("com.broadsoft.xsi-actions/v2.0/user/m29289547@vk103741.hvoip.dk/directories/Enterprise?sortColumn=firstName&userId=*hvoip.dk*&start=1&results=10", basicAuthToken)
+        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/m29289547@vk103741.hvoip.dk/directories/Enterprise?sortColumn=firstName&userId=*hvoip.dk*&start=1&results=10", basicAuthToken)
         return responseBody.flatMap {
             Mono.just(xmlParser.tryMapValue<Enterprise>(it))
         }
