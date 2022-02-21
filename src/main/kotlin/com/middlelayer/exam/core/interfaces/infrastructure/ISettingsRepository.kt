@@ -1,5 +1,6 @@
 package com.middlelayer.exam.core.interfaces.infrastructure
 
+import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.xsi.*
 import reactor.core.publisher.Mono
 
@@ -10,4 +11,5 @@ interface ISettingsRepository {
     fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<AvailableCallToNumbers>
     fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice>
     fun getNumberDisplayStatus(token: String, userId: String): Mono<NumberDisplayHidden>
+    fun getNumberDisplay(token: String, userId: String): Mono<NumberDisplay>
 }

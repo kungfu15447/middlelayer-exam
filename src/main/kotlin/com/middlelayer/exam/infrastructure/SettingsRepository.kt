@@ -2,6 +2,7 @@ package com.middlelayer.exam.infrastructure
 
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.infrastructure.IClient
+import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.xsi.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Repository
@@ -59,6 +60,13 @@ class SettingsRepository : ISettingsRepository {
         val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/CallingLineIDDeliveryBlocking", token)
         return responseBody.flatMap {
             Mono.just(objectParser.tryMapXml(it))
+        }
+    }
+
+    override fun getNumberDisplay(token: String, userId: String): Mono<NumberDisplay> {
+        val responseBody = imsClient.get("/nef/clid/user/${userId}/service", token)
+        return responseBody.flatMap {
+            Mono.just(objectParser.tryMapJson(it))
         }
     }
 }

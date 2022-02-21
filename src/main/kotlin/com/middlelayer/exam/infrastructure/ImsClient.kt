@@ -1,17 +1,21 @@
 package com.middlelayer.exam.infrastructure
 
 import com.middlelayer.exam.core.interfaces.infrastructure.IClient
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 
+@Component
+@Qualifier("imsClient")
 class ImsClient: IClient {
     private val webClient: WebClient
     private val configuration: WebClientConfiguration = WebClientConfiguration()
 
-    constructor(@Value("ims.server.url") server: String) {
+    constructor(@Value("\${ims.server.url}") server: String) {
         webClient = WebClient
             .builder()
             .baseUrl(server)

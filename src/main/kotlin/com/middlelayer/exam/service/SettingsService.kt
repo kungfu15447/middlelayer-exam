@@ -3,6 +3,7 @@ package com.middlelayer.exam.service
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.DCallToNumber
+import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.xsi.ExclusionNumber
 import com.middlelayer.exam.core.models.xsi.NumberDisplayHidden
 import com.middlelayer.exam.core.models.xsi.PersonalAssistant
@@ -50,5 +51,9 @@ class SettingsService : ISettingsService {
 
     override fun getNumberDisplayStatus(token: String, userId: String): Mono<NumberDisplayHidden> {
         return settingsRepo.getNumberDisplayStatus(token, userId)
+    }
+
+    override fun getNumberDisplay(token: String, userId: String): Mono<NumberDisplay> {
+        return settingsRepo.getNumberDisplay(token, userId)
     }
 }

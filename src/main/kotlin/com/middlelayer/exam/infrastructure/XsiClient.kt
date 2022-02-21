@@ -1,12 +1,14 @@
 package com.middlelayer.exam.infrastructure
 
 import com.middlelayer.exam.core.interfaces.infrastructure.IClient
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.*
 import reactor.core.publisher.Mono
 
 @Component
+@Qualifier("xsiClient")
 class XsiClient : IClient {
     private val webClient: WebClient
     private val configuration: WebClientConfiguration = WebClientConfiguration()
