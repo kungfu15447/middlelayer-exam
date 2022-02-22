@@ -61,4 +61,17 @@ class ProfileController {
     fun getTest(): String {
         return "This is a test"
     }
+
+    private fun formatUsername(username: String): String {
+        var formattedUserName = username
+            .replace("+45", "")
+            .replace(" ", "")
+
+        //Is username numeric?
+        if (formattedUserName.matches(Regex("[0-9]+"))) {
+            formattedUserName = "PA_45$formattedUserName"
+        }
+
+        return formattedUserName
+    }
 }
