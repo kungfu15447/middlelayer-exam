@@ -2,8 +2,7 @@ package com.middlelayer.exam.web
 
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
-import com.middlelayer.exam.core.models.domain.DCallToNumber
-import com.middlelayer.exam.core.models.domain.DVoiceMessaging
+import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
@@ -45,6 +44,8 @@ class SettingsController {
         val voiceMessaging = settingsService.getVoiceMessaging(basicToken, userId)
         val voiceMessagingGreeting = settingsService.getVoiceMessagingGreeting(basicToken, userId)
         val pushNotification = settingsService.getPushNotification(basicToken, userId)
+        val simultaneousRing = settingsService.getSimultaneousRing(basicToken, userId)
+        val doNotDisturb = settingsService.getDoNotDisturb(basicToken, userId)
 
         val personalAssistantZip = Mono.zip(
             personalAssistant,
@@ -75,7 +76,9 @@ class SettingsController {
             remoteOffice,
             numberDisplayZip,
             callForwardZip,
-            voiceMessagingZip
+            voiceMessagingZip,
+            simultaneousRing,
+            doNotDisturb
         )
         return response.flatMap {
             val paZip = it.t1
@@ -103,17 +106,16 @@ class SettingsController {
 
             //Voice Messaging settings
             val vm: DVoiceMessaging = vmZip.t1
+            val vmg: DVoiceMessagingGreeting = vmZip.t2
+            val pn: DPushNotification = vmZip.t3
 
+            //Simultaneous Ring settings
+            val sr: DSimultaneousRing = it.t6
 
-            val responseBody = GetSettingsResponseDTO(
-                pa,
-                en,
-                asctn,
-                avctn,
-                ro,
-                ndh,
-                nd
-            )
+            //Do Not Disturbs settings
+            val dnd: DDoNotDisturb = it.t7
+
+            val responseBody = GetSettingsResponseDTO()
             Mono.just(ResponseEntity(responseBody, HttpStatus.OK))
         }
     }
