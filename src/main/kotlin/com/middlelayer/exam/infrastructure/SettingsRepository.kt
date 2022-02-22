@@ -104,4 +104,11 @@ class SettingsRepository : ISettingsRepository {
             Mono.just(objectParser.tryMapXml(it))
         }
     }
+
+    override fun getMWIDeliveryToMobileEndpoint(token: String, userId: String): Mono<MWIDeliveryToMobileEndpoint> {
+        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/MWIDeliveryToMobileEndpoint", token)
+        return responseBody.flatMap {
+            Mono.just(objectParser.tryMapXml(it))
+        }
+    }
 }
