@@ -18,12 +18,18 @@ class SettingsService : ISettingsService {
         this.settingsRepo = settingsRepo
     }
 
-    override fun getPersonalAssistant(token: String, userId: String): Mono<PersonalAssistant> {
-        return settingsRepo.getPersonalAssistant(token, userId)
+    override fun getPersonalAssistant(token: String, userId: String): Mono<DPersonalAssistant> {
+        return settingsRepo.getPersonalAssistant(token, userId).flatMap {
+            Mono.just(DPersonalAssistant(it))
+        }
     }
 
-    override fun getPAExclusionNumbers(token: String, userId: String): Mono<List<ExclusionNumber>> {
-        return settingsRepo.getPAExclusionNumbers(token, userId)
+    override fun getPAExclusionNumbers(token: String, userId: String): Mono<List<DExclusionNumber>> {
+        return settingsRepo.getPAExclusionNumbers(token, userId).flatMap {
+            Mono.just(it.map { en ->
+                DExclusionNumber(en)
+            })
+        }
     }
 
     override fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
@@ -42,8 +48,10 @@ class SettingsService : ISettingsService {
         }
     }
 
-    override fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice> {
-        return settingsRepo.getRemoteOffice(token, userId)
+    override fun getRemoteOffice(token: String, userId: String): Mono<DRemoteOffice> {
+        return settingsRepo.getRemoteOffice(token, userId).flatMap {
+            Mono.just(DRemoteOffice(it))
+        }
     }
 
     override fun getNumberDisplayStatus(token: String, userId: String): Mono<DNumberDisplayHidden> {

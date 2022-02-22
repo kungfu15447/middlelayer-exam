@@ -1,16 +1,14 @@
 package com.middlelayer.exam.core.interfaces.service
 
 import com.middlelayer.exam.core.models.domain.*
-import com.middlelayer.exam.core.models.ims.NumberDisplay
-import com.middlelayer.exam.core.models.xsi.*
 import reactor.core.publisher.Mono
 
 interface ISettingsService {
-    fun getPersonalAssistant(token: String, userId: String): Mono<PersonalAssistant>
-    fun getPAExclusionNumbers(token: String, userId: String): Mono<List<ExclusionNumber>>
+    fun getPersonalAssistant(token: String, userId: String): Mono<DPersonalAssistant>
+    fun getPAExclusionNumbers(token: String, userId: String): Mono<List<DExclusionNumber>>
     fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>>
     fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>>
-    fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice>
+    fun getRemoteOffice(token: String, userId: String): Mono<DRemoteOffice>
     fun getNumberDisplayStatus(token: String, userId: String): Mono<DNumberDisplayHidden>
     fun getNumberDisplay(token: String, userId: String): Mono<DNumberDisplay>
     fun getCallForwardingAlways(token: String, userId: String): Mono<DCallForwardingAlways>

@@ -3,18 +3,18 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
-import com.middlelayer.exam.core.models.ims.NumberDisplay
-import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.publisher.Mono
 
 @RestController
+@RequestMapping("api/user/settings")
 class SettingsController {
     private val settingsService: ISettingsService
     private val authService: IAuthService
@@ -25,7 +25,7 @@ class SettingsController {
         this.authService = authService
     }
 
-    @GetMapping("api/user/settings")
+    @GetMapping("")
     fun getSettings(@RequestHeader("Authorization") token: String): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         val userId = claims.profileObj.userId
@@ -87,8 +87,8 @@ class SettingsController {
             val vmZip = it.t5
 
             //Personal Assistant settings
-            val pa: PersonalAssistant = paZip.t1
-            val en: List<ExclusionNumber> = paZip.t2
+            val pa: DPersonalAssistant = paZip.t1
+            val en: List<DExclusionNumber> = paZip.t2
             val asctn: List<DCallToNumber> = paZip.t3
             val avctn: List<DCallToNumber> = paZip.t4
 
@@ -97,7 +97,7 @@ class SettingsController {
             val nd: DNumberDisplay = ndZip.t2
 
             //Remote Office settings
-            val ro: RemoteOffice = it.t2
+            val ro: DRemoteOffice = it.t2
 
             //Call Forwarding settings
             val cfa: DCallForwardingAlways = cfZip.t1
@@ -116,6 +116,11 @@ class SettingsController {
             val dnd: DDoNotDisturb = it.t7
 
             val responseBody = GetSettingsResponseDTO(
+                pa,
+                asctn,
+                avctn,
+                en,
+                ro,
                 cfa,
                 cfb,
                 cfna,

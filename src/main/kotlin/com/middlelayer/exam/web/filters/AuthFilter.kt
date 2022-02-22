@@ -20,7 +20,7 @@ class AuthFilter : GenericFilterBean {
 
     constructor(env: Environment) {
         secretKey = env.getProperty("jwt.secret.key", "")
-        filterUrl = AntPathRequestMatcher("/api/user/profile")
+        filterUrl = AntPathRequestMatcher("/api/user/profile/login")
     }
 
     override fun doFilter(request: ServletRequest?, response: ServletResponse?, chain: FilterChain?) {
