@@ -19,4 +19,5 @@ interface ISettingsRepository {
     fun getVoiceMessagingGreeting(token: String, userId: String): Mono<VoiceMessagingGreeting>
     fun getMWIDeliveryToMobileEndpoint(token: String, userId: String): Mono<MWIDeliveryToMobileEndpoint>
     fun getSimultaneousRingPersonal(token: String, userId: String): Mono<SimultaneousRingPersonal>
+    fun getDoNotDisturb(token: String, userId: String): Mono<DoNotDisturb>
 }

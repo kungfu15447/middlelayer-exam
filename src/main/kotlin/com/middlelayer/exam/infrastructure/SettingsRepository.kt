@@ -113,8 +113,15 @@ class SettingsRepository : ISettingsRepository {
     }
 
     override fun getSimultaneousRingPersonal(token: String, userId: String): Mono<SimultaneousRingPersonal> {
-        val responseBusy = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/SimultaneousRingPersonal")
+        val responseBusy = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/SimultaneousRingPersonal", token)
         return responseBusy.flatMap {
+            Mono.just(objectParser.tryMapXml(it))
+        }
+    }
+
+    override fun getDoNotDisturb(token: String, userId: String): Mono<DoNotDisturb> {
+        val responseBody = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/donotdisturb", token)
+        return responseBody.flatMap {
             Mono.just(objectParser.tryMapXml(it))
         }
     }
