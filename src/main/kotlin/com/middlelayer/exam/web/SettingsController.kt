@@ -93,16 +93,16 @@ class SettingsController {
             val avctn: List<DCallToNumber> = paZip.t4
 
             //Number Display settings
-            val ndh: NumberDisplayHidden = ndZip.t1
-            val nd: NumberDisplay = ndZip.t2
+            val ndh: DNumberDisplayHidden = ndZip.t1
+            val nd: DNumberDisplay = ndZip.t2
 
             //Remote Office settings
             val ro: RemoteOffice = it.t2
 
             //Call Forwarding settings
-            val cfa: CallForwardingAlways = cfZip.t1
-            val cfb: CallForwardingBusy = cfZip.t2
-            val cfna: CallForwardingNoAnswer = cfZip.t3
+            val cfa: DCallForwardingAlways = cfZip.t1
+            val cfb: DCallForwardingBusy = cfZip.t2
+            val cfna: DCallForwardingNoAnswer = cfZip.t3
 
             //Voice Messaging settings
             val vm: DVoiceMessaging = vmZip.t1
@@ -116,6 +116,11 @@ class SettingsController {
             val dnd: DDoNotDisturb = it.t7
 
             val responseBody = GetSettingsResponseDTO(
+                cfa,
+                cfb,
+                cfna,
+                ndh,
+                nd,
                 vm,
                 vmg,
                 pn,

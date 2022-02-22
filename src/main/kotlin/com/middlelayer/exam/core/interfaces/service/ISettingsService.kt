@@ -11,11 +11,11 @@ interface ISettingsService {
     fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>>
     fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>>
     fun getRemoteOffice(token: String, userId: String): Mono<RemoteOffice>
-    fun getNumberDisplayStatus(token: String, userId: String): Mono<NumberDisplayHidden>
-    fun getNumberDisplay(token: String, userId: String): Mono<NumberDisplay>
-    fun getCallForwardingAlways(token: String, userId: String): Mono<CallForwardingAlways>
-    fun getCallForwardingNoAnswer(token: String, userId: String): Mono<CallForwardingNoAnswer>
-    fun getCallForwardingBusy(token: String, userId: String): Mono<CallForwardingBusy>
+    fun getNumberDisplayStatus(token: String, userId: String): Mono<DNumberDisplayHidden>
+    fun getNumberDisplay(token: String, userId: String): Mono<DNumberDisplay>
+    fun getCallForwardingAlways(token: String, userId: String): Mono<DCallForwardingAlways>
+    fun getCallForwardingNoAnswer(token: String, userId: String): Mono<DCallForwardingNoAnswer>
+    fun getCallForwardingBusy(token: String, userId: String): Mono<DCallForwardingBusy>
     fun getVoiceMessaging(token: String, userId: String): Mono<DVoiceMessaging>
     fun getVoiceMessagingGreeting(token: String, userId: String): Mono<DVoiceMessagingGreeting>
     fun getPushNotification(token: String, userId: String): Mono<DPushNotification>

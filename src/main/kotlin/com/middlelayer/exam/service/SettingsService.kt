@@ -46,24 +46,34 @@ class SettingsService : ISettingsService {
         return settingsRepo.getRemoteOffice(token, userId)
     }
 
-    override fun getNumberDisplayStatus(token: String, userId: String): Mono<NumberDisplayHidden> {
-        return settingsRepo.getNumberDisplayStatus(token, userId)
+    override fun getNumberDisplayStatus(token: String, userId: String): Mono<DNumberDisplayHidden> {
+        return settingsRepo.getNumberDisplayStatus(token, userId).flatMap {
+            Mono.just(DNumberDisplayHidden(it))
+        }
     }
 
-    override fun getNumberDisplay(token: String, userId: String): Mono<NumberDisplay> {
-        return settingsRepo.getNumberDisplay(token, userId)
+    override fun getNumberDisplay(token: String, userId: String): Mono<DNumberDisplay> {
+        return settingsRepo.getNumberDisplay(token, userId).flatMap {
+            Mono.just(DNumberDisplay(it))
+        }
     }
 
-    override fun getCallForwardingAlways(token: String, userId: String): Mono<CallForwardingAlways> {
-        return settingsRepo.getCallForwardingAlways(token, userId)
+    override fun getCallForwardingAlways(token: String, userId: String): Mono<DCallForwardingAlways> {
+        return settingsRepo.getCallForwardingAlways(token, userId).flatMap {
+            Mono.just(DCallForwardingAlways(it))
+        }
     }
 
-    override fun getCallForwardingNoAnswer(token: String, userId: String): Mono<CallForwardingNoAnswer> {
-        return settingsRepo.getCallForwardingNoAnswer(token, userId)
+    override fun getCallForwardingNoAnswer(token: String, userId: String): Mono<DCallForwardingNoAnswer> {
+        return settingsRepo.getCallForwardingNoAnswer(token, userId).flatMap {
+            Mono.just(DCallForwardingNoAnswer(it))
+        }
     }
 
-    override fun getCallForwardingBusy(token: String, userId: String): Mono<CallForwardingBusy> {
-        return settingsRepo.getCallForwardingBusy(token, userId)
+    override fun getCallForwardingBusy(token: String, userId: String): Mono<DCallForwardingBusy> {
+        return settingsRepo.getCallForwardingBusy(token, userId).flatMap {
+            Mono.just(DCallForwardingBusy(it))
+        }
     }
 
     override fun getVoiceMessaging(token: String, userId: String): Mono<DVoiceMessaging> {
