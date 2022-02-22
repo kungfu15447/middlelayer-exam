@@ -3,6 +3,7 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.DCallToNumber
+import com.middlelayer.exam.core.models.domain.DVoiceMessaging
 import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
@@ -42,6 +43,8 @@ class SettingsController {
         val callForwardingBusy = settingsService.getCallForwardingBusy(basicToken, userId)
         val callForwardingNoAnswer = settingsService.getCallForwardingNoAnswer(basicToken, userId)
         val voiceMessaging = settingsService.getVoiceMessaging(basicToken, userId)
+        val voiceMessagingGreeting = settingsService.getVoiceMessagingGreeting(basicToken, userId)
+        val pushNotification = settingsService.getPushNotification(basicToken, userId)
 
         val personalAssistantZip = Mono.zip(
             personalAssistant,
@@ -63,7 +66,8 @@ class SettingsController {
 
         val voiceMessagingZip = Mono.zip(
             voiceMessaging,
-            voiceMessaging
+            voiceMessagingGreeting,
+            pushNotification,
         )
 
         val response = Mono.zip(
@@ -98,7 +102,8 @@ class SettingsController {
             val cfna: CallForwardingNoAnswer = cfZip.t3
 
             //Voice Messaging settings
-            val vm: VoiceMessaging = vmZip.t1
+            val vm: DVoiceMessaging = vmZip.t1
+
 
             val responseBody = GetSettingsResponseDTO(
                 pa,
