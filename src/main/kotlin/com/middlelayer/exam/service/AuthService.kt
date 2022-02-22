@@ -53,7 +53,6 @@ class AuthService : IAuthService {
             val claims = Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(trueToken).body
-            println("Result: $claims")
             val basicToken = claims["basicToken"] as String
             val services = claims["services"] as List<String>
             val profile = mapper.convertValue(claims["profileInfo"], ProfileTokenObject::class.java)
