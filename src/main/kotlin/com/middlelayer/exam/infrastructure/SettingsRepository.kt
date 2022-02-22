@@ -111,4 +111,11 @@ class SettingsRepository : ISettingsRepository {
             Mono.just(objectParser.tryMapXml(it))
         }
     }
+
+    override fun getSimultaneousRingPersonal(token: String, userId: String): Mono<SimultaneousRingPersonal> {
+        val responseBusy = xsiClient.get("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/SimultaneousRingPersonal")
+        return responseBusy.flatMap {
+            Mono.just(objectParser.tryMapXml(it))
+        }
+    }
 }
