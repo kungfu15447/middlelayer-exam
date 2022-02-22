@@ -97,4 +97,11 @@ class SettingsRepository : ISettingsRepository {
             Mono.just(objectParser.tryMapXml(it))
         }
     }
+
+    override fun getVoiceMessagingGreeting(token: String, userId: String): Mono<VoiceMessagingGreeting> {
+        val responseBody = xsiClient.get("com.broadsoft.xsi-actions/v2.0/user/${userId}/services/voicemessaging/greetings", token)
+        return responseBody.flatMap {
+            Mono.just(objectParser.tryMapXml(it))
+        }
+    }
 }

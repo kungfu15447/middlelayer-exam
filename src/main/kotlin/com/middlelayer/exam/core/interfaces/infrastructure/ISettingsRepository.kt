@@ -16,4 +16,5 @@ interface ISettingsRepository {
     fun getCallForwardingNoAnswer(token: String, userId: String): Mono<CallForwardingNoAnswer>
     fun getCallForwardingBusy(token: String, userId: String): Mono<CallForwardingBusy>
     fun getVoiceMessaging(token: String, userId: String): Mono<VoiceMessaging>
+    fun getVoiceMessagingGreeting(token: String, userId: String): Mono<VoiceMessagingGreeting>
 }
