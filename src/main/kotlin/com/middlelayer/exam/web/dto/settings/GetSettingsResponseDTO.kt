@@ -17,7 +17,7 @@ data class GetSettingsResponseDTO (
             voiceMessagingGreeting,
             pushNotification
         ),
-        doNotDisturb = false,
+        doNotDisturb = doNotDisturb.active,
     )
 }
 
