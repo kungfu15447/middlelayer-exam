@@ -10,7 +10,7 @@ data class DNumberDisplay(
         xsiNumberDisplay: NumberDisplay
     ) : this(
         currentNumber = xsiNumberDisplay.presentationNumber ?: "",
-        displayType = xsiNumberDisplay.numberDescription ?: ""
+        displayType = xsiNumberDisplay.presentationStatus ?: ""
     )
 }
 
