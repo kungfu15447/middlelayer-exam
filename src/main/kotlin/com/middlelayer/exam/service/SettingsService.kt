@@ -3,6 +3,9 @@ package com.middlelayer.exam.service
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.DCallToNumber
+import com.middlelayer.exam.core.models.domain.DPushNotification
+import com.middlelayer.exam.core.models.domain.DVoiceMessaging
+import com.middlelayer.exam.core.models.domain.DVoiceMessagingGreeting
 import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.xsi.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -66,7 +69,21 @@ class SettingsService : ISettingsService {
         return settingsRepo.getCallForwardingBusy(token, userId)
     }
 
-    override fun getVoiceMessaging(token: String, userId: String): Mono<VoiceMessaging> {
-        return settingsRepo.getVoiceMessaging(token, userId)
+    override fun getVoiceMessaging(token: String, userId: String): Mono<DVoiceMessaging> {
+        return settingsRepo.getVoiceMessaging(token, userId).flatMap {
+            Mono.just(DVoiceMessaging(it))
+        }
+    }
+
+    override fun getVoiceMessagingGreeting(token: String, userId: String): Mono<DVoiceMessagingGreeting> {
+        return settingsRepo.getVoiceMessagingGreeting(token, userId).flatMap {
+            Mono.just(DVoiceMessagingGreeting(it))
+        }
+    }
+
+    override fun getPushNotification(token: String, userId: String): Mono<DPushNotification> {
+        return settingsRepo.getMWIDeliveryToMobileEndpoint(token, userId).flatMap {
+            Mono.just(DPushNotification(it))
+        }
     }
 }
