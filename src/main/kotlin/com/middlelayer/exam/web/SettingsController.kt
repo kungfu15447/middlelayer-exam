@@ -115,7 +115,12 @@ class SettingsController {
             //Do Not Disturbs settings
             val dnd: DDoNotDisturb = it.t7
 
-            val responseBody = GetSettingsResponseDTO()
+            val responseBody = GetSettingsResponseDTO(
+                vm,
+                vmg,
+                pn,
+                dnd
+            )
             Mono.just(ResponseEntity(responseBody, HttpStatus.OK))
         }
     }

@@ -11,14 +11,22 @@ data class VoiceMessagingGreeting(
     val disableMessageDeposit: Boolean? = null,
     val disableMessageDepositAction: String? = null,
     val greetingOnlyForwardDestination: String? = null,
-    @JacksonXmlElementWrapper(useWrapping = false)
-    val busyPersonalAudioFile: List<BusyPersonalAudioFile> = emptyList(),
-    @JacksonXmlElementWrapper(useWrapping = false)
-    val noAnswerPersonalAudioFile: List<NoAnswerPersonalAudioFile> = emptyList()
+    val busyPersonalAudioFile: BusyPersonalAudioFile = BusyPersonalAudioFile(),
+    val busyPersonalVideoFile: BusyPersonalVideoFile = BusyPersonalVideoFile(),
+    val noAnswerPersonalAudioFile: NoAnswerPersonalAudioFile = NoAnswerPersonalAudioFile(),
+    val noAnswerPersonalVideoFile: NoAnswerPersonalVideoFile = NoAnswerPersonalVideoFile()
 )
 
 data class BusyPersonalAudioFile(
     val description: String? = null
+)
+
+data class BusyPersonalVideoFile(
+    val description: String? = null,
+)
+
+data class NoAnswerPersonalVideoFile(
+    val description: String? = null,
 )
 
 data class NoAnswerPersonalAudioFile(
