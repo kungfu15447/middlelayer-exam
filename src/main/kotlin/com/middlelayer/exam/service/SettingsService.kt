@@ -2,10 +2,7 @@ package com.middlelayer.exam.service
 
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
-import com.middlelayer.exam.core.models.domain.DCallToNumber
-import com.middlelayer.exam.core.models.domain.DPushNotification
-import com.middlelayer.exam.core.models.domain.DVoiceMessaging
-import com.middlelayer.exam.core.models.domain.DVoiceMessagingGreeting
+import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.xsi.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -84,6 +81,18 @@ class SettingsService : ISettingsService {
     override fun getPushNotification(token: String, userId: String): Mono<DPushNotification> {
         return settingsRepo.getMWIDeliveryToMobileEndpoint(token, userId).flatMap {
             Mono.just(DPushNotification(it))
+        }
+    }
+
+    override fun getSimultaneousRing(token: String, userId: String): Mono<DSimultaneousRing> {
+        return settingsRepo.getSimultaneousRingPersonal(token, userId).flatMap {
+            Mono.just(DSimultaneousRing(it))
+        }
+    }
+
+    override fun getDoNotDisturb(token: String, userId: String): Mono<DDoNotDisturb> {
+        return settingsRepo.getDoNotDisturb(token, userId).flatMap {
+            Mono.just(DDoNotDisturb(it))
         }
     }
 }
