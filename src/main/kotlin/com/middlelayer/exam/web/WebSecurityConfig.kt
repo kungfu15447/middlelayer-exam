@@ -33,7 +33,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter {
             ?.cors()?.configurationSource(setCors())
             ?.and()
             ?.addFilterAfter(AuthFilter(env), BasicAuthenticationFilter::class.java)
-            ?.logout()?.disable()
+            ?.httpBasic()?.disable()
     }
 
     private fun setCors(): CorsConfigurationSource {
