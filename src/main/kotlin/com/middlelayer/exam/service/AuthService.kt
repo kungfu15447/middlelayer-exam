@@ -1,12 +1,15 @@
 package com.middlelayer.exam.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.models.auth.ProfileTokenObject
+import com.middlelayer.exam.core.models.auth.TokenClaimsObject
 import com.middlelayer.exam.core.models.domain.DProfile
 import com.middlelayer.exam.core.models.domain.DService
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -39,7 +42,23 @@ class AuthService : IAuthService {
     }
 
     override fun createBasicAuthToken(user: String, password: String): String {
-        var auth = "${user}:${password}"
+        val auth = "${user}:${password}"
         return "Basic ${Base64.getEncoder().encodeToString(auth.toByteArray())}"
+    }
+
+    override fun getClaimsFromJWTToken(token: String): TokenClaimsObject {
+        try {
+            val mapper = ObjectMapper()
+            val trueToken = token.replace("Bearer", "")
+            val claims = Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(trueToken).body
+            val basicToken = claims["basicToken"] as String
+            val services = claims["services"] as List<String>
+            val profile = mapper.convertValue(claims["profileInfo"], ProfileTokenObject::class.java)
+            return TokenClaimsObject(services, profile, basicToken)
+        } catch(ex: Exception) {
+            throw ex
+        }
     }
 }

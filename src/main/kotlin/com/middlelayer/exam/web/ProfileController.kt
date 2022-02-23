@@ -2,6 +2,7 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.web.dto.profile.LoginDTO
+import okhttp3.internal.format
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.HttpHeaders
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono
 import kotlin.math.log
 
 @RestController
+@RequestMapping("api/user/profile")
 class ProfileController {
     private val profileService: IProfileService
     private val authService: IAuthService
@@ -21,7 +23,7 @@ class ProfileController {
         this.authService = authService
     }
 
-    @PostMapping("api/user/profile")
+    @PostMapping("/login")
     fun getProfile(@RequestBody loginDTO: LoginDTO) : Mono<ResponseEntity<Any>> {
         if (!loginDTO.username.isNullOrEmpty() && !loginDTO.password.isNullOrEmpty()) {
             val formattedUsername = formatUsername(loginDTO.username)
@@ -42,7 +44,7 @@ class ProfileController {
         }
     }
 
-    @GetMapping("api/user/test")
+    @GetMapping("/test")
     fun getTest(): String {
         return "This is a test"
     }
