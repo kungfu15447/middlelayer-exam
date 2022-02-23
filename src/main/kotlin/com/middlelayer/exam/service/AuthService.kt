@@ -51,7 +51,6 @@ class AuthService : IAuthService {
             val trueToken = token.replace("Bearer", "")
             val claims = Jwts.parser()
                 .setSigningKey(secretKey)
-                .requireExpiration()
                 .parseClaimsJws(trueToken).body
             val basicToken = claims["basicToken"] as String
             val services = claims["services"] as List<String>
