@@ -9,7 +9,6 @@ import com.middlelayer.exam.core.models.domain.DService
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -33,7 +32,7 @@ class AuthService : IAuthService {
 
         return Jwts.builder()
             .setIssuer(profile.userId)
-            .setExpiration(Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000))
+            .setExpiration(Date(System.currentTimeMillis() + 60 * 60 * 1000))
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .claim("basicToken", basicAuthToken)
             .claim("services", servicesString)
@@ -52,6 +51,7 @@ class AuthService : IAuthService {
             val trueToken = token.replace("Bearer", "")
             val claims = Jwts.parser()
                 .setSigningKey(secretKey)
+                .requireExpiration()
                 .parseClaimsJws(trueToken).body
             val basicToken = claims["basicToken"] as String
             val services = claims["services"] as List<String>

@@ -1,5 +1,6 @@
 package com.middlelayer.exam.web
 
+import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.web.filters.AuthFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
@@ -18,9 +19,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class WebSecurityConfig : WebSecurityConfigurerAdapter {
 
     private var env: Environment
+    private var authService: IAuthService
+
     @Autowired
-    constructor(env: Environment) {
+    constructor(env: Environment, authService: IAuthService) {
         this.env = env
+        this.authService = authService
     }
 
     override fun configure(web: WebSecurity?) {
@@ -32,7 +36,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter {
             ?.csrf()?.disable()
             ?.cors()?.configurationSource(setCors())
             ?.and()
-            ?.addFilterAfter(AuthFilter(env), BasicAuthenticationFilter::class.java)
+            ?.addFilterAfter(AuthFilter(env, authService), BasicAuthenticationFilter::class.java)
             ?.httpBasic()?.disable()
     }
 

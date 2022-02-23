@@ -1,7 +1,9 @@
 package com.middlelayer.exam.web.filters
 
+import com.middlelayer.exam.core.interfaces.service.IAuthService
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.security.web.util.matcher.OrRequestMatcher
@@ -13,13 +15,15 @@ import javax.servlet.ServletResponse
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
-
 class AuthFilter : GenericFilterBean {
 
     private var whitelisted_urls: RequestMatcher
     private var secretKey: String = ""
+    private var authService: IAuthService
 
-    constructor(env: Environment) {
+    @Autowired
+    constructor(env: Environment, authService: IAuthService) {
+        this.authService = authService
         secretKey = env.getProperty("jwt.secret.key", "")
         whitelisted_urls = OrRequestMatcher(
             AntPathRequestMatcher("/api/user/profile/login"),
@@ -46,9 +50,7 @@ class AuthFilter : GenericFilterBean {
 
         try {
             token = token.substring(7)
-            var jws = Jwts.parser()
-                .setSigningKey(secretKey)
-                .parseClaimsJws(token)
+            var claimsObject = authService.getClaimsFromJWTToken(token)
         } catch(ex: JwtException) {
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Could not decrypt token with secret key. Unauthorized access")
         }
