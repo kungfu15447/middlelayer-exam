@@ -1,4 +1,4 @@
-package com.middlelayer.exam.web
+package com.middlelayer.exam.web.configs
 
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.web.filters.AuthFilter
