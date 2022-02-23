@@ -1,4 +1,4 @@
-package com.middlelayer.exam.web
+package com.middlelayer.exam.web.configs
 
 import com.middlelayer.exam.web.filters.AuthFilter
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,16 +24,20 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter {
     }
 
     override fun configure(web: WebSecurity?) {
-        super.configure(web)
+        web
+            ?.ignoring()
+            ?.antMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html", "/api/user/profile/login")
     }
 
     override fun configure(http: HttpSecurity?) {
         http
+            ?.httpBasic()?.disable()
             ?.csrf()?.disable()
             ?.cors()?.configurationSource(setCors())
             ?.and()
-            ?.addFilterAfter(AuthFilter(env), BasicAuthenticationFilter::class.java)
-            ?.logout()?.disable()
+            ?.authorizeRequests()
+            ?.antMatchers("api/**")
+            ?.permitAll()
     }
 
     private fun setCors(): CorsConfigurationSource {
