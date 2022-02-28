@@ -2,6 +2,7 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.web.dto.profile.LoginDTO
+import com.middlelayer.exam.web.dto.profile.LoginDTOResponse
 import io.swagger.v3.oas.annotations.security.SecurityRequirements
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
@@ -32,10 +33,9 @@ class ProfileController {
 
             val response = profile.flatMap { profile->
                 val newToken = authService.createBasicAuthToken(profile.userId, loginDTO.password)
-                profileService.getServicesFromProfile(newToken, profile.userId).flatMap { s ->
-                    val headers = HttpHeaders()
-                    headers.add("Authorization", "Bearer ${authService.register(newToken, profile, s)}")
-                    Mono.just(ResponseEntity<Any>(profile, headers,HttpStatus.OK))
+                profileService.getServicesFromProfile(newToken, profile.userId).flatMap { services ->
+                    var jwt = authService.register(newToken, profile, services)
+                    Mono.just(ResponseEntity<Any>(LoginDTOResponse(jwt, profile, services), HttpStatus.OK))
                 }
             }
             return response
