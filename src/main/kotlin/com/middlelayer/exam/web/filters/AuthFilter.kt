@@ -46,6 +46,7 @@ class AuthFilter : GenericFilterBean {
 
         if (token == null || !token.startsWith("Bearer ")) {
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No token/invalid Bearer token in Authorization header")
+            return
         }
 
         try {
