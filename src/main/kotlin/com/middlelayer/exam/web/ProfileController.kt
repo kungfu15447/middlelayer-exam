@@ -2,14 +2,13 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.web.dto.profile.LoginDTO
-import okhttp3.internal.format
+import io.swagger.v3.oas.annotations.security.SecurityRequirements
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import reactor.core.publisher.Mono
-import kotlin.math.log
 
 @RestController
 @RequestMapping("api/user/profile")
@@ -23,6 +22,7 @@ class ProfileController {
         this.authService = authService
     }
 
+    @SecurityRequirements
     @PostMapping("/login")
     fun getProfile(@RequestBody loginDTO: LoginDTO) : Mono<ResponseEntity<Any>> {
         if (!loginDTO.username.isNullOrEmpty() && !loginDTO.password.isNullOrEmpty()) {
