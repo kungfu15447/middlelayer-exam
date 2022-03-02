@@ -1,4 +1,4 @@
-package com.middlelayer.exam.controllertests
+package com.middlelayer.exam.controllerTests
 import com.middlelayer.exam.web.ProfileController
 import com.middlelayer.exam.web.dto.profile.LoginDTO
 import io.mockk.every
