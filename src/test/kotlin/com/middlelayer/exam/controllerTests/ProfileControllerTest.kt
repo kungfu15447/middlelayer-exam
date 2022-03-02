@@ -209,5 +209,103 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         response.expectStatus().isOk
     }
 
+    @Test
+    fun `on Login success calls getProfile once`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val profile = DProfile(Profile())
+        val services = ArrayList<DService>()
 
+        `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
+        `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
+        `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+
+        //Act
+        var response = web.post()
+            .uri("/api/user/profile/login")
+            .body(BodyInserters.fromValue(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(profileService, times(1)).getProfile(kAny(), kAny())
+    }
+
+    @Test
+    fun `on Login success calls getServicesFromProfile once`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val profile = DProfile(Profile())
+        val services = ArrayList<DService>()
+
+        `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
+        `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
+        `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+
+        //Act
+        var response = web.post()
+            .uri("/api/user/profile/login")
+            .body(BodyInserters.fromValue(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(profileService, times(1)).getServicesFromProfile(kAny(), kAny())
+    }
+
+    @Test
+    fun `on Login success calls createBasicAuthToken twice`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val profile = DProfile(Profile())
+        val services = ArrayList<DService>()
+
+        `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
+        `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
+        `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+
+        //Act
+        var response = web.post()
+            .uri("/api/user/profile/login")
+            .body(BodyInserters.fromValue(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(authService, times(2)).createBasicAuthToken(kAny(), kAny())
+    }
+
+    @Test
+    fun `on Login success calls register once`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val profile = DProfile(Profile())
+        val services = ArrayList<DService>()
+
+        `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
+        `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
+        `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+
+        //Act
+        var response = web.post()
+            .uri("/api/user/profile/login")
+            .body(BodyInserters.fromValue(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(authService, times(1)).register(kAny(), kAny(), kAny())
+    }
 }
