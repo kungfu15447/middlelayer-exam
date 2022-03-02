@@ -1,45 +1,60 @@
 package com.middlelayer.exam.controllerTests
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.middlelayer.exam.core.interfaces.service.IAuthService
+import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.web.ProfileController
 import com.middlelayer.exam.web.dto.profile.LoginDTO
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.TestConfiguration
-import org.springframework.context.annotation.Bean
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
-import reactor.core.publisher.Mono.just
+import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.web.reactive.function.BodyInserters
 
 @ExtendWith(SpringExtension::class)
 class ProfileControllerTest {
+    private lateinit var web: WebTestClient
 
-    @TestConfiguration
-    class ProfileTestConfig {
-        @Bean
-        fun profileController() = mockk<ProfileController>()
+    @MockBean
+    private lateinit var profileService: IProfileService
+
+    @MockBean
+    private lateinit var authService: IAuthService
+
+    private lateinit var json: ObjectMapper
+
+    @BeforeEach
+    fun setup() {
+        json = ObjectMapper()
+        web = WebTestClient
+            .bindToController(ProfileController(profileService, authService))
+            .build()
     }
 
-    @Autowired
-        private lateinit var profileController: ProfileController
+    @ParameterizedTest
+    @CsvSource(
+        ",",
+        "'',''",
+        "' ',' '",
+        "username,",
+        ",password",
+    )
+    fun `on Login with invalid body returns bad request`(username: String?, password: String?) {
+        //Assign
+        val requestBody = LoginDTO(username, password)
 
+        //Act
+        var response = web.post()
+            .uri("/api/user/profile/login")
+            .body(BodyInserters.fromValue(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
 
-    @Test
-    fun `getProfile returnsStatus`() {
-        val loginDTO = LoginDTO("username","password")
-        val response: ResponseEntity<Any> = ResponseEntity<Any>(HttpStatus.OK)
-
-        every { profileController.getProfile(loginDTO)} returns just(response)
-
-        val result = profileController.getProfile(loginDTO);
-
-        result.subscribe {
-            assertThat(it).isEqualTo(ResponseEntity<Any>(HttpStatus.OK))
-            verify { profileController.getProfile(loginDTO) }
-        }
+        //Assert
+        response.expectStatus().isBadRequest
     }
 }
