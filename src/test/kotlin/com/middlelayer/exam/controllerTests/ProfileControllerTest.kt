@@ -4,6 +4,7 @@ import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.core.models.domain.DProfile
 import com.middlelayer.exam.core.models.domain.DService
+import com.middlelayer.exam.core.models.xsi.Profile
 import com.middlelayer.exam.web.ProfileController
 import com.middlelayer.exam.web.dto.profile.LoginDTO
 import org.junit.jupiter.api.BeforeEach
@@ -11,18 +12,25 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
+import org.mockito.Mockito.*
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
+import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.BodyInserters
+import reactor.core.publisher.Mono
+import org.mockito.kotlin.any as kAny
+
 
 @ExtendWith(SpringExtension::class)
-class ProfileControllerTest {
-    private lateinit var web: WebTestClient
-
+@WebFluxTest(
+    controllers = [ProfileController::class],
+    excludeAutoConfiguration = [ReactiveSecurityAutoConfiguration::class]
+)
+class ProfileControllerTest(@Autowired val web: WebTestClient) {
     @MockBean
     private lateinit var profileService: IProfileService
 
@@ -34,9 +42,6 @@ class ProfileControllerTest {
     @BeforeEach
     fun setup() {
         json = ObjectMapper()
-        web = WebTestClient
-            .bindToController(ProfileController(profileService, authService))
-            .build()
     }
 
     @ParameterizedTest
@@ -106,7 +111,7 @@ class ProfileControllerTest {
             .responseBody.blockFirst()
 
         //Assert
-        verify(profileService, times(0)).getProfile("", "")
+        verify(profileService, times(0)).getProfile(kAny(), kAny())
     }
 
     @ParameterizedTest
@@ -130,7 +135,7 @@ class ProfileControllerTest {
             .responseBody.blockFirst()
 
         //Assert
-        verify(profileService, times(0)).getServicesFromProfile("", "")
+        verify(profileService, times(0)).getServicesFromProfile(kAny(), kAny())
     }
 
     @ParameterizedTest
@@ -154,7 +159,7 @@ class ProfileControllerTest {
             .responseBody.blockFirst()
 
         //Assert
-        verify(authService, times(0)).createBasicAuthToken("", "")
+        verify(authService, times(0)).createBasicAuthToken(kAny(), kAny())
     }
 
     @ParameterizedTest
@@ -178,8 +183,31 @@ class ProfileControllerTest {
             .responseBody.blockFirst()
 
         //Assert
-        val profile = DProfile("", "", "", "", "", "", "")
-        var services = ArrayList<DService>()
-        verify(authService, times(0)).register("", profile, services)
+        verify(authService, times(0)).register(kAny(), kAny(), kAny())
     }
+
+    @Test
+    fun `on Login success returns OK status`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val profile = DProfile(Profile())
+        val services = ArrayList<DService>()
+
+        `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
+        `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
+        `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+
+        //Act
+        var response = web.post()
+            .uri("/api/user/profile/login")
+            .body(BodyInserters.fromValue(requestBody))
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+
+        //Assert
+        response.expectStatus().isOk
+    }
+
+
 }
