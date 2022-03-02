@@ -5,6 +5,7 @@ import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.core.models.domain.DProfile
 import com.middlelayer.exam.core.models.domain.DService
 import com.middlelayer.exam.core.models.xsi.Profile
+import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.ProfileController
 import com.middlelayer.exam.web.dto.profile.LoginDTO
 import org.junit.jupiter.api.BeforeEach
@@ -17,10 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.http.MediaType
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.web.reactive.function.BodyInserters
 import reactor.core.publisher.Mono
 import org.mockito.kotlin.any as kAny
 
@@ -30,7 +29,7 @@ import org.mockito.kotlin.any as kAny
     controllers = [ProfileController::class],
     excludeAutoConfiguration = [ReactiveSecurityAutoConfiguration::class]
 )
-class ProfileControllerTest(@Autowired val web: WebTestClient) {
+class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
     @MockBean
     private lateinit var profileService: IProfileService
 
@@ -39,9 +38,12 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
 
     private lateinit var json: ObjectMapper
 
+    private lateinit var web: WebTestHelper
+
     @BeforeEach
     fun setup() {
         json = ObjectMapper()
+        web = WebTestHelper(webTestClient)
     }
 
     @ParameterizedTest
@@ -56,11 +58,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
 
         //Assert
         response.expectStatus().isBadRequest
@@ -78,11 +76,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -102,11 +96,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -126,11 +116,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -150,11 +136,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -174,11 +156,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -199,11 +177,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
 
         //Assert
         response.expectStatus().isOk
@@ -222,11 +196,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -247,11 +217,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -272,11 +238,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -297,11 +259,7 @@ class ProfileControllerTest(@Autowired val web: WebTestClient) {
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post()
-            .uri("/api/user/profile/login")
-            .body(BodyInserters.fromValue(requestBody))
-            .accept(MediaType.APPLICATION_JSON)
-            .exchange()
+        var response = web.post("/api/user/profile/login", requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
