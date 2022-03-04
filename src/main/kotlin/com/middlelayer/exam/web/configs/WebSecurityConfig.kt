@@ -1,10 +1,12 @@
-package com.middlelayer.exam.web
+package com.middlelayer.exam.web.configs
 
+import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.web.filters.AuthFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
@@ -17,17 +19,25 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class WebSecurityConfig : WebSecurityConfigurerAdapter {
 
     private var env: Environment
+    private var authService: IAuthService
+
     @Autowired
-    constructor(env: Environment) {
+    constructor(env: Environment, authService: IAuthService) {
         this.env = env
+        this.authService = authService
     }
+
+    override fun configure(web: WebSecurity?) {
+        super.configure(web)
+    }
+
     override fun configure(http: HttpSecurity?) {
         http
             ?.csrf()?.disable()
             ?.cors()?.configurationSource(setCors())
             ?.and()
-            ?.addFilterAfter(AuthFilter(env), BasicAuthenticationFilter::class.java)
-            ?.logout()?.disable()
+            ?.addFilterAfter(AuthFilter(env, authService), BasicAuthenticationFilter::class.java)
+            ?.httpBasic()?.disable()
     }
 
     private fun setCors(): CorsConfigurationSource {
