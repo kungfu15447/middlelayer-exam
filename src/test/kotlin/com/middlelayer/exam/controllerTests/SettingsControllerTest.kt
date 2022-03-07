@@ -12,7 +12,7 @@ import com.middlelayer.exam.web.SettingsController
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.Mockito.`when`
+import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
@@ -183,5 +183,293 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Assert
         response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on get Settings success calls getCallForwardingAlways once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getCallForwardingAlways(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getCallForwardingBusy once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getCallForwardingBusy(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getCallForwardingNoAnswer once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getCallForwardingNoAnswer(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getPersonalAssistant once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getPersonalAssistant(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getNumberDisplay once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getNumberDisplay(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getDoNotDisturb once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getDoNotDisturb(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getNumberDisplayStatus once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getNumberDisplayStatus(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getPAAssignedCallToNumbers once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getPAAssignedCallToNumbers(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getPAAvailableCallToNumbers once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getPAAvailableCallToNumbers(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getPAExclusionNumbers once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getPAExclusionNumbers(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getPushNotification once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getPushNotification(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getRemoteOffice once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getRemoteOffice(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getVoiceMessagingGreeting once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getVoiceMessagingGreeting(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getSimultaneousRing once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getSimultaneousRing(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getVoiceMessaging once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).getVoiceMessaging(kAny(), kAny())
+    }
+
+    @Test
+    fun `on get Settings success calls getClaimsFromJWTToken once`() {
+        //Assign
+        getSettingsMockSetup()
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.get(
+            "/api/user/settings",
+            arrayListOf(WebHeader("Authorization", "someToken"))
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
     }
 }
