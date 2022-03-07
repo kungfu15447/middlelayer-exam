@@ -32,4 +32,16 @@ class ImsClient: IClient {
             .bodyToMono<String>()
         return response
     }
+
+    override fun post(uri: String, auth: String?, body: String?): Mono<String> {
+        TODO("Not yet implemented")
+    }
+
+    override fun put(uri: String, auth: String?, body: String?): Mono<String> {
+        TODO("Not yet implemented")
+    }
+
+    override fun delete(uri: String, auth: String?, body: String?): Mono<String> {
+        TODO("Not yet implemented")
+    }
 }
