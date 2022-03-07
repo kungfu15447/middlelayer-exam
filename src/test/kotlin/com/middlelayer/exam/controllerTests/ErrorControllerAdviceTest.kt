@@ -1,6 +1,8 @@
 package com.middlelayer.exam.controllerTests
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.middlelayer.exam.core.exceptions.BadRequestException
+import com.middlelayer.exam.core.exceptions.ISEException
 import com.middlelayer.exam.core.exceptions.NotFoundException
 import com.middlelayer.exam.core.exceptions.UnauthorizedException
 import com.middlelayer.exam.core.interfaces.service.IAuthService
@@ -117,6 +119,94 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         val requestBody = LoginDTO("username", "password")
         val services = ArrayList<DService>()
         val ex = NotFoundException("Something went wrong")
+
+        `when`(profileService.getProfile(any(), any())).thenAnswer {
+            throw ex
+        }
+        `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
+        `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+
+        //Act
+        var response = web.post("/api/user/profile/login", requestBody)
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        assert(response == ex.message)
+    }
+
+    @Test
+    fun `Throws ISEException returns Internal Server Error status result`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val services = ArrayList<DService>()
+        val ex = ISEException("Something went wrong")
+
+        `when`(profileService.getProfile(any(), any())).thenAnswer {
+            throw ex
+        }
+        `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
+        `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+
+        //Act
+        var response = web.post("/api/user/profile/login", requestBody)
+
+        //Assert
+        response.expectStatus().is5xxServerError
+    }
+
+    @Test
+    fun `Throws ISEException returns correct error message`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val services = ArrayList<DService>()
+        val ex = ISEException("Something went wrong")
+
+        `when`(profileService.getProfile(any(), any())).thenAnswer {
+            throw ex
+        }
+        `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
+        `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+
+        //Act
+        var response = web.post("/api/user/profile/login", requestBody)
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        assert(response == ex.message)
+    }
+
+    @Test
+    fun `Throws BadRequestException returns Bad Request status result`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val services = ArrayList<DService>()
+        val ex = BadRequestException("Something went wrong")
+
+        `when`(profileService.getProfile(any(), any())).thenAnswer {
+            throw ex
+        }
+        `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
+        `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+
+        //Act
+        var response = web.post("/api/user/profile/login", requestBody)
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `Throws BadRequestException returns correct error message`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val services = ArrayList<DService>()
+        val ex = BadRequestException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
             throw ex
