@@ -10,7 +10,7 @@ data class PersonalAssistant(
     val enableTransferToAttendant: Boolean? = null,
     val attendantNumber: String? = null,
     val ringSplash: Boolean? = null,
-    val callToNumberList: CallToNumberList = CallToNumberList(),
+    val callToNumberList: List<CallToNumber> = emptyList(),
     val alertMeFirst: Boolean? = null,
     val numberOfRings: Int? = null
 )

@@ -18,6 +18,10 @@ class ObjectParser {
         throw InvalidMapException("No body to map was returned")
     }
 
+    fun tryMapToXmlString(obj: Any): String {
+        return xmlMapper.writeValueAsString(obj)
+    }
+
     final inline fun <reified T>tryMapJson(json: String?): T {
         json?.let {
             return jsonMapper.readValue(it)

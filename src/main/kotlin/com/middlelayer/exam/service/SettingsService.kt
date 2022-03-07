@@ -113,4 +113,8 @@ class SettingsService : ISettingsService {
             Mono.just(DDoNotDisturb(it))
         }
     }
+
+    override fun updatePersonalAssistant(token: String, userId: String, body: PersonalAssistant): Mono<Void> {
+        return settingsRepo.updatePersonalAssistant(token, userId, body)
+    }
 }

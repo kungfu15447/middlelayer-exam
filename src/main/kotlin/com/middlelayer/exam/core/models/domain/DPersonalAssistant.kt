@@ -21,7 +21,7 @@ data class DPersonalAssistant(
         ringSplash = xsiPersonalAssistant.ringSplash ?: false,
         callToNumbers = emptyList()
     ) {
-        val xsiCallToNumbers = xsiPersonalAssistant.callToNumberList.callToNumbers
+        val xsiCallToNumbers = xsiPersonalAssistant.callToNumberList
         callToNumbers = xsiCallToNumbers.map {
             DCallToNumber(it.type ?: "")
         }

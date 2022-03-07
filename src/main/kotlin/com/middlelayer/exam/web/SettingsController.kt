@@ -3,14 +3,12 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
+import com.middlelayer.exam.core.models.xsi.PersonalAssistant
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
 @RestController
@@ -132,6 +130,17 @@ class SettingsController {
                 dnd
             )
             Mono.just(ResponseEntity(responseBody, HttpStatus.OK))
+        }
+    }
+
+    @PutMapping("/status")
+    fun updateStatus(@RequestHeader("Authorization") token: String, @RequestBody body: PersonalAssistant): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+
+        return settingsService.updatePersonalAssistant(basicToken, userId, body).flatMap {
+            Mono.just(ResponseEntity(HttpStatus.OK))
         }
     }
 }

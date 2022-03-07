@@ -125,4 +125,13 @@ class SettingsRepository : ISettingsRepository {
             Mono.just(objectParser.tryMapXml(it))
         }
     }
+
+    override fun updatePersonalAssistant(token: String, userId: String, body: PersonalAssistant): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        println(xmlBody)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant", token, xmlBody)
+        return response.flatMap {
+            Mono.empty()
+        }
+    }
 }
