@@ -3,8 +3,11 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
+import com.middlelayer.exam.core.models.xsi.CallToNumber
+import com.middlelayer.exam.core.models.xsi.CallToNumberList
 import com.middlelayer.exam.core.models.xsi.PersonalAssistant
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
+import com.middlelayer.exam.web.dto.settings.PersonalAssistantPut
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -134,12 +137,26 @@ class SettingsController {
     }
 
     @PutMapping("/status")
-    fun updateStatus(@RequestHeader("Authorization") token: String, @RequestBody body: PersonalAssistant): Mono<ResponseEntity<Any>> {
+    fun updateStatus(@RequestHeader("Authorization") token: String, @RequestBody body: PersonalAssistantPut): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         val userId = claims.profileObj.userId
         val basicToken = claims.basicToken
 
-        return settingsService.updatePersonalAssistant(basicToken, userId, body).flatMap {
+        val personalAssistant = PersonalAssistant(
+            presence = body.presence,
+            enableExpirationTime = body.enableExpirationTime,
+            expirationTime = body.expirationTime,
+            enableTransferToAttendant = body.enableTransferToAttendant,
+            alertMeFirst = body.alertMeFirst,
+            attendantNumber = body.attendantNumber,
+            ringSplash = body.ringSplash,
+            callToNumberList = body.callToNumberList.map {
+                CallToNumber(it.type)
+            },
+            numberOfRings = body.numberOfRings
+        )
+
+        return settingsService.updatePersonalAssistant(basicToken, userId, personalAssistant).flatMap {
             Mono.just(ResponseEntity(HttpStatus.OK))
         }
     }

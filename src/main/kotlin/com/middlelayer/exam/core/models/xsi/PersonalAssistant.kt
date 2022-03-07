@@ -1,6 +1,5 @@
 package com.middlelayer.exam.core.models.xsi
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import java.util.*
 
 data class PersonalAssistant(
@@ -13,4 +12,4 @@ data class PersonalAssistant(
     val callToNumberList: List<CallToNumber> = emptyList(),
     val alertMeFirst: Boolean? = null,
     val numberOfRings: Int? = null
-)
+) : XsiModel()
