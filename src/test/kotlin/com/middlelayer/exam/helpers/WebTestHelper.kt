@@ -12,4 +12,15 @@ class WebTestHelper(private val web: WebTestClient) {
             .accept(MediaType.APPLICATION_JSON)
             .exchange()
     }
+
+    fun get(uri: String, headers: List<WebHeader>? = null): WebTestClient.ResponseSpec {
+        var request = web.get()
+            .uri(uri)
+        headers?.let {
+            it.forEach { header ->
+                request.header(header.key, header.value)
+            }
+        }
+        return request.exchange()
+    }
 }
