@@ -150,9 +150,9 @@ class SettingsController {
             alertMeFirst = body.alertMeFirst,
             attendantNumber = body.attendantNumber,
             ringSplash = body.ringSplash,
-            callToNumberList = body.callToNumberList.map {
+            callToNumberList = CallToNumberList(body.callToNumberList.map {
                 CallToNumber(it.type)
-            },
+            }),
             numberOfRings = body.numberOfRings
         )
 

@@ -3,7 +3,6 @@ package com.middlelayer.exam.service
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
-import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.xsi.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -34,7 +33,7 @@ class SettingsService : ISettingsService {
 
     override fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
         return settingsRepo.getPAAssignedCallToNumbers(token, userId).flatMap {
-            Mono.just(it.callToNumberList.callToNumbers.map { ctn ->
+            Mono.just(it.callToNumberList.callToNumber.map { ctn ->
                 DCallToNumber(ctn.type ?: "")
             })
         }
