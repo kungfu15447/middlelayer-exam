@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonRootName
 
 @JsonRootName("PersonalAssistantExclusionNumber")
 data class ExclusionNumber(
-    val number: String? = null,
-    val description: String? = null
-)
+    val number: String? = null
+): XsiModel() {
+    val description: String = "-"
+}

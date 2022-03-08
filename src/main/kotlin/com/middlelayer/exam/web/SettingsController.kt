@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
+import java.util.*
 
 @RestController
 @RequestMapping("api/user/settings")
@@ -141,11 +142,11 @@ class SettingsController {
         val userId = claims.profileObj.userId
         val basicToken = claims.basicToken
 
-        var updatePA = Mono.empty<Void>()
-        var updateActn = Mono.empty<Void>()
-        var updateEn = Mono.empty<Void>()
-        var addEn = Mono.empty<Void>()
-        var deleteEn = Mono.empty<Void>()
+        var updatePA = Mono.just<Optional<Void>>(Optional.empty())
+        var updateActn = Mono.just<Optional<Void>>(Optional.empty())
+        var updateEn = Mono.just<Optional<Void>>(Optional.empty())
+        var addEn = Mono.just<Optional<Void>>(Optional.empty())
+        var deleteEn = Mono.just<Optional<Void>>(Optional.empty())
 
         val paPut = body.personalAssistance
         val enPost = body.newExclusionNumber
@@ -173,28 +174,36 @@ class SettingsController {
                 })
             )
 
-            updatePA = settingsService.updatePersonalAssistant(basicToken, userId, personalAssistant)
-            updateActn = settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumbers)
+            updatePA = settingsService.updatePersonalAssistant(basicToken, userId, personalAssistant).flatMap {
+                Mono.just(Optional.of(it))
+            }
+            updateActn = settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumbers).flatMap {
+                Mono.just(Optional.of(it))
+            }
         }
 
         enPost?.let {
             val newExclusionNumber = ExclusionNumber(
-                it,
-                "-"
+                it
             )
-            addEn = settingsService.addExclusionNumber(basicToken, userId, newExclusionNumber)
+            addEn = settingsService.addExclusionNumber(basicToken, userId, newExclusionNumber).flatMap {
+                Mono.just(Optional.of(it))
+            }
         }
 
         enPut?.let {
             val updatedExclusionNumber = ExclusionNumber(
-                enPut.newNumber,
-                "-"
+                enPut.newNumber
             )
-            updateEn = settingsService.updateExclusionNumber(basicToken, userId, it.oldNumber, updatedExclusionNumber)
+            updateEn = settingsService.updateExclusionNumber(basicToken, userId, it.oldNumber, updatedExclusionNumber).flatMap {
+                Mono.just(Optional.of(it))
+            }
         }
 
         enDelete?.let {
-            deleteEn = settingsService.deleteExclusionNumber(basicToken, userId, it)
+            deleteEn = settingsService.deleteExclusionNumber(basicToken, userId, it).flatMap {
+                Mono.just(Optional.of(it))
+            }
         }
 
         var updateZip = Mono.zip(

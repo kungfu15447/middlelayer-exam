@@ -129,25 +129,19 @@ class SettingsRepository : ISettingsRepository {
     override fun updatePersonalAssistant(token: String, userId: String, body: PersonalAssistant): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
         val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant", token, xmlBody)
-        return response.flatMap {
-            Mono.empty()
-        }
+        return response.then()
     }
 
     override fun updatePAAssignedCallToNumbers(token: String, userId: String, body: AssignedCallToNumbers): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
         val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/assignedcalltonumbers", token, xmlBody)
-        return response.flatMap {
-            Mono.empty()
-        }
+        return response.then()
     }
 
     override fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
         val response = xsiClient.post("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber", token, xmlBody)
-        return response.flatMap {
-            Mono.empty()
-        }
+        return response.then()
     }
 
     override fun updateExclusionNumber(
@@ -158,15 +152,11 @@ class SettingsRepository : ISettingsRepository {
     ): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
         val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber/${number}", token, xmlBody)
-        return response.flatMap {
-            Mono.empty()
-        }
+        return response.then()
     }
 
     override fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void> {
         val response = xsiClient.delete("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber/${number}", token)
-        return response.flatMap {
-            Mono.empty()
-        }
+        return response.then()
     }
 }
