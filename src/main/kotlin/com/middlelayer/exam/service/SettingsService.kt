@@ -116,4 +116,8 @@ class SettingsService : ISettingsService {
     override fun updatePersonalAssistant(token: String, userId: String, body: PersonalAssistant): Mono<Void> {
         return settingsRepo.updatePersonalAssistant(token, userId, body)
     }
+
+    override fun updatePAAssignedCallToNumbers(token: String, userId: String, body: AssignedCallToNumbers): Mono<Void> {
+        return settingsRepo.updatePAAssignedCallToNumbers(token, userId, body);
+    }
 }

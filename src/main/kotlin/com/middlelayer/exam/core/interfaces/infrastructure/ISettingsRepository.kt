@@ -21,4 +21,5 @@ interface ISettingsRepository {
     fun getSimultaneousRingPersonal(token: String, userId: String): Mono<SimultaneousRingPersonal>
     fun getDoNotDisturb(token: String, userId: String): Mono<DoNotDisturb>
     fun updatePersonalAssistant(token: String, userId: String, body: PersonalAssistant): Mono<Void>
+    fun updatePAAssignedCallToNumbers(token: String, userId: String, body: AssignedCallToNumbers): Mono<Void>
 }

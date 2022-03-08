@@ -3,11 +3,13 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
+import com.middlelayer.exam.core.models.xsi.AssignedCallToNumbers
 import com.middlelayer.exam.core.models.xsi.CallToNumber
 import com.middlelayer.exam.core.models.xsi.CallToNumberList
 import com.middlelayer.exam.core.models.xsi.PersonalAssistant
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import com.middlelayer.exam.web.dto.settings.PersonalAssistantPut
+import com.middlelayer.exam.web.dto.settings.PutSettingsStatusDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -137,26 +139,39 @@ class SettingsController {
     }
 
     @PutMapping("/status")
-    fun updateStatus(@RequestHeader("Authorization") token: String, @RequestBody body: PersonalAssistantPut): Mono<ResponseEntity<Any>> {
+    fun updateStatus(@RequestHeader("Authorization") token: String, @RequestBody body: PutSettingsStatusDTO): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         val userId = claims.profileObj.userId
         val basicToken = claims.basicToken
 
+        val paPut = body.personalAssistance
+
         val personalAssistant = PersonalAssistant(
-            presence = body.presence,
-            enableExpirationTime = body.enableExpirationTime,
-            expirationTime = body.expirationTime,
-            enableTransferToAttendant = body.enableTransferToAttendant,
-            alertMeFirst = body.alertMeFirst,
-            attendantNumber = body.attendantNumber,
-            ringSplash = body.ringSplash,
-            callToNumberList = CallToNumberList(body.callToNumberList.map {
-                CallToNumber(it.type)
+            presence = paPut.presence,
+            enableExpirationTime = paPut.enableExpirationTime,
+            expirationTime = paPut.expirationTime,
+            enableTransferToAttendant = paPut.enableTransferToAttendant,
+            alertMeFirst = paPut.alertMeFirst,
+            attendantNumber = paPut.attendantNumber,
+            ringSplash = paPut.ringSplash,
+            callToNumberList = CallToNumberList(paPut.callToNumberList.map {
+                CallToNumber(it.type, it.alternateNumberId)
             }),
-            numberOfRings = body.numberOfRings
+            numberOfRings = paPut.numberOfRings
         )
 
-        return settingsService.updatePersonalAssistant(basicToken, userId, personalAssistant).flatMap {
+        val assignedCallToNumbers = AssignedCallToNumbers(
+            callToNumberList = CallToNumberList(paPut.callToNumberList.map {
+                CallToNumber(it.type, it.alternateNumberId)
+            })
+        )
+
+        var updatePA = settingsService.updatePersonalAssistant(basicToken, userId, personalAssistant)
+        var updateActn = settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumbers)
+
+        var updateZip = Mono.zip(updatePA, updateActn)
+
+        return updateZip.flatMap {
             Mono.just(ResponseEntity(HttpStatus.OK))
         }
     }
