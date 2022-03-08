@@ -1,6 +1,7 @@
 package com.middlelayer.exam.infrastructure
 
 import com.middlelayer.exam.core.interfaces.infrastructure.IClient
+import org.apache.tomcat.util.http.parser.Authorization
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
@@ -32,7 +33,15 @@ class XsiClient : IClient {
     }
 
     override fun post(uri: String, auth: String?, body: String?): Mono<String> {
-        TODO("Not yet implemented")
+        val response = webClient.post()
+            .uri(uri)
+            .header("Authorization", auth)
+        body?.let {
+            response.body(Mono.just(it))
+        }
+        return response
+            .retrieve()
+            .bodyToMono()
     }
 
     override fun put(uri: String, auth: String?, body: String?): Mono<String> {

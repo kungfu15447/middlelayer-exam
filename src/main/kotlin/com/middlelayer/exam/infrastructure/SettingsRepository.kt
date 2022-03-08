@@ -141,4 +141,32 @@ class SettingsRepository : ISettingsRepository {
             Mono.empty()
         }
     }
+
+    override fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.post("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/", token, xmlBody)
+        return response.flatMap {
+            Mono.empty()
+        }
+    }
+
+    override fun updateExclusionNumber(
+        token: String,
+        userId: String,
+        number: String,
+        body: ExclusionNumber
+    ): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/${number}", token, xmlBody)
+        return response.flatMap {
+            Mono.empty()
+        }
+    }
+
+    override fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void> {
+        val response = xsiClient.delete("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/${number}", token)
+        return response.flatMap {
+            Mono.empty()
+        }
+    }
 }
