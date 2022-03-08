@@ -1,10 +1,12 @@
 package com.middlelayer.exam.web.dto.settings
 
-import com.middlelayer.exam.core.models.xsi.AssignedCallToNumbers
 import java.util.*
 
 data class PutSettingsStatusDTO(
-    val personalAssistance: PersonalAssistantPut,
+    val personalAssistance: PersonalAssistantPut?,
+    val updateExclusionNumber: ExclusionNumberPut?,
+    val exclusionNumberToDelete: String?,
+    val newExclusionNumber: String?,
 )
 
 data class PersonalAssistantPut(
@@ -22,4 +24,9 @@ data class PersonalAssistantPut(
 data class CallToNumberPut(
     val type: String,
     val alternateNumberId: Int?
+)
+
+data class ExclusionNumberPut(
+    val oldNumber: String,
+    val newNumber: String,
 )

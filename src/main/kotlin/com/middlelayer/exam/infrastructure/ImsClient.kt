@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.body
 import org.springframework.web.reactive.function.client.bodyToMono
 import reactor.core.publisher.Mono
 
@@ -34,14 +35,35 @@ class ImsClient: IClient {
     }
 
     override fun post(uri: String, auth: String?, body: String?): Mono<String> {
-        TODO("Not yet implemented")
+        val response = webClient.post()
+            .uri(uri)
+            .header("Authorization", auth)
+        body?.let {
+            response.body(Mono.just(it))
+        }
+        return response
+            .retrieve()
+            .bodyToMono()
     }
 
     override fun put(uri: String, auth: String?, body: String?): Mono<String> {
-        TODO("Not yet implemented")
+        val response = webClient.put()
+            .uri(uri)
+            .header("Authorization", auth)
+        body?.let {
+            response.body(Mono.just(it))
+        }
+        return response
+            .retrieve()
+            .bodyToMono()
     }
 
-    override fun delete(uri: String, auth: String?, body: String?): Mono<String> {
-        TODO("Not yet implemented")
+    override fun delete(uri: String, auth: String?): Mono<String> {
+        val response = webClient.delete()
+            .uri(uri)
+            .header("Authorization", auth)
+            .retrieve()
+            .bodyToMono<String>()
+        return response
     }
 }

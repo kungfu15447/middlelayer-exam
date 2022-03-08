@@ -3,10 +3,7 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
-import com.middlelayer.exam.core.models.xsi.AssignedCallToNumbers
-import com.middlelayer.exam.core.models.xsi.CallToNumber
-import com.middlelayer.exam.core.models.xsi.CallToNumberList
-import com.middlelayer.exam.core.models.xsi.PersonalAssistant
+import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import com.middlelayer.exam.web.dto.settings.PersonalAssistantPut
 import com.middlelayer.exam.web.dto.settings.PutSettingsStatusDTO
@@ -144,32 +141,69 @@ class SettingsController {
         val userId = claims.profileObj.userId
         val basicToken = claims.basicToken
 
+        var updatePA = Mono.empty<Void>()
+        var updateActn = Mono.empty<Void>()
+        var updateEn = Mono.empty<Void>()
+        var addEn = Mono.empty<Void>()
+        var deleteEn = Mono.empty<Void>()
+
         val paPut = body.personalAssistance
+        val enPost = body.newExclusionNumber
+        val enPut = body.updateExclusionNumber
+        val enDelete = body.exclusionNumberToDelete
 
-        val personalAssistant = PersonalAssistant(
-            presence = paPut.presence,
-            enableExpirationTime = paPut.enableExpirationTime,
-            expirationTime = paPut.expirationTime,
-            enableTransferToAttendant = paPut.enableTransferToAttendant,
-            alertMeFirst = paPut.alertMeFirst,
-            attendantNumber = paPut.attendantNumber,
-            ringSplash = paPut.ringSplash,
-            callToNumberList = CallToNumberList(paPut.callToNumberList.map {
-                CallToNumber(it.type, it.alternateNumberId)
-            }),
-            numberOfRings = paPut.numberOfRings
+        paPut?.let {
+            val personalAssistant = PersonalAssistant(
+                presence = it.presence,
+                enableExpirationTime = it.enableExpirationTime,
+                expirationTime = it.expirationTime,
+                enableTransferToAttendant = it.enableTransferToAttendant,
+                alertMeFirst = it.alertMeFirst,
+                attendantNumber = it.attendantNumber,
+                ringSplash = it.ringSplash,
+                callToNumberList = CallToNumberList(it.callToNumberList.map { ctnPut ->
+                    CallToNumber(ctnPut.type, ctnPut.alternateNumberId)
+                }),
+                numberOfRings = it.numberOfRings
+            )
+
+            val assignedCallToNumbers = AssignedCallToNumbers(
+                callToNumberList = CallToNumberList(it.callToNumberList.map { ctnPut ->
+                    CallToNumber(ctnPut.type, ctnPut.alternateNumberId)
+                })
+            )
+
+            updatePA = settingsService.updatePersonalAssistant(basicToken, userId, personalAssistant)
+            updateActn = settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumbers)
+        }
+
+        enPost?.let {
+            val newExclusionNumber = ExclusionNumber(
+                it,
+                "-"
+            )
+            addEn = settingsService.addExclusionNumber(basicToken, userId, newExclusionNumber)
+        }
+
+        enPut?.let {
+            val updatedExclusionNumber = ExclusionNumber(
+                enPut.newNumber,
+                "-"
+            )
+            updateEn = settingsService.updateExclusionNumber(basicToken, userId, it.oldNumber, updatedExclusionNumber)
+        }
+
+        enDelete?.let {
+            deleteEn = settingsService.deleteExclusionNumber(basicToken, userId, it)
+        }
+
+        var updateZip = Mono.zip(
+            updatePA,
+            updateActn,
+            addEn,
+            updateEn,
+            deleteEn
         )
-
-        val assignedCallToNumbers = AssignedCallToNumbers(
-            callToNumberList = CallToNumberList(paPut.callToNumberList.map {
-                CallToNumber(it.type, it.alternateNumberId)
-            })
-        )
-
-        var updatePA = settingsService.updatePersonalAssistant(basicToken, userId, personalAssistant)
-        var updateActn = settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumbers)
-
-        var updateZip = Mono.zip(updatePA, updateActn)
 
         return updateZip.flatMap {
             Mono.just(ResponseEntity(HttpStatus.OK))

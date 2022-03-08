@@ -56,7 +56,12 @@ class XsiClient : IClient {
             .bodyToMono()
     }
 
-    override fun delete(uri: String, auth: String?, body: String?): Mono<String> {
-        TODO("Not yet implemented")
+    override fun delete(uri: String, auth: String?): Mono<String> {
+        val response = webClient.delete()
+            .uri(uri)
+            .header("Authorization", auth)
+            .retrieve()
+            .bodyToMono<String>()
+        return response
     }
 }

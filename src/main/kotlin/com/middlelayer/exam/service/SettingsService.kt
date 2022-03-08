@@ -120,4 +120,21 @@ class SettingsService : ISettingsService {
     override fun updatePAAssignedCallToNumbers(token: String, userId: String, body: AssignedCallToNumbers): Mono<Void> {
         return settingsRepo.updatePAAssignedCallToNumbers(token, userId, body);
     }
+
+    override fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void> {
+        return settingsRepo.addExclusionNumber(token, userId, body)
+    }
+
+    override fun updateExclusionNumber(
+        token: String,
+        userId: String,
+        number: String,
+        body: ExclusionNumber
+    ): Mono<Void> {
+        return settingsRepo.updateExclusionNumber(token, userId, number, body)
+    }
+
+    override fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void> {
+        return settingsRepo.deleteExclusionNumber(token, userId, number)
+    }
 }
