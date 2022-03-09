@@ -5,13 +5,14 @@ import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
-import com.middlelayer.exam.web.dto.settings.PersonalAssistantPut
 import com.middlelayer.exam.web.dto.settings.PutSettingsStatusDTO
+import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
+import java.lang.IllegalArgumentException
 import java.util.*
 
 @RestController
@@ -216,6 +217,34 @@ class SettingsController {
 
         return updateZip.flatMap {
             Mono.just(ResponseEntity(HttpStatus.OK))
+        }
+    }
+
+    @PutMapping("/simultaneous/call")
+    fun updateSimultaneousCall(@RequestHeader("Authorization") token: String, @RequestBody body: PutSimultaneousCallDTO): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        var simRingLocations: SimRingLocations? = null
+        if (body.simRingLocations.isNotEmpty()) {
+            simRingLocations = SimRingLocations(
+                body.simRingLocations.map {
+                    SimRingLocation(
+                        it.address,
+                        it.answerConfirmedRequired
+                    )
+                }
+            )
+        }
+        return try {
+            var simultaneousRingPersonal = SimultaneousRingPersonal(
+                body.active,
+                stringToIncomingCallsEnum(body.incomingCalls),
+                simRingLocations
+            )
+            settingsService.updateSimultaneousRingPersonal(claims.basicToken, claims.profileObj.userId, simultaneousRingPersonal).flatMap {
+                Mono.just(ResponseEntity(HttpStatus.OK))
+            }
+        } catch(ex: IllegalArgumentException) {
+            Mono.just(ResponseEntity("No valid enum type for value: ${body.incomingCalls}", HttpStatus.BAD_REQUEST))
         }
     }
 }

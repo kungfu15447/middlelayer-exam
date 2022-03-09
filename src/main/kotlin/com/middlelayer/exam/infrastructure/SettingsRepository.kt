@@ -166,7 +166,9 @@ class SettingsRepository : ISettingsRepository {
         body: SimultaneousRingPersonal
     ): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
-        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/{userid}/services/SimultaneousRingPersonal", token, xmlBody)
+        println(xmlBody)
+        println(userId)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/SimultaneousRingPersonal", token, xmlBody)
         return response.then()
     }
 }
