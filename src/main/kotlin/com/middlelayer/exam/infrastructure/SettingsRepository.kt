@@ -159,4 +159,14 @@ class SettingsRepository : ISettingsRepository {
         val response = xsiClient.delete("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber/${number}", token)
         return response.then()
     }
+
+    override fun updateSimultaneousRingPersonal(
+        token: String,
+        userId: String,
+        body: SimultaneousRingPersonal
+    ): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/{userid}/services/SimultaneousRingPersonal", token, xmlBody)
+        return response.then()
+    }
 }
