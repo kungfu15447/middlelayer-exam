@@ -551,4 +551,26 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         verify(settingsService, times(1)).updateSimultaneousRingPersonal(kAny(), kAny(), kAny())
     }
 
+    @Test
+    fun `on PUT SimultaneousCall on empty body returns Bad Request status result`() {
+        //Assign
+        `when`(settingsService.updateSimultaneousRingPersonal(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutSimultaneousCallDTO(
+            false,
+            "Do not Ring if on a Call"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/simultaneous/call",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            )
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
 }
