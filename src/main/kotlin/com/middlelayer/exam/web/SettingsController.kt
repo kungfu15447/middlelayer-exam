@@ -138,7 +138,10 @@ class SettingsController {
     }
 
     @PutMapping("/status")
-    fun updateStatus(@RequestHeader("Authorization") token: String, @RequestBody body: PutSettingsStatusDTO): Mono<ResponseEntity<Any>> {
+    fun updateStatus(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutSettingsStatusDTO
+    ): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         val userId = claims.profileObj.userId
         val basicToken = claims.basicToken
@@ -178,9 +181,10 @@ class SettingsController {
             updatePA = settingsService.updatePersonalAssistant(basicToken, userId, personalAssistant).flatMap {
                 Mono.just(Optional.of(it))
             }
-            updateActn = settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumbers).flatMap {
-                Mono.just(Optional.of(it))
-            }
+            updateActn =
+                settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumbers).flatMap {
+                    Mono.just(Optional.of(it))
+                }
         }
 
         enPost?.let {
@@ -196,9 +200,10 @@ class SettingsController {
             val updatedExclusionNumber = ExclusionNumber(
                 enPut.newNumber
             )
-            updateEn = settingsService.updateExclusionNumber(basicToken, userId, it.oldNumber, updatedExclusionNumber).flatMap {
-                Mono.just(Optional.of(it))
-            }
+            updateEn = settingsService.updateExclusionNumber(basicToken, userId, it.oldNumber, updatedExclusionNumber)
+                .flatMap {
+                    Mono.just(Optional.of(it))
+                }
         }
 
         enDelete?.let {
@@ -221,7 +226,10 @@ class SettingsController {
     }
 
     @PutMapping("/simultaneous/call")
-    fun updateSimultaneousCall(@RequestHeader("Authorization") token: String, @RequestBody body: PutSimultaneousCallDTO): Mono<ResponseEntity<Any>> {
+    fun updateSimultaneousCall(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutSimultaneousCallDTO
+    ): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         var simRingLocations: SimRingLocations? = null
         if (body.simRingLocations.isNotEmpty()) {
@@ -234,17 +242,17 @@ class SettingsController {
                 }
             )
         }
-        return try {
-            var simultaneousRingPersonal = SimultaneousRingPersonal(
-                body.active,
-                stringToIncomingCallsEnum(body.incomingCalls),
-                simRingLocations
-            )
-            settingsService.updateSimultaneousRingPersonal(claims.basicToken, claims.profileObj.userId, simultaneousRingPersonal).flatMap {
-                Mono.just(ResponseEntity(HttpStatus.OK))
-            }
-        } catch(ex: IllegalArgumentException) {
-            Mono.just(ResponseEntity("No valid enum type for value: ${body.incomingCalls}", HttpStatus.BAD_REQUEST))
+        var simultaneousRingPersonal = SimultaneousRingPersonal(
+            body.active,
+            stringToIncomingCallsEnum(body.incomingCalls),
+            simRingLocations
+        )
+        return settingsService.updateSimultaneousRingPersonal(
+            claims.basicToken,
+            claims.profileObj.userId,
+            simultaneousRingPersonal
+        ).flatMap {
+            Mono.just(ResponseEntity(HttpStatus.OK))
         }
     }
 }

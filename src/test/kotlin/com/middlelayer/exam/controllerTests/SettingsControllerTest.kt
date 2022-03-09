@@ -472,4 +472,6 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         //Assert
         verify(authService, times(1)).getClaimsFromJWTToken(kAny())
     }
+
+
 }
