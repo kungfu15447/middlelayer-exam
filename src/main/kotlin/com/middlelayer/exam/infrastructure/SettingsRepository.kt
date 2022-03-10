@@ -161,14 +161,20 @@ class SettingsRepository : ISettingsRepository {
     }
 
     override fun updateCallForwardingAlways(token: String, userId: String, body: CallForwardingAlways): Mono<Void> {
-        TODO("Not yet implemented")
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/callforwardingalways", token, xmlBody)
+        return response.then()
     }
 
     override fun updateCallForwardingBusy(token: String, userId: String, body: CallForwardingBusy): Mono<Void> {
-        TODO("Not yet implemented")
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/callforwardingbusy", token, xmlBody)
+        return response.then()
     }
 
     override fun updateCallForwardingNoAnswer(token: String, userId: String, body: CallForwardingNoAnswer): Mono<Void> {
-        TODO("Not yet implemented")
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/callforwardingnoanswer", token, xmlBody)
+        return response.then()
     }
 }
