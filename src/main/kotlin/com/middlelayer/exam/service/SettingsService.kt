@@ -137,4 +137,10 @@ class SettingsService : ISettingsService {
     override fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void> {
         return settingsRepo.deleteExclusionNumber(token, userId, number)
     }
+
+    override fun updateHideNumberStatus(token: String, userId: String, body: NumberDisplayHidden): Mono<Void> {
+        return settingsRepo.updateNumberDisplayStatus(token, userId, body)
+    }
+
+
 }
