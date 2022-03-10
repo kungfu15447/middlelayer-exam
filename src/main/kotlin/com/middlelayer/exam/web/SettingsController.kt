@@ -6,6 +6,7 @@ import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import com.middlelayer.exam.web.dto.settings.PersonalAssistantPut
+import com.middlelayer.exam.web.dto.settings.PutDoNotDisturbDTO
 import com.middlelayer.exam.web.dto.settings.PutSettingsStatusDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -137,7 +138,10 @@ class SettingsController {
     }
 
     @PutMapping("/status")
-    fun updateStatus(@RequestHeader("Authorization") token: String, @RequestBody body: PutSettingsStatusDTO): Mono<ResponseEntity<Any>> {
+    fun updateStatus(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutSettingsStatusDTO
+    ): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         val userId = claims.profileObj.userId
         val basicToken = claims.basicToken
@@ -177,9 +181,10 @@ class SettingsController {
             updatePA = settingsService.updatePersonalAssistant(basicToken, userId, personalAssistant).flatMap {
                 Mono.just(Optional.of(it))
             }
-            updateActn = settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumbers).flatMap {
-                Mono.just(Optional.of(it))
-            }
+            updateActn =
+                settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumbers).flatMap {
+                    Mono.just(Optional.of(it))
+                }
         }
 
         enPost?.let {
@@ -195,9 +200,10 @@ class SettingsController {
             val updatedExclusionNumber = ExclusionNumber(
                 enPut.newNumber
             )
-            updateEn = settingsService.updateExclusionNumber(basicToken, userId, it.oldNumber, updatedExclusionNumber).flatMap {
-                Mono.just(Optional.of(it))
-            }
+            updateEn = settingsService.updateExclusionNumber(basicToken, userId, it.oldNumber, updatedExclusionNumber)
+                .flatMap {
+                    Mono.just(Optional.of(it))
+                }
         }
 
         enDelete?.let {
@@ -215,6 +221,23 @@ class SettingsController {
         )
 
         return updateZip.flatMap {
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        }
+    }
+
+    @PutMapping("/donotdisturb")
+    fun updateDoNotDisturb(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutDoNotDisturbDTO
+    ): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val doNotDisturb = DoNotDisturb(
+            body.active,
+            body.ringSplash
+        )
+        val updateDoNotDisturb = settingsService.updateDoNotDisturb(claims.basicToken, claims.profileObj.userId, doNotDisturb)
+
+        return updateDoNotDisturb.flatMap {
             Mono.just(ResponseEntity(HttpStatus.OK))
         }
     }
