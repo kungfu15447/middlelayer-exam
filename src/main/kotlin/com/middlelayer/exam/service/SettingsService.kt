@@ -137,4 +137,8 @@ class SettingsService : ISettingsService {
     override fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void> {
         return settingsRepo.deleteExclusionNumber(token, userId, number)
     }
+
+    override fun updateRemoteOffice(token: String, userId: String, body: RemoteOffice): Mono<Void> {
+        return settingsRepo.updateRemoteOffice(token, userId, body)
+    }
 }
