@@ -26,4 +26,6 @@ interface ISettingsRepository {
     fun updateExclusionNumber(token: String, userId: String, number: String, body: ExclusionNumber): Mono<Void>
     fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void>
     fun updateNumberDisplayStatus(token: String, userId: String, body: NumberDisplayHidden): Mono<Void>
+    fun updatePresentationToBusiness(token: String, userId: String): Mono<Void>
+    fun updatePresentationToMobile(token: String, userId: String): Mono<Void>
 }

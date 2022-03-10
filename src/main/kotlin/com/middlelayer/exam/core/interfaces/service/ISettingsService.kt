@@ -1,6 +1,7 @@
 package com.middlelayer.exam.core.interfaces.service
 
 import com.middlelayer.exam.core.models.domain.*
+import com.middlelayer.exam.core.models.ims.PresentationStatusEnum
 import com.middlelayer.exam.core.models.xsi.*
 import reactor.core.publisher.Mono
 
@@ -26,4 +27,5 @@ interface ISettingsService {
     fun updateExclusionNumber(token: String, userId: String, number: String, body: ExclusionNumber): Mono<Void>
     fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void>
     fun updateHideNumberStatus(token: String, userId: String, body: NumberDisplayHidden): Mono<Void>
+    fun updateNumberPresentationStatus(token: String, userId: String, status: PresentationStatusEnum): Mono<Void>
 }

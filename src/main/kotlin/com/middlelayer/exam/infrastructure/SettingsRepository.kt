@@ -209,4 +209,14 @@ class SettingsRepository : ISettingsRepository {
         )
         return response.then()
     }
+
+    override fun updatePresentationToBusiness(token: String, userId: String): Mono<Void> {
+        val response = imsClient.put("/nef/clid/user/${userId}/service/business", token)
+        return response.then()
+    }
+
+    override fun updatePresentationToMobile(token: String, userId: String): Mono<Void> {
+        val response = imsClient.put("/nef/clid/user/${userId}/service/mobile", token)
+        return response.then()
+    }
 }
