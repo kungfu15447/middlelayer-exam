@@ -218,4 +218,9 @@ class SettingsController {
             Mono.just(ResponseEntity(HttpStatus.OK))
         }
     }
+
+    @PutMapping("/callforwarding")
+    fun updateCallForwarding(): Mono<ResponseEntity<Any>> {
+        return Mono.just(ResponseEntity(HttpStatus.OK))
+    }
 }
