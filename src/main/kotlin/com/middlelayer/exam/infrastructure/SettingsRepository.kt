@@ -159,4 +159,16 @@ class SettingsRepository : ISettingsRepository {
         val response = xsiClient.delete("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber/${number}", token)
         return response.then()
     }
+
+    override fun updateCallForwardingAlways(token: String, userId: String, body: CallForwardingAlways): Mono<Void> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateCallForwardingBusy(token: String, userId: String, body: CallForwardingBusy): Mono<Void> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updateCallForwardingNoAnswer(token: String, userId: String, body: CallForwardingNoAnswer): Mono<Void> {
+        TODO("Not yet implemented")
+    }
 }
