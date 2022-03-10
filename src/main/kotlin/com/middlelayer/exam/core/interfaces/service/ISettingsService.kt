@@ -2,6 +2,7 @@ package com.middlelayer.exam.core.interfaces.service
 
 import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.xsi.AssignedCallToNumbers
+import com.middlelayer.exam.core.models.xsi.DoNotDisturb
 import com.middlelayer.exam.core.models.xsi.ExclusionNumber
 import com.middlelayer.exam.core.models.xsi.PersonalAssistant
 import reactor.core.publisher.Mono
@@ -27,4 +28,5 @@ interface ISettingsService {
     fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void>
     fun updateExclusionNumber(token: String, userId: String, number: String, body: ExclusionNumber): Mono<Void>
     fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void>
+    fun updateDoNotDisturb(token: String, userId: String, body: DoNotDisturb): Mono<Void>
 }

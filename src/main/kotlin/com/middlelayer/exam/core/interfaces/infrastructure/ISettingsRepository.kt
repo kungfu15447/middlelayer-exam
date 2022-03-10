@@ -25,4 +25,5 @@ interface ISettingsRepository {
     fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void>
     fun updateExclusionNumber(token: String, userId: String, number: String, body: ExclusionNumber): Mono<Void>
     fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void>
+    fun updateDoNotDisturb(token: String, userId: String, body: DoNotDisturb): Mono<Void>
 }
