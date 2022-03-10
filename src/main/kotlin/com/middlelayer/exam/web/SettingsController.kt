@@ -3,9 +3,11 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
+import com.middlelayer.exam.core.models.ims.stringToPresentationStatusEnum
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import com.middlelayer.exam.web.dto.settings.PersonalAssistantPut
+import com.middlelayer.exam.web.dto.settings.PutNumberDisplayDTO
 import com.middlelayer.exam.web.dto.settings.PutSettingsStatusDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -217,5 +219,26 @@ class SettingsController {
         return updateZip.flatMap {
             Mono.just(ResponseEntity(HttpStatus.OK))
         }
+    }
+
+    @PutMapping("/numberdisplay")
+    fun updateNumberDisplay(@RequestHeader("Authorization") token: String, @RequestBody body: PutNumberDisplayDTO): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val basicToken = claims.basicToken
+        val userId = claims.profileObj.userId
+
+        val displayStatus = stringToPresentationStatusEnum(body.presentationStatus)
+        val numberDisplayHidden = NumberDisplayHidden(
+            body.hideNumber
+        )
+
+        val updateHideNumber = settingsService.updateHideNumberStatus(basicToken, userId, numberDisplayHidden)
+        val updateDisplayStatus = settingsService.updateNumberPresentationStatus(basicToken, userId, displayStatus)
+
+        val response = Mono.zip(updateHideNumber, updateDisplayStatus)
+        
+        return response.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
     }
 }
