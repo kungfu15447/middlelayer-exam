@@ -236,7 +236,7 @@ class SettingsController {
         val updateDisplayStatus = settingsService.updateNumberPresentationStatus(basicToken, userId, displayStatus)
 
         val response = Mono.zip(updateHideNumber, updateDisplayStatus)
-        
+
         return response.then(
             Mono.just(ResponseEntity(HttpStatus.OK))
         )
