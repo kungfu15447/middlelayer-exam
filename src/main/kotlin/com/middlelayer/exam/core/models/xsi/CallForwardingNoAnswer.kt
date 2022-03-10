@@ -4,4 +4,4 @@ data class CallForwardingNoAnswer(
     val active: Boolean? = null,
     val forwardToPhoneNumber: String? = null,
     val numberOfRings: Int? = null,
-)
+): XsiModel()

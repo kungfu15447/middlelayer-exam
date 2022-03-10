@@ -4,4 +4,4 @@ data class CallForwardingAlways(
     val active: Boolean? = null,
     val forwardToPhoneNumber: String? = null,
     val ringSplash: Boolean? = null
-)
+): XsiModel()
