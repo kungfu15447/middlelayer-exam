@@ -149,7 +149,7 @@ class SettingsController {
         val list = body.assignedCallToNumbers
 
         val xsiPA = PersonalAssistant(
-            presence = body.presence,
+            presence = stringToPresenceEnum(body.presence),
             enableExpirationTime = body.expirationTime != null,
             expirationTime = body.expirationTime,
             attendantNumber = body.transferNumber,
@@ -162,7 +162,7 @@ class SettingsController {
 
         list?.let {
             var xsiList = it.map { item ->
-                CallToNumber(item)
+                CallToNumber(stringToCallToNumberEnum(item))
             }
             var assignedCallToNumber = AssignedCallToNumbers(
                 CallToNumberList(

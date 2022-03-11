@@ -34,7 +34,7 @@ class SettingsService : ISettingsService {
     override fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
         return settingsRepo.getPAAssignedCallToNumbers(token, userId).flatMap {
             Mono.just(it.callToNumberList.callToNumber.map { ctn ->
-                DCallToNumber(ctn.type ?: "")
+                DCallToNumber(ctn.type?.value ?: "")
             })
         }
     }
@@ -42,7 +42,7 @@ class SettingsService : ISettingsService {
     override fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
         return settingsRepo.getPAAvailableCallToNumbers(token, userId).flatMap {
             Mono.just(it.callToNumbers.map { ctn ->
-                DCallToNumber(ctn.type ?: "")
+                DCallToNumber(ctn.type?.value ?: "")
             })
         }
     }
