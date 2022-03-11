@@ -135,7 +135,10 @@ class SettingsController {
     }
 
     @PutMapping("/personalassistant")
-    fun updateStatus(@RequestHeader("Authorization") token: String, @RequestBody body: PutPersonalAssistantDTO): Mono<ResponseEntity<Any>> {
+    fun updateStatus(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutPersonalAssistantDTO
+    ): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         val userId = claims.profileObj.userId
         val basicToken = claims.basicToken
@@ -165,7 +168,8 @@ class SettingsController {
                     xsiList
                 )
             )
-            var updateAssignedCTN = settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumber)
+            var updateAssignedCTN =
+                settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumber)
             toUpdateList.add(updateAssignedCTN)
         }
 
@@ -176,8 +180,11 @@ class SettingsController {
         )
     }
 
-    @PostMapping("personalassistant/exclusionnumber/{number}")
-    fun addExclusionNumber(@RequestHeader("Authorization") token: String, @PathVariable("number") phoneNumber: String): Mono<ResponseEntity<Any>> {
+    @PostMapping("/personalassistant/exclusionnumber/{number}")
+    fun addExclusionNumber(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable("number") phoneNumber: String
+    ): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         val userId = claims.profileObj.userId
         val basicToken = claims.basicToken
@@ -194,4 +201,25 @@ class SettingsController {
             Mono.just(ResponseEntity(HttpStatus.OK))
         )
     }
+
+    @DeleteMapping("/personalassistant/exclusionnumber/{number}")
+    fun deleteExclusionNumber(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable("number") phoneNumber: String
+    ): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+
+        if (phoneNumber.isNullOrEmpty()) {
+            return Mono.just(ResponseEntity("Number to add cannot be empty or null", HttpStatus.BAD_REQUEST))
+        }
+
+        val deleteExclusionNumber = settingsService.deleteExclusionNumber(basicToken, userId, phoneNumber)
+
+        return deleteExclusionNumber.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
+    }
+
 }
