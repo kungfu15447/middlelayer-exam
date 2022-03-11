@@ -134,7 +134,7 @@ class SettingsController {
         }
     }
 
-    @PutMapping("/status")
+    @PutMapping("/personalassistant")
     fun updateStatus(@RequestHeader("Authorization") token: String, @RequestBody body: PutPersonalAssistantDTO): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         val userId = claims.profileObj.userId
@@ -172,6 +172,25 @@ class SettingsController {
         val response = Mono.zip(toUpdateList) {}
 
         return response.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
+    }
+
+    @PostMapping("personalassistant/exclusionnumber/{number}")
+    fun addExclusionNumber(@RequestHeader("Authorization") token: String, @PathVariable("number") phoneNumber: String): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+
+        if (phoneNumber.isNullOrEmpty()) {
+            return Mono.just(ResponseEntity("Number to add cannot be empty or null", HttpStatus.BAD_REQUEST))
+        }
+
+        val exclusionNumber = ExclusionNumber(phoneNumber)
+
+        var newExclusionNumber = settingsService.addExclusionNumber(basicToken, userId, exclusionNumber)
+
+        return newExclusionNumber.then(
             Mono.just(ResponseEntity(HttpStatus.OK))
         )
     }
