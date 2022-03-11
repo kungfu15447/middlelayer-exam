@@ -5,6 +5,7 @@ import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
+import com.middlelayer.exam.web.dto.settings.PutExclusionNumberDTO
 import com.middlelayer.exam.web.dto.settings.PutPersonalAssistantDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -218,6 +219,30 @@ class SettingsController {
         val deleteExclusionNumber = settingsService.deleteExclusionNumber(basicToken, userId, phoneNumber)
 
         return deleteExclusionNumber.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
+    }
+
+    @PutMapping("/personalassistant/exclusionnumber")
+    fun updateExclusionNumber(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutExclusionNumberDTO
+    ): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+
+        if (body.newNumber.isNullOrEmpty() || body.oldNumber.isNullOrEmpty()) {
+            return Mono.just(ResponseEntity("New and/or old number cannot be null or empty", HttpStatus.BAD_REQUEST))
+        }
+
+        val exclusionNumber = ExclusionNumber(
+            body.newNumber
+        )
+
+        val updateExclusionNumber = settingsService.updateExclusionNumber(basicToken, userId, body.oldNumber, exclusionNumber)
+        
+        return updateExclusionNumber.then(
             Mono.just(ResponseEntity(HttpStatus.OK))
         )
     }
