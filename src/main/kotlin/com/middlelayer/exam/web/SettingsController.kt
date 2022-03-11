@@ -222,10 +222,48 @@ class SettingsController {
 
     @PutMapping("/callforwarding")
     fun updateCallForwarding(@RequestHeader("Authorization") token: String, @RequestBody body: PutCallForwardDTO): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+
         val always = body.always
         val busy = body.busy
         val noAnswer = body.noAnswer
-        
-        return Mono.just(ResponseEntity(HttpStatus.OK))
+
+        var listOfUpdates = ArrayList<Mono<Void>>()
+
+        always?.let {
+            val xsiAlways = CallForwardingAlways(
+                it.active,
+                it.phoneNumber
+            )
+            val update = settingsService.updateCallForwardingAlways(basicToken, userId, xsiAlways)
+            listOfUpdates.add(update)
+        }
+
+        busy?.let {
+            val xsiBusy = CallForwardingBusy(
+                it.active,
+                it.phoneNumber
+            )
+            val update = settingsService.updateCallForwardingBusy(basicToken, userId, xsiBusy)
+            listOfUpdates.add(update)
+        }
+
+        noAnswer?.let {
+            val xsiNoAnswer = CallForwardingNoAnswer(
+                it.active,
+                it.phoneNumber,
+                it.numberOfRings
+            )
+            val update = settingsService.updateCallForwardingNoAnswer(basicToken, userId, xsiNoAnswer)
+            listOfUpdates.add(update)
+        }
+
+        val response = Mono.zip(listOfUpdates) { }
+
+        return response.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
     }
 }
