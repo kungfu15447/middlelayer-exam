@@ -23,7 +23,7 @@ data class SimRingLocation(
 )
 
 enum class IncomingCallsEnum {
-    @JsonProperty("Do not Ring if on  a Call")
+    @JsonProperty("Do not Ring if on a Call")
     DoNotRing,
     @JsonProperty("Ring for all Incoming Calls")
     RingForAll
