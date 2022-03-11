@@ -5,6 +5,7 @@ import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
+import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
 import com.middlelayer.exam.web.dto.settings.PutExclusionNumberDTO
 import com.middlelayer.exam.web.dto.settings.PutPersonalAssistantDTO
 import org.springframework.beans.factory.annotation.Autowired
@@ -247,4 +248,37 @@ class SettingsController {
         )
     }
 
+    @PutMapping("/simultaneouscall")
+    fun updateSimultaneousCall(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutSimultaneousCallDTO
+    ): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        var simRingLocations: SimRingLocations? = null
+        body.simRingLocations?.let {
+            if (body.simRingLocations.isNotEmpty()) {
+                simRingLocations = SimRingLocations(
+                    body.simRingLocations.map {
+                        SimRingLocation(
+                            it.address,
+                            it.answerConfirmedRequired
+                        )
+                    }
+                )
+            }
+        }
+
+        var simultaneousRingPersonal = SimultaneousRingPersonal(
+            body.active,
+            if (body.doNotRingIfOnCall) IncomingCallsEnum.DoNotRing else IncomingCallsEnum.RingForAll,
+            simRingLocations
+        )
+        return settingsService.updateSimultaneousRingPersonal(
+            claims.basicToken,
+            claims.profileObj.userId,
+            simultaneousRingPersonal
+        ).flatMap {
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        }
+    }
 }
