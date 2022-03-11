@@ -128,10 +128,10 @@ class SettingsService : ISettingsService {
     override fun updateExclusionNumber(
         token: String,
         userId: String,
-        number: String,
+        oldNumber: String,
         body: ExclusionNumber
     ): Mono<Void> {
-        return settingsRepo.updateExclusionNumber(token, userId, number, body)
+        return settingsRepo.updateExclusionNumber(token, userId, oldNumber, body)
     }
 
     override fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void> {

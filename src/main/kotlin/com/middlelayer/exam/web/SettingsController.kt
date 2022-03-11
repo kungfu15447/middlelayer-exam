@@ -241,7 +241,7 @@ class SettingsController {
         )
 
         val updateExclusionNumber = settingsService.updateExclusionNumber(basicToken, userId, body.oldNumber, exclusionNumber)
-        
+
         return updateExclusionNumber.then(
             Mono.just(ResponseEntity(HttpStatus.OK))
         )
