@@ -2,8 +2,8 @@ package com.middlelayer.exam.web.dto.settings
 
 data class PutSimultaneousCallDTO(
     val active: Boolean,
-    val incomingCalls: String,
-    val simRingLocations: List<PutSimRingLocation> = emptyList()
+    val doNotRingIfOnCall: Boolean,
+    val simRingLocations: List<PutSimRingLocation>?
 )
 
 data class PutSimRingLocation(

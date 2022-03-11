@@ -484,8 +484,9 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateSimultaneousRingPersonal(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
         var body = PutSimultaneousCallDTO(
-            false,
-            "Do not Ring if on a Call"
+            active = false,
+            doNotRingIfOnCall = true,
+            simRingLocations = null
         )
 
         //Act
@@ -507,8 +508,9 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateSimultaneousRingPersonal(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
         var body = PutSimultaneousCallDTO(
-            false,
-            "Do not Ring if on a Call"
+            active = false,
+            doNotRingIfOnCall = true,
+            simRingLocations = null
         )
 
         //Act
@@ -532,8 +534,9 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateSimultaneousRingPersonal(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
         var body = PutSimultaneousCallDTO(
-            false,
-            "Do not Ring if on a Call"
+            active = false,
+            doNotRingIfOnCall = true,
+            simRingLocations = null
         )
 
         //Act
@@ -556,10 +559,6 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         //Assign
         `when`(settingsService.updateSimultaneousRingPersonal(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
-        var body = PutSimultaneousCallDTO(
-            false,
-            "Do not Ring if on a Call"
-        )
 
         //Act
         var response = web.put(

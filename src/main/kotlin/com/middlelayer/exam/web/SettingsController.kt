@@ -248,26 +248,29 @@ class SettingsController {
         )
     }
 
-    @PutMapping("/simultaneous/call")
+    @PutMapping("/simultaneouscall")
     fun updateSimultaneousCall(
         @RequestHeader("Authorization") token: String,
         @RequestBody body: PutSimultaneousCallDTO
     ): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         var simRingLocations: SimRingLocations? = null
-        if (body.simRingLocations.isNotEmpty()) {
-            simRingLocations = SimRingLocations(
-                body.simRingLocations.map {
-                    SimRingLocation(
-                        it.address,
-                        it.answerConfirmedRequired
-                    )
-                }
-            )
+        body.simRingLocations?.let {
+            if (body.simRingLocations.isNotEmpty()) {
+                simRingLocations = SimRingLocations(
+                    body.simRingLocations.map {
+                        SimRingLocation(
+                            it.address,
+                            it.answerConfirmedRequired
+                        )
+                    }
+                )
+            }
         }
+
         var simultaneousRingPersonal = SimultaneousRingPersonal(
             body.active,
-            stringToIncomingCallsEnum(body.incomingCalls),
+            if (body.doNotRingIfOnCall) IncomingCallsEnum.DoNotRing else IncomingCallsEnum.RingForAll,
             simRingLocations
         )
         return settingsService.updateSimultaneousRingPersonal(
