@@ -6,6 +6,7 @@ import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import com.middlelayer.exam.web.dto.settings.PersonalAssistantPut
+import com.middlelayer.exam.web.dto.settings.PutCallForwardDTO
 import com.middlelayer.exam.web.dto.settings.PutSettingsStatusDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -220,7 +221,11 @@ class SettingsController {
     }
 
     @PutMapping("/callforwarding")
-    fun updateCallForwarding(): Mono<ResponseEntity<Any>> {
+    fun updateCallForwarding(@RequestHeader("Authorization") token: String, @RequestBody body: PutCallForwardDTO): Mono<ResponseEntity<Any>> {
+        val always = body.always
+        val busy = body.busy
+        val noAnswer = body.noAnswer
+        
         return Mono.just(ResponseEntity(HttpStatus.OK))
     }
 }
