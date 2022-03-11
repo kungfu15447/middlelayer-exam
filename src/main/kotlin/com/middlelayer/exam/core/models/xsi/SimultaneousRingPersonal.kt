@@ -5,7 +5,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 data class SimultaneousRingPersonal(
     val active: Boolean? = false,
     val incomingCalls: String? = null,
-    val criteriaActivationList: CriteriaActivationList = CriteriaActivationList()
+    val criteriaActivationList: CriteriaActivationList = CriteriaActivationList(),
+    val simRingLocations: Any? = null
 )
 
 data class CriteriaActivationList(
