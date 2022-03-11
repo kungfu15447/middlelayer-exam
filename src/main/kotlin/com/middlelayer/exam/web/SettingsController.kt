@@ -174,7 +174,7 @@ class SettingsController {
             toUpdateList.add(updateAssignedCTN)
         }
 
-        val response = Mono.zip(toUpdateList) {}
+        val response = Mono.`when`(toUpdateList)
 
         return response.then(
             Mono.just(ResponseEntity(HttpStatus.OK))
