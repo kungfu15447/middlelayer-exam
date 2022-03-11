@@ -491,7 +491,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-            "/api/user/settings/simultaneous/call",
+            "/api/user/settings/simultaneouscall",
             arrayListOf(
                 WebHeader("Authorization", "someToken"),
             ),
@@ -515,7 +515,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-            "/api/user/settings/simultaneous/call",
+            "/api/user/settings/simultaneouscall",
             arrayListOf(
                 WebHeader("Authorization", "someToken"),
             ),
@@ -541,7 +541,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-            "/api/user/settings/simultaneous/call",
+            "/api/user/settings/simultaneouscall",
             arrayListOf(
                 WebHeader("Authorization", "someToken"),
             ),
@@ -562,7 +562,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-            "/api/user/settings/simultaneous/call",
+            "/api/user/settings/simultaneouscall",
             arrayListOf(
                 WebHeader("Authorization", "someToken"),
             )
