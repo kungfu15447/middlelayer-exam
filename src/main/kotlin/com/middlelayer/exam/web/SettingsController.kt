@@ -3,14 +3,14 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
+import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
+import com.middlelayer.exam.web.dto.settings.PutExclusionNumberDTO
+import com.middlelayer.exam.web.dto.settings.PutPersonalAssistantDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
 @RestController
@@ -134,4 +134,117 @@ class SettingsController {
             Mono.just(ResponseEntity(responseBody, HttpStatus.OK))
         }
     }
+
+    @PutMapping("/personalassistant")
+    fun updateStatus(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutPersonalAssistantDTO
+    ): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+
+        var toUpdateList = ArrayList<Mono<Void>>()
+
+        val list = body.assignedCallToNumbers
+
+        val xsiPA = PersonalAssistant(
+            presence = stringToPresenceEnum(body.presence),
+            enableExpirationTime = body.expirationTime != null,
+            expirationTime = body.expirationTime,
+            attendantNumber = body.transferNumber,
+            ringSplash = body.transferCalls,
+            enableTransferToAttendant = body.transferNotification
+        )
+
+        var updatePA = settingsService.updatePersonalAssistant(basicToken, userId, xsiPA)
+        toUpdateList.add(updatePA)
+
+        list?.let {
+            var xsiList = it.map { item ->
+                CallToNumber(stringToCallToNumberEnum(item))
+            }
+            var assignedCallToNumber = AssignedCallToNumbers(
+                CallToNumberList(
+                    xsiList
+                )
+            )
+            var updateAssignedCTN =
+                settingsService.updatePAAssignedCallToNumbers(basicToken, userId, assignedCallToNumber)
+            toUpdateList.add(updateAssignedCTN)
+        }
+
+        val response = Mono.`when`(toUpdateList)
+
+        return response.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
+    }
+
+    @PostMapping("/personalassistant/exclusionnumber/{number}")
+    fun addExclusionNumber(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable("number") phoneNumber: String
+    ): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+
+        if (phoneNumber.isNullOrEmpty()) {
+            return Mono.just(ResponseEntity("Number to add cannot be empty or null", HttpStatus.BAD_REQUEST))
+        }
+
+        val exclusionNumber = ExclusionNumber(phoneNumber)
+
+        var newExclusionNumber = settingsService.addExclusionNumber(basicToken, userId, exclusionNumber)
+
+        return newExclusionNumber.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
+    }
+
+    @DeleteMapping("/personalassistant/exclusionnumber/{number}")
+    fun deleteExclusionNumber(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable("number") phoneNumber: String
+    ): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+
+        if (phoneNumber.isNullOrEmpty()) {
+            return Mono.just(ResponseEntity("Number to add cannot be empty or null", HttpStatus.BAD_REQUEST))
+        }
+
+        val deleteExclusionNumber = settingsService.deleteExclusionNumber(basicToken, userId, phoneNumber)
+
+        return deleteExclusionNumber.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
+    }
+
+    @PutMapping("/personalassistant/exclusionnumber")
+    fun updateExclusionNumber(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutExclusionNumberDTO
+    ): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+
+        if (body.newNumber.isNullOrEmpty() || body.oldNumber.isNullOrEmpty()) {
+            return Mono.just(ResponseEntity("New and/or old number cannot be null or empty", HttpStatus.BAD_REQUEST))
+        }
+
+        val exclusionNumber = ExclusionNumber(
+            body.newNumber
+        )
+
+        val updateExclusionNumber = settingsService.updateExclusionNumber(basicToken, userId, body.oldNumber, exclusionNumber)
+
+        return updateExclusionNumber.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
+    }
+
 }

@@ -3,7 +3,6 @@ package com.middlelayer.exam.service
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
-import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.xsi.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -34,8 +33,8 @@ class SettingsService : ISettingsService {
 
     override fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
         return settingsRepo.getPAAssignedCallToNumbers(token, userId).flatMap {
-            Mono.just(it.callToNumberList.callToNumbers.map { ctn ->
-                DCallToNumber(ctn.type ?: "")
+            Mono.just(it.callToNumberList.callToNumber.map { ctn ->
+                DCallToNumber(ctn.type?.value ?: "")
             })
         }
     }
@@ -43,7 +42,7 @@ class SettingsService : ISettingsService {
     override fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
         return settingsRepo.getPAAvailableCallToNumbers(token, userId).flatMap {
             Mono.just(it.callToNumbers.map { ctn ->
-                DCallToNumber(ctn.type ?: "")
+                DCallToNumber(ctn.type?.value ?: "")
             })
         }
     }
@@ -112,5 +111,30 @@ class SettingsService : ISettingsService {
         return settingsRepo.getDoNotDisturb(token, userId).flatMap {
             Mono.just(DDoNotDisturb(it))
         }
+    }
+
+    override fun updatePersonalAssistant(token: String, userId: String, body: PersonalAssistant): Mono<Void> {
+        return settingsRepo.updatePersonalAssistant(token, userId, body)
+    }
+
+    override fun updatePAAssignedCallToNumbers(token: String, userId: String, body: AssignedCallToNumbers): Mono<Void> {
+        return settingsRepo.updatePAAssignedCallToNumbers(token, userId, body);
+    }
+
+    override fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void> {
+        return settingsRepo.addExclusionNumber(token, userId, body)
+    }
+
+    override fun updateExclusionNumber(
+        token: String,
+        userId: String,
+        oldNumber: String,
+        body: ExclusionNumber
+    ): Mono<Void> {
+        return settingsRepo.updateExclusionNumber(token, userId, oldNumber, body)
+    }
+
+    override fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void> {
+        return settingsRepo.deleteExclusionNumber(token, userId, number)
     }
 }

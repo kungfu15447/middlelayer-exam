@@ -125,4 +125,38 @@ class SettingsRepository : ISettingsRepository {
             Mono.just(objectParser.tryMapXml(it))
         }
     }
+
+    override fun updatePersonalAssistant(token: String, userId: String, body: PersonalAssistant): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant", token, xmlBody)
+        return response.then()
+    }
+
+    override fun updatePAAssignedCallToNumbers(token: String, userId: String, body: AssignedCallToNumbers): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/assignedcalltonumbers", token, xmlBody)
+        return response.then()
+    }
+
+    override fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.post("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber", token, xmlBody)
+        return response.then()
+    }
+
+    override fun updateExclusionNumber(
+        token: String,
+        userId: String,
+        oldNumber: String,
+        body: ExclusionNumber
+    ): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber/${oldNumber}", token, xmlBody)
+        return response.then()
+    }
+
+    override fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void> {
+        val response = xsiClient.delete("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber/${number}", token)
+        return response.then()
+    }
 }
