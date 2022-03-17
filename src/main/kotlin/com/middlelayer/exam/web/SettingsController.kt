@@ -293,9 +293,9 @@ class SettingsController {
             body.active,
             body.remoteOfficeNumber
         )
-        return settingsService.updateRemoteOffice(claims.basicToken, claims.profileObj.userId, remoteOffice).flatMap {
-            Mono.just(ResponseEntity(HttpStatus.OK))
-        }
+        return settingsService
+                .updateRemoteOffice(claims.basicToken, claims.profileObj.userId, remoteOffice)
+                .then(Mono.just(ResponseEntity(HttpStatus.OK)))
     }
 
 }
