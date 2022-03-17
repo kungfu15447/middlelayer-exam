@@ -9,6 +9,7 @@ import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.helpers.WebHeader
 import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.SettingsController
+import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -46,24 +47,27 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
     private fun getSettingsMockSetup() {
         `when`(settingsService.getCallForwardingAlways(kAny(), kAny())).thenReturn(
-            Mono.just(DCallForwardingAlways(
-                false,
-                ""
+            Mono.just(
+                DCallForwardingAlways(
+                    false,
+                    ""
                 )
             )
         )
         `when`(settingsService.getCallForwardingBusy(kAny(), kAny())).thenReturn(
-            Mono.just(DCallForwardingBusy(
-                false,
-                ""
+            Mono.just(
+                DCallForwardingBusy(
+                    false,
+                    ""
                 )
             )
         )
         `when`(settingsService.getCallForwardingNoAnswer(kAny(), kAny())).thenReturn(
-            Mono.just(DCallForwardingNoAnswer(
-                false,
-                "",
-                1
+            Mono.just(
+                DCallForwardingNoAnswer(
+                    false,
+                    "",
+                    1
                 )
             )
         )
@@ -74,23 +78,24 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
             Mono.just(emptyList())
         )
         `when`(settingsService.getDoNotDisturb(kAny(), kAny())).thenReturn(
-            Mono.just(DDoNotDisturb(
-                false
+            Mono.just(
+                DDoNotDisturb(
+                    false
                 )
             )
         )
         `when`(settingsService.getNumberDisplay(kAny(), kAny())).thenReturn(
             Mono.just(
                 DNumberDisplay(
-                "",
-                ""
+                    "",
+                    ""
                 )
             )
         )
         `when`(settingsService.getNumberDisplayStatus(kAny(), kAny())).thenReturn(
             Mono.just(
                 DNumberDisplayHidden(
-                false
+                    false
                 )
             )
         )
@@ -100,13 +105,13 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.getPersonalAssistant(kAny(), kAny())).thenReturn(
             Mono.just(
                 DPersonalAssistant(
-                "",
-                false,
-                null,
-                false,
-                "",
-                false,
-                emptyList()
+                    "",
+                    false,
+                    null,
+                    false,
+                    "",
+                    false,
+                    emptyList()
                 )
             )
         )
@@ -472,4 +477,99 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         //Assert
         verify(authService, times(1)).getClaimsFromJWTToken(kAny())
     }
+
+    @Test
+    fun `on PUT SimultaneousCall success returns OK status result`() {
+        //Assign
+        `when`(settingsService.updateSimultaneousRingPersonal(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutSimultaneousCallDTO(
+            active = false,
+            doNotRingIfOnCall = true,
+            simRingLocations = null
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/simultaneouscall",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+
+        //Assert
+        response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on PUT SimultaneousCall success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updateSimultaneousRingPersonal(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutSimultaneousCallDTO(
+            active = false,
+            doNotRingIfOnCall = true,
+            simRingLocations = null
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/simultaneouscall",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT SimultaneousCall success calls updateSimultaneousRingPersonal once`() {
+        //Assign
+        `when`(settingsService.updateSimultaneousRingPersonal(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutSimultaneousCallDTO(
+            active = false,
+            doNotRingIfOnCall = true,
+            simRingLocations = null
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/simultaneouscall",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateSimultaneousRingPersonal(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT SimultaneousCall on empty body returns Bad Request status result`() {
+        //Assign
+        `when`(settingsService.updateSimultaneousRingPersonal(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/simultaneouscall",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            )
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
 }

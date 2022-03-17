@@ -13,7 +13,7 @@ data class DPersonalAssistant(
     var callToNumbers: List<DCallToNumber>
 ) {
     constructor(xsiPersonalAssistant: PersonalAssistant) : this(
-        presence = xsiPersonalAssistant.presence ?: "",
+        presence = xsiPersonalAssistant.presence?.value ?: "",
         enableExpirationTime = xsiPersonalAssistant.enableExpirationTime ?: false,
         expirationTime = xsiPersonalAssistant.expirationTime,
         enableTransferToAttendant = xsiPersonalAssistant.enableTransferToAttendant ?: false,
@@ -23,7 +23,7 @@ data class DPersonalAssistant(
     ) {
         val xsiCallToNumbers = xsiPersonalAssistant.callToNumberList.callToNumber
         callToNumbers = xsiCallToNumbers.map {
-            DCallToNumber(it.type ?: "")
+            DCallToNumber(it.type?.value ?: "")
         }
     }
 }

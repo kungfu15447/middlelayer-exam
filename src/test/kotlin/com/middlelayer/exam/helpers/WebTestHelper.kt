@@ -23,4 +23,19 @@ class WebTestHelper(private val web: WebTestClient) {
         }
         return request.exchange()
     }
+
+    fun put(uri: String, headers: List<WebHeader>? = null, body: Any? = null): WebTestClient.ResponseSpec {
+        var request = web.put()
+            .uri(uri)
+        headers?.let {
+            it.forEach { header ->
+                request.header(header.key, header.value)
+            }
+        }
+        body?.let {
+            request
+                .bodyValue(body)
+        }
+        return request.exchange()
+    }
 }

@@ -147,11 +147,11 @@ class SettingsRepository : ISettingsRepository {
     override fun updateExclusionNumber(
         token: String,
         userId: String,
-        number: String,
+        oldNumber: String,
         body: ExclusionNumber
     ): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
-        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber/${number}", token, xmlBody)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber/${oldNumber}", token, xmlBody)
         return response.then()
     }
 
@@ -163,6 +163,16 @@ class SettingsRepository : ISettingsRepository {
     override fun updateDoNotDisturb(token: String, userId: String, body: DoNotDisturb): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
         val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/donotdisturb", token, xmlBody)
+        return response.then()
+    }
+
+    override fun updateSimultaneousRingPersonal(
+        token: String,
+        userId: String,
+        body: SimultaneousRingPersonal
+    ): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/SimultaneousRingPersonal", token, xmlBody)
         return response.then()
     }
 }
