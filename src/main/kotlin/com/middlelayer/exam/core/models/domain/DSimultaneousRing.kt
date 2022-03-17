@@ -1,6 +1,7 @@
 package com.middlelayer.exam.core.models.domain
 
-import com.middlelayer.exam.core.models.xsi.CriteriaActivation
+import com.middlelayer.exam.core.models.xsi.IncomingCallsEnum
+import com.middlelayer.exam.core.models.xsi.SimRingLocation
 import com.middlelayer.exam.core.models.xsi.SimultaneousRingPersonal
 
 data class DSimultaneousRing(
@@ -14,9 +15,9 @@ data class DSimultaneousRing(
         phoneNumbers = emptyList()
     ) {
         var incomingCalls = xsiSimultaneousRingPersonal.incomingCalls ?: ""
-        var phoneNumberList = xsiSimultaneousRingPersonal.criteriaActivationList.criteriaActivations
+        var phoneNumberList = xsiSimultaneousRingPersonal.simRingLocations?.simRingLocation ?: emptyList()
 
-        doNotRingIfOnCall = incomingCalls.lowercase() != "do not ring if on a call"
+        doNotRingIfOnCall = incomingCalls == IncomingCallsEnum.DoNotRing
         if (phoneNumberList.isNotEmpty()) {
             phoneNumbers = phoneNumberList.map {
                 DPhoneNumber(it)
@@ -31,7 +32,7 @@ data class DPhoneNumber(
     var address: String,
     var answerConfirmationRequired: Boolean,
 ) {
-    constructor(xsiPhoneNumber: CriteriaActivation) : this(
+    constructor(xsiPhoneNumber: SimRingLocation) : this(
         address = xsiPhoneNumber.address ?: "",
         answerConfirmationRequired = xsiPhoneNumber.answerConfirmationRequired ?: false
     )
