@@ -286,7 +286,7 @@ class SettingsController {
     @PutMapping("/remoteoffice")
     fun updateRemoteOffice(@RequestHeader("Authorization") token: String, @RequestBody body: PutRemoteOfficeDTO): Mono<ResponseEntity<Any>> {
         if (body.remoteOfficeNumber.isNullOrEmpty()) {
-            return Mono.just(ResponseEntity("Remote office number cannot be empty or null!" ,HttpStatus.BAD_REQUEST))
+            return Mono.just(ResponseEntity("Remote office number cannot be empty or null!", HttpStatus.BAD_REQUEST))
         }
         var claims = authService.getClaimsFromJWTToken(token)
         var remoteOffice = RemoteOffice(

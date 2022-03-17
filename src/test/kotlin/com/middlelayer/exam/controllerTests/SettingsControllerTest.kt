@@ -572,4 +572,6 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         response.expectStatus().isBadRequest
     }
 
+
+
 }
