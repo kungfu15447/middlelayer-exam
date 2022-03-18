@@ -35,4 +35,51 @@ class SettingsServiceTest(@Autowired val settingsService: SettingsService) {
         verify(settingsRepo, times(1)).updatePresentationToMobile(kAny(), kAny())
     }
 
+    @Test
+    fun `on updateNumberPresentationStatus with MOBILE param does not call updatePresentationToBusiness`() {
+        //Assign
+        `when`(settingsRepo.updatePresentationToMobile(kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsRepo.updatePresentationToBusiness(kAny(), kAny())).thenReturn(Mono.empty())
+
+        //Act
+        settingsService
+            .updateNumberPresentationStatus("", "", PresentationStatusEnum.MOBILE)
+            .block()
+
+
+        //Assert
+        verify(settingsRepo, times(0)).updatePresentationToBusiness(kAny(), kAny())
+    }
+
+    @Test
+    fun `on updateNumberPresentationStatus with BUSINESS param calls updatePresentationToBusiness once`() {
+        //Assign
+        `when`(settingsRepo.updatePresentationToMobile(kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsRepo.updatePresentationToBusiness(kAny(), kAny())).thenReturn(Mono.empty())
+
+        //Act
+        settingsService
+            .updateNumberPresentationStatus("", "", PresentationStatusEnum.BUSINESS)
+            .block()
+
+
+        //Assert
+        verify(settingsRepo, times(1)).updatePresentationToBusiness(kAny(), kAny())
+    }
+
+    @Test
+    fun `on updateNumberPresentationStatus with BUSINESS param does not call updatePresentationToMobile`() {
+        //Assign
+        `when`(settingsRepo.updatePresentationToMobile(kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsRepo.updatePresentationToBusiness(kAny(), kAny())).thenReturn(Mono.empty())
+
+        //Act
+        settingsService
+            .updateNumberPresentationStatus("", "", PresentationStatusEnum.BUSINESS)
+            .block()
+
+
+        //Assert
+        verify(settingsRepo, times(0)).updatePresentationToMobile(kAny(), kAny())
+    }
 }
