@@ -35,7 +35,7 @@ class SettingsService : ISettingsService {
     override fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
         return settingsRepo.getPAAssignedCallToNumbers(token, userId).flatMap {
             Mono.just(it.callToNumberList.callToNumber.map { ctn ->
-                DCallToNumber(ctn.type ?: "")
+                DCallToNumber(ctn.type?.value ?: "")
             })
         }
     }
@@ -43,7 +43,7 @@ class SettingsService : ISettingsService {
     override fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
         return settingsRepo.getPAAvailableCallToNumbers(token, userId).flatMap {
             Mono.just(it.callToNumbers.map { ctn ->
-                DCallToNumber(ctn.type ?: "")
+                DCallToNumber(ctn.type?.value ?: "")
             })
         }
     }
@@ -129,10 +129,10 @@ class SettingsService : ISettingsService {
     override fun updateExclusionNumber(
         token: String,
         userId: String,
-        number: String,
+        oldNumber: String,
         body: ExclusionNumber
     ): Mono<Void> {
-        return settingsRepo.updateExclusionNumber(token, userId, number, body)
+        return settingsRepo.updateExclusionNumber(token, userId, oldNumber, body)
     }
 
     override fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void> {
@@ -144,9 +144,17 @@ class SettingsService : ISettingsService {
     }
 
     override fun updateNumberPresentationStatus(token: String, userId: String, status: PresentationStatusEnum): Mono<Void> {
-        return when(status) {
+        return when (status) {
             PresentationStatusEnum.BUSINESS -> settingsRepo.updatePresentationToBusiness(token, userId)
             PresentationStatusEnum.MOBILE -> settingsRepo.updatePresentationToMobile(token, userId)
         }
+    }
+
+    override fun updateSimultaneousRingPersonal(
+        token: String,
+        userId: String,
+        body: SimultaneousRingPersonal
+    ): Mono<Void> {
+        return settingsRepo.updateSimultaneousRingPersonal(token, userId, body)
     }
 }
