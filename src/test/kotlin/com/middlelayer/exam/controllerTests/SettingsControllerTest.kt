@@ -9,6 +9,7 @@ import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.helpers.WebHeader
 import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.SettingsController
+import com.middlelayer.exam.web.dto.settings.PutDoNotDisturbDTO
 import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -566,6 +567,97 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
             arrayListOf(
                 WebHeader("Authorization", "someToken"),
             )
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `on PUT DoNotDisturb success returns OK Status Result`() {
+        //Assign
+        `when`(settingsService.updateDoNotDisturb(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutDoNotDisturbDTO(
+            active = false,
+            ringSplash = false,
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/donotdisturb",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+
+        //Assert
+        response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on PUT DoNotDisturb success calls updateDoNotDisturb once`() {
+        //Assign
+        `when`(settingsService.updateDoNotDisturb(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutDoNotDisturbDTO(
+            active = false,
+            ringSplash = false,
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/donotdisturb",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateDoNotDisturb(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT DoNotDisturb success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updateDoNotDisturb(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutDoNotDisturbDTO(
+            active = false,
+            ringSplash = false,
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/donotdisturb",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT DoNotDisturb on empty body returns Bad Request Status Result`() {
+        //Assign
+        `when`(settingsService.updateDoNotDisturb(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/donotdisturb",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
         )
 
         //Assert
