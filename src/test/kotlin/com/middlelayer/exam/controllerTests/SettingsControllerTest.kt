@@ -9,6 +9,7 @@ import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.helpers.WebHeader
 import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.SettingsController
+import com.middlelayer.exam.web.dto.settings.PutExclusionNumberDTO
 import com.middlelayer.exam.web.dto.settings.PutPersonalAssistantDTO
 import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
 import org.junit.jupiter.api.BeforeEach
@@ -845,7 +846,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on DELETE ExclusionNumber on success calls addExclusionNumber once`() {
+    fun `on DELETE ExclusionNumber on success calls deleteExclusionNumber once`() {
         //Assign
         `when`(settingsService.deleteExclusionNumber(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
@@ -887,4 +888,188 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         //Assert
         verify(authService, times(1)).getClaimsFromJWTToken(kAny())
     }
+
+    @Test
+    fun `on PUT ExclusionNumber on success then return OK status result`() {
+        //Assign
+        `when`(settingsService.updateExclusionNumber(kAny(), kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutExclusionNumberDTO(
+                "123",
+                "1234"
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant/exclusionnumber",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+
+        //Assert
+        response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on PUT ExclusionNumber on success calls updateExclusionNumber once`() {
+        //Assign
+        `when`(settingsService.updateExclusionNumber(kAny(), kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutExclusionNumberDTO(
+                "123",
+                "1234"
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant/exclusionnumber",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateExclusionNumber(kAny(), kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT ExclusionNumber on success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updateExclusionNumber(kAny(), kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutExclusionNumberDTO(
+                "123",
+                "1234"
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant/exclusionnumber",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+            "'',123",
+            "123,''",
+            "'',''"
+    )
+    fun `on PUT ExclusionNumber if oldNumber or newNumber in request body is null or empty then return Bad Request status result`(oldNumber: String, newNumber: String) {
+        //Assign
+        `when`(settingsService.updateExclusionNumber(kAny(), kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutExclusionNumberDTO(
+                oldNumber,
+                newNumber
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant/exclusionnumber",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+            "'',123",
+            "123,''",
+            "'',''"
+    )
+    fun `on PUT ExclusionNumber if oldNumber or newNumber in request body is null or empty then never calls updateExclusionNumber`(oldNumber: String, newNumber: String) {
+        //Assign
+        `when`(settingsService.updateExclusionNumber(kAny(), kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutExclusionNumberDTO(
+                oldNumber,
+                newNumber
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant/exclusionnumber",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(0)).updateExclusionNumber(kAny(), kAny(), kAny(), kAny())
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+            "'',123",
+            "123,''",
+            "'',''"
+    )
+    fun `on PUT ExclusionNumber if oldNumber or newNumber in request body is null or empty then never calls getClaimsFromJWTToken`(oldNumber: String, newNumber: String) {
+        //Assign
+        `when`(settingsService.updateExclusionNumber(kAny(), kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutExclusionNumberDTO(
+                oldNumber,
+                newNumber
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant/exclusionnumber",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(authService, times(0)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT ExclusionNumber with empty body then returns Bad Request status result`() {
+        //Assign
+        `when`(settingsService.updateExclusionNumber(kAny(), kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant/exclusionnumber",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
 }
