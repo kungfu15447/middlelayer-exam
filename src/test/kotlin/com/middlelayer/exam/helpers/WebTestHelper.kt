@@ -46,4 +46,16 @@ class WebTestHelper(private val web: WebTestClient) {
         }
         return request.exchange()
     }
+
+    fun delete(uri: String, headers: List<WebHeader>? = null): WebTestClient.ResponseSpec {
+        var request = web.delete()
+                .uri(uri)
+        headers?.let {
+            it.forEach { header ->
+                request.header(header.key, header.value)
+            }
+        }
+
+        return request.exchange()
+    }
 }

@@ -802,4 +802,89 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         //Assert
         verify(settingsService, times(1)).addExclusionNumber(kAny(), kAny(), kAny())
     }
+
+    @Test
+    fun `on POST ExclusionNumber on success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.addExclusionNumber(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var number = "123"
+
+        //Act
+        var response = web.post(
+                "/api/user/settings/personalassistant/exclusionnumber/${number}",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on DELETE ExclusionNumber on success then return OK status result`() {
+        //Assign
+        `when`(settingsService.deleteExclusionNumber(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var number = "123"
+
+        //Act
+        var response = web.delete(
+                "/api/user/settings/personalassistant/exclusionnumber/${number}",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+        )
+
+        //Assert
+        response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on DELETE ExclusionNumber on success calls addExclusionNumber once`() {
+        //Assign
+        `when`(settingsService.deleteExclusionNumber(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var number = "123"
+
+        //Act
+        var response = web.delete(
+                "/api/user/settings/personalassistant/exclusionnumber/${number}",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).deleteExclusionNumber(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on DELETE ExclusionNumber on success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.deleteExclusionNumber(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var number = "123"
+
+        //Act
+        var response = web.delete(
+                "/api/user/settings/personalassistant/exclusionnumber/${number}",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
 }
