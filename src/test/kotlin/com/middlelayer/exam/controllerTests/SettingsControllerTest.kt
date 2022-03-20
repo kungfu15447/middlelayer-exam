@@ -9,7 +9,7 @@ import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.helpers.WebHeader
 import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.SettingsController
-import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
+import com.middlelayer.exam.web.dto.settings.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.returnResult
 import reactor.core.publisher.Mono
 import org.mockito.kotlin.any as kAny
 
@@ -570,6 +571,351 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Assert
         response.expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `on PUT CallForwarding on success returns OK status result`() {
+        //Assign
+        `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutCallForwardDTO(
+                always = PutCallForwardAlways(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                busy = PutCallForwardBusy(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                noAnswer = PutCallForwardNoAnswer(
+                        active = false,
+                        phoneNumber = "111",
+                        numberOfRings = 1
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/callforwarding",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+
+        //Assert
+        response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on PUT CallForwarding on success calls updateCallForwardingAlways once`() {
+        //Assign
+        `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutCallForwardDTO(
+                always = PutCallForwardAlways(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                busy = PutCallForwardBusy(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                noAnswer = PutCallForwardNoAnswer(
+                        active = false,
+                        phoneNumber = "111",
+                        numberOfRings = 1
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/callforwarding",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateCallForwardingAlways(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT CallForwarding on success calls updateCallForwardingNoAnswer once`() {
+        //Assign
+        `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutCallForwardDTO(
+                always = PutCallForwardAlways(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                busy = PutCallForwardBusy(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                noAnswer = PutCallForwardNoAnswer(
+                        active = false,
+                        phoneNumber = "111",
+                        numberOfRings = 1
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/callforwarding",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateCallForwardingNoAnswer(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT CallForwarding on success calls updateCallForwardingBusy once`() {
+        //Assign
+        `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutCallForwardDTO(
+                always = PutCallForwardAlways(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                busy = PutCallForwardBusy(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                noAnswer = PutCallForwardNoAnswer(
+                        active = false,
+                        phoneNumber = "111",
+                        numberOfRings = 1
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/callforwarding",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateCallForwardingBusy(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT CallForwarding when PutCallForwardAlways is null then never calls updateCallForwardingAlways`() {
+        //Assign
+        `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutCallForwardDTO(
+                always = null,
+                busy = PutCallForwardBusy(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                noAnswer = PutCallForwardNoAnswer(
+                        active = false,
+                        phoneNumber = "111",
+                        numberOfRings = 1
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/callforwarding",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(0)).updateCallForwardingAlways(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT CallForwarding when PutCallForwardBusy is null then never calls updateCallForwardingBusy`() {
+        //Assign
+        `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutCallForwardDTO(
+                always = PutCallForwardAlways(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                busy = null,
+                noAnswer = PutCallForwardNoAnswer(
+                        active = false,
+                        phoneNumber = "111",
+                        numberOfRings = 1
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/callforwarding",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(0)).updateCallForwardingBusy(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT CallForwarding when PutCallForwardNoAnswer is null then never calls updateCallForwardingNoAnswer`() {
+        //Assign
+        `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutCallForwardDTO(
+                always = PutCallForwardAlways(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                busy = PutCallForwardBusy(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                noAnswer = null
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/callforwarding",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(0)).updateCallForwardingNoAnswer(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT CallForwarding on success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutCallForwardDTO(
+                always = PutCallForwardAlways(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                busy = PutCallForwardBusy(
+                        active = true,
+                        phoneNumber = "111"
+                ),
+                noAnswer = PutCallForwardNoAnswer(
+                        active = false,
+                        phoneNumber = "111",
+                        numberOfRings = 1
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/callforwarding",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT CallForwarding if request is null then return Bad Request status result`() {
+        //Assign
+        `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/callforwarding",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                )
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `on PUT CallForwarding if every variable in request is null then return Ok status result`() {
+        //Assign
+        `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutCallForwardDTO(
+                always = null,
+                busy = null,
+                noAnswer = null
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/callforwarding",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+
+        //Assert
+        response.expectStatus().isOk
     }
 
 }
