@@ -24,9 +24,10 @@ interface ISettingsRepository {
     fun updatePersonalAssistant(token: String, userId: String, body: PersonalAssistant): Mono<Void>
     fun updatePAAssignedCallToNumbers(token: String, userId: String, body: AssignedCallToNumbers): Mono<Void>
     fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void>
-    fun updateExclusionNumber(token: String, userId: String, number: String, body: ExclusionNumber): Mono<Void>
+    fun updateExclusionNumber(token: String, userId: String, oldNumber: String, body: ExclusionNumber): Mono<Void>
     fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void>
     fun updateCallForwardingAlways(token: String, userId: String, body: CallForwardingAlways): Mono<Void>
     fun updateCallForwardingBusy(token: String, userId: String, body: CallForwardingBusy): Mono<Void>
     fun updateCallForwardingNoAnswer(token: String, userId: String, body: CallForwardingNoAnswer): Mono<Void>
+    fun updateSimultaneousRingPersonal(token: String, userId: String, body: SimultaneousRingPersonal): Mono<Void>
 }
