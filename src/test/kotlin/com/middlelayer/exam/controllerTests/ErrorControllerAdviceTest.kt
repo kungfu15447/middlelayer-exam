@@ -64,7 +64,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", requestBody)
+        var response = web.post("/api/user/profile/login", body = requestBody)
 
         //Assert
         response.expectStatus().isUnauthorized
@@ -85,7 +85,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", requestBody)
+        var response = web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -107,7 +107,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", requestBody)
+        var response = web.post("/api/user/profile/login", body = requestBody)
 
         //Assert
         response.expectStatus().isNotFound
@@ -128,7 +128,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", requestBody)
+        var response = web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -151,7 +151,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", requestBody)
+        var response = web.post("/api/user/profile/login", body = requestBody)
 
         //Assert
         response.expectStatus().is5xxServerError
@@ -172,7 +172,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", requestBody)
+        var response = web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -195,7 +195,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", requestBody)
+        var response = web.post("/api/user/profile/login", body = requestBody)
 
         //Assert
         response.expectStatus().isBadRequest
@@ -216,7 +216,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", requestBody)
+        var response = web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 

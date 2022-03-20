@@ -9,10 +9,13 @@ import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.helpers.WebHeader
 import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.SettingsController
+import com.middlelayer.exam.web.dto.settings.PutPersonalAssistantDTO
 import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.mockito.Mockito.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.security.reactive.ReactiveSecurityAutoConfiguration
@@ -20,6 +23,7 @@ import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.reactive.server.returnResult
 import reactor.core.publisher.Mono
 import org.mockito.kotlin.any as kAny
 
@@ -572,4 +576,230 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         response.expectStatus().isBadRequest
     }
 
+    @Test
+    fun `on PUT PersonalAssistant on success returns OK status result`() {
+        //Assign
+        `when`(settingsService.updatePersonalAssistant(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutPersonalAssistantDTO(
+                presence = "None",
+                expirationTime = null,
+                transferNumber = null,
+                transferCalls = true,
+                transferNotification = true,
+                assignedCallToNumbers = arrayListOf(
+                        "1",
+                        "2",
+                        "3"
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+
+        //Assert
+        response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on PUT PersonalAssistant on success calls updatePersonalAssistant once`() {
+        //Assign
+        `when`(settingsService.updatePersonalAssistant(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutPersonalAssistantDTO(
+                presence = "None",
+                expirationTime = null,
+                transferNumber = null,
+                transferCalls = true,
+                transferNotification = true,
+                assignedCallToNumbers = arrayListOf(
+                        "1",
+                        "2",
+                        "3"
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updatePersonalAssistant(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT PersonalAssistant on success calls updatePAAssignedCallToNumbers once`() {
+        //Assign
+        `when`(settingsService.updatePersonalAssistant(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutPersonalAssistantDTO(
+                presence = "None",
+                expirationTime = null,
+                transferNumber = null,
+                transferCalls = true,
+                transferNotification = true,
+                assignedCallToNumbers = arrayListOf(
+                        "1",
+                        "2",
+                        "3"
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT PersonalAssistant on success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updatePersonalAssistant(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutPersonalAssistantDTO(
+                presence = "None",
+                expirationTime = null,
+                transferNumber = null,
+                transferCalls = true,
+                transferNotification = true,
+                assignedCallToNumbers = arrayListOf(
+                        "1",
+                        "2",
+                        "3"
+                )
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT PersonalAssistant if assignedCallToNumbers in request is null then do not call updatePAAssignedCallToNumbers`() {
+        //Assign
+        `when`(settingsService.updatePersonalAssistant(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutPersonalAssistantDTO(
+                presence = "None",
+                expirationTime = null,
+                transferNumber = null,
+                transferCalls = true,
+                transferNotification = true,
+                assignedCallToNumbers = null
+        )
+
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+                body
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(0)).updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT PersonalAssistant if request body is null then return Bad Request status result`() {
+        //Assign
+        `when`(settingsService.updatePersonalAssistant(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        //Act
+        var response = web.put(
+                "/api/user/settings/personalassistant",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `on POST ExclusionNumber on success then return OK status result`() {
+        //Assign
+        `when`(settingsService.addExclusionNumber(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var number = "123"
+
+        //Act
+        var response = web.post(
+                "/api/user/settings/personalassistant/exclusionnumber/${number}",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+        )
+
+        //Assert
+        response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on POST ExclusionNumber on success calls addExclusionNumber once`() {
+        //Assign
+        `when`(settingsService.addExclusionNumber(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var number = "123"
+
+        //Act
+        var response = web.post(
+                "/api/user/settings/personalassistant/exclusionnumber/${number}",
+                arrayListOf(
+                        WebHeader("Authorization", "someToken"),
+                ),
+        )
+                .returnResult(String::class.java)
+                .responseBody
+                .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).addExclusionNumber(kAny(), kAny(), kAny())
+    }
 }
