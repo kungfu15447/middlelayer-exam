@@ -42,7 +42,6 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter-api")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.junit.jupiter:junit-jupiter-engine")
-	testImplementation("com.ninja-squad:springmockk:3.1.0")
 	testImplementation("org.mockito.kotlin:mockito-kotlin:4.0.0")
 }
 
