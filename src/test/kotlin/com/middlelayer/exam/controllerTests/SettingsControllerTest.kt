@@ -11,6 +11,7 @@ import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.SettingsController
 import com.middlelayer.exam.web.dto.settings.PutExclusionNumberDTO
 import com.middlelayer.exam.web.dto.settings.PutPersonalAssistantDTO
+import com.middlelayer.exam.web.dto.settings.PutRemoteOfficeDTO
 import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -578,31 +579,195 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
+    fun `on PUT RemoteOffice success return OK status result`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = "111"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/remoteoffice",arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+
+        //Assert
+        response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on PUT RemoteOffice on success calls updateRemoteOffice once`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = "111"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateRemoteOffice(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT RemoteOffice on success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = "111"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT RemoteOffice with empty number in body returns Bad Request status result`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = ""
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/remoteoffice",arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `on PUT RemoteOffice with empty number does not call updateRemoteOffice`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = ""
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+
+        //Assert
+        verify(settingsService, times(0)).updateRemoteOffice(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT RemoteOffice with empty number does not call getClaimsFromJWTToken`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = ""
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(authService, times(0)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT RemoteOffice with empty body returns Bad Request status result`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/personalassistant/exclusionnumber",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
+    @Test
     fun `on PUT PersonalAssistant on success returns OK status result`() {
         //Assign
         `when`(settingsService.updatePersonalAssistant(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         `when`(settingsService.updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
         var body = PutPersonalAssistantDTO(
-                presence = "None",
-                expirationTime = null,
-                transferNumber = null,
-                transferCalls = true,
-                transferNotification = true,
-                assignedCallToNumbers = arrayListOf(
-                        "1",
-                        "2",
-                        "3"
-                )
+            presence = "None",
+            expirationTime = null,
+            transferNumber = null,
+            transferCalls = true,
+            transferNotification = true,
+            assignedCallToNumbers = arrayListOf(
+                "1",
+                "2",
+                "3"
+            )
         )
+
 
         //Act
         var response = web.put(
-                "/api/user/settings/personalassistant",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken"),
-                ),
-                body
+            "/api/user/settings/personalassistant",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
         )
 
         //Assert
@@ -626,7 +791,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
                         "2",
                         "3"
                 )
-        )
+    )
 
         //Act
         var response = web.put(
@@ -667,13 +832,13 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         var response = web.put(
                 "/api/user/settings/personalassistant",
                 arrayListOf(
-                        WebHeader("Authorization", "someToken"),
+                        WebHeader("Authorization", "someToken")
                 ),
                 body
         )
-                .returnResult(String::class.java)
-                .responseBody
-                .blockFirst()
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
 
         //Assert
         verify(settingsService, times(1)).updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())
@@ -731,15 +896,13 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-                "/api/user/settings/personalassistant",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken"),
-                ),
-                body
+            "/api/user/settings/personalassistant",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
         )
-                .returnResult(String::class.java)
-                .responseBody
-                .blockFirst()
+
 
         //Assert
         verify(settingsService, times(0)).updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())
@@ -950,18 +1113,18 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-                "/api/user/settings/personalassistant/exclusionnumber",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken"),
-                ),
-                body
+            "/api/user/settings/personalassistant/exclusionnumber",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
         )
-                .returnResult(String::class.java)
-                .responseBody
-                .blockFirst()
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
 
         //Assert
-        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+        verify(authService, times(0)).getClaimsFromJWTToken(kAny())
     }
 
     @ParameterizedTest
@@ -1009,15 +1172,15 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-                "/api/user/settings/personalassistant/exclusionnumber",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken"),
-                ),
-                body
+            "/api/user/settings/personalassistant/exclusionnumber",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
         )
-                .returnResult(String::class.java)
-                .responseBody
-                .blockFirst()
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
 
         //Assert
         verify(settingsService, times(0)).updateExclusionNumber(kAny(), kAny(), kAny(), kAny())
@@ -1058,18 +1221,16 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     fun `on PUT ExclusionNumber with empty body then returns Bad Request status result`() {
         //Assign
         `when`(settingsService.updateExclusionNumber(kAny(), kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
 
         //Act
         var response = web.put(
-                "/api/user/settings/personalassistant/exclusionnumber",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken"),
-                ),
+            "/api/user/settings/personalassistant/exclusionnumber",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
         )
 
         //Assert
         response.expectStatus().isBadRequest
     }
-
 }

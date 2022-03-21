@@ -5,6 +5,7 @@ import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
+import com.middlelayer.exam.web.dto.settings.PutRemoteOfficeDTO
 import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
 import com.middlelayer.exam.web.dto.settings.PutExclusionNumberDTO
 import com.middlelayer.exam.web.dto.settings.PutPersonalAssistantDTO
@@ -281,4 +282,20 @@ class SettingsController {
             Mono.just(ResponseEntity(HttpStatus.OK))
         }
     }
+
+    @PutMapping("/remoteoffice")
+    fun updateRemoteOffice(@RequestHeader("Authorization") token: String, @RequestBody body: PutRemoteOfficeDTO): Mono<ResponseEntity<Any>> {
+        if (body.remoteOfficeNumber.isNullOrEmpty()) {
+            return Mono.just(ResponseEntity("Remote office number cannot be empty or null!", HttpStatus.BAD_REQUEST))
+        }
+        var claims = authService.getClaimsFromJWTToken(token)
+        var remoteOffice = RemoteOffice(
+            body.active,
+            body.remoteOfficeNumber
+        )
+        return settingsService
+                .updateRemoteOffice(claims.basicToken, claims.profileObj.userId, remoteOffice)
+                .then(Mono.just(ResponseEntity(HttpStatus.OK)))
+    }
+
 }
