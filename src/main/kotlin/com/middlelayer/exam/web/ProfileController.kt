@@ -28,7 +28,8 @@ class ProfileController {
     fun getProfile(@RequestBody loginDTO: LoginDTO) : Mono<ResponseEntity<Any>> {
         if (!loginDTO.username.isNullOrEmpty() && !loginDTO.password.isNullOrEmpty()) {
             val basicAuthToken = authService.createBasicAuthToken(loginDTO.username, loginDTO.password)
-            val profile = profileService.getProfile(basicAuthToken, loginDTO.username)
+            val credentials = authService.getCredentialsFromBasicToken(basicAuthToken)
+            val profile = profileService.getProfile(basicAuthToken, credentials.username)
 
             val response = profile.flatMap { profile ->
                 val userId = profile.details.userId ?: ""

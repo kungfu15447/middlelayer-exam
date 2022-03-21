@@ -1,16 +1,20 @@
 package com.middlelayer.exam.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.middlelayer.exam.core.exceptions.UnauthorizedException
 import com.middlelayer.exam.core.interfaces.service.IAuthService
+import com.middlelayer.exam.core.models.auth.BasicTokenObject
 import com.middlelayer.exam.core.models.auth.ProfileTokenObject
 import com.middlelayer.exam.core.models.auth.TokenClaimsObject
 import com.middlelayer.exam.core.models.xsi.Profile
-import com.middlelayer.exam.core.models.xsi.Service as xsiService
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException.Unauthorized
+import java.nio.charset.StandardCharsets
 import java.util.*
+import com.middlelayer.exam.core.models.xsi.Service as xsiService
 
 @Service
 class AuthService : IAuthService {
@@ -62,6 +66,21 @@ class AuthService : IAuthService {
             return TokenClaimsObject(services, profile, basicToken)
         } catch(ex: Exception) {
             throw ex
+        }
+    }
+
+    override fun getCredentialsFromBasicToken(token: String): BasicTokenObject {
+        try {
+            val base64Credentials: String = token.substring(6)
+            val credDecoded = Base64.getDecoder().decode(base64Credentials)
+            val credentials = String(credDecoded, StandardCharsets.UTF_8)
+            val values = credentials.split(":")
+            return BasicTokenObject(
+                    username = values[0],
+                    password = values[1]
+            )
+        } catch(ex: Exception) {
+            throw UnauthorizedException("Could not decode basic token")
         }
     }
 

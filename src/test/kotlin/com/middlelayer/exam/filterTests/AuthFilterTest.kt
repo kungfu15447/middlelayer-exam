@@ -201,7 +201,7 @@ class AuthFilterTest {
         filter.doFilter(req, res, chain)
 
         //Assert
-        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+        verify(authService, times(0)).getClaimsFromJWTToken(kAny())
     }
 
     @Test

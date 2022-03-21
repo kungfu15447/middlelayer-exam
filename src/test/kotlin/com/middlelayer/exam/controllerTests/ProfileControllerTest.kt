@@ -2,6 +2,7 @@ package com.middlelayer.exam.controllerTests
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IProfileService
+import com.middlelayer.exam.core.models.auth.BasicTokenObject
 import com.middlelayer.exam.core.models.xsi.Profile
 import com.middlelayer.exam.core.models.xsi.Service
 import com.middlelayer.exam.helpers.WebTestHelper
@@ -163,6 +164,34 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         verify(authService, times(0)).register(kAny(), kAny(), kAny())
     }
 
+    @ParameterizedTest
+    @CsvSource(
+            ",",
+            "'',''",
+            "username,",
+            ",password",
+    )
+    fun `on Login with invalid body never calls getCredentialsFromBasicToken`(username: String?, password: String?) {
+        //Assign
+        val requestBody = LoginDTO(username, password)
+        val profile = Profile()
+        val services = ArrayList<Service>()
+
+        `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
+        `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
+        `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(kAny())).thenReturn(BasicTokenObject("username", "password"))
+
+        //Act
+        web.post("/api/user/profile/login", body = requestBody)
+                .returnResult(String::class.java)
+                .responseBody.blockFirst()
+
+        //Assert
+        verify(authService, times(0)).getCredentialsFromBasicToken(kAny())
+    }
+
     @Test
     fun `on Login success returns OK status`() {
         //Assign
@@ -174,6 +203,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(kAny())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         val response = web.post("/api/user/profile/login", body = requestBody)
@@ -193,6 +223,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(kAny())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         web.post("/api/user/profile/login", body = requestBody)
@@ -214,6 +245,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(kAny())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         web.post("/api/user/profile/login", body = requestBody)
@@ -235,6 +267,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(kAny())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         web.post("/api/user/profile/login", body = requestBody)
@@ -243,6 +276,28 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Assert
         verify(authService, times(2)).createBasicAuthToken(kAny(), kAny())
+    }
+
+    @Test
+    fun `on Login success calls getCredentialsFromBasicToken once`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val profile = Profile()
+        val services = ArrayList<Service>()
+
+        `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
+        `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
+        `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(kAny())).thenReturn(BasicTokenObject("username", "password"))
+
+        //Act
+        web.post("/api/user/profile/login", body = requestBody)
+                .returnResult(String::class.java)
+                .responseBody.blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getCredentialsFromBasicToken(kAny())
     }
 
     @Test
@@ -256,6 +311,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(kAny())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         web.post("/api/user/profile/login", body = requestBody)

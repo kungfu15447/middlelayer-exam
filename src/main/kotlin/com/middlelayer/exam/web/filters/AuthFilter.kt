@@ -23,7 +23,6 @@ class AuthFilter : GenericFilterBean {
     @Autowired
     constructor(env: Environment, authService: IAuthService) {
         this.authService = authService
-        secretKey = env.getProperty("jwt.secret.key", "")
         whitelistedUrls = OrRequestMatcher(
             AntPathRequestMatcher("/api/user/profile/login"),
             AntPathRequestMatcher("/v3/api-docs/**"),
