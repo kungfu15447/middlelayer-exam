@@ -1,6 +1,7 @@
 package com.middlelayer.exam.web.filters
 
 import com.middlelayer.exam.core.interfaces.service.IAuthService
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
@@ -49,9 +50,11 @@ class AuthFilter : GenericFilterBean {
 
         try {
             token = token.substring(7)
-            var claimsObject = authService.getClaimsFromJWTToken(token)
+            authService.getClaimsFromJWTToken(token)
         } catch(ex: JwtException) {
             res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Could not decrypt token with secret key. Unauthorized access")
+        } catch(ex: ExpiredJwtException) {
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token was too old. Unauthorized access")
         }
 
         chain?.doFilter(req, res)
