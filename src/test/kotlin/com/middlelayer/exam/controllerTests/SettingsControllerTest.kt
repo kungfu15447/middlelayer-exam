@@ -177,7 +177,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success return OK status result`() {
+    fun `on GET Settings success return OK status result`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -193,7 +193,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getCallForwardingAlways once`() {
+    fun `on GET Settings success calls getCallForwardingAlways once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -211,7 +211,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getCallForwardingBusy once`() {
+    fun `on GET Settings success calls getCallForwardingBusy once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -229,7 +229,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getCallForwardingNoAnswer once`() {
+    fun `on GET Settings success calls getCallForwardingNoAnswer once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -247,7 +247,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getPersonalAssistant once`() {
+    fun `on GET Settings success calls getPersonalAssistant once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -265,7 +265,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getNumberDisplay once`() {
+    fun `on GET Settings success calls getNumberDisplay once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -283,7 +283,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getDoNotDisturb once`() {
+    fun `on GET Settings success calls getDoNotDisturb once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -301,7 +301,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getNumberDisplayStatus once`() {
+    fun `on GET Settings success calls getNumberDisplayStatus once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -319,7 +319,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getPAAssignedCallToNumbers once`() {
+    fun `on GET Settings success calls getPAAssignedCallToNumbers once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -337,7 +337,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getPAAvailableCallToNumbers once`() {
+    fun `on GET Settings success calls getPAAvailableCallToNumbers once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -355,7 +355,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getPAExclusionNumbers once`() {
+    fun `on GET Settings success calls getPAExclusionNumbers once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -373,7 +373,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getPushNotification once`() {
+    fun `on GET Settings success calls getPushNotification once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -391,7 +391,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getRemoteOffice once`() {
+    fun `on GET Settings success calls getRemoteOffice once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -409,7 +409,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getVoiceMessagingGreeting once`() {
+    fun `on GET Settings success calls getVoiceMessagingGreeting once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -427,7 +427,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getSimultaneousRing once`() {
+    fun `on GET Settings success calls getSimultaneousRing once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -445,7 +445,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getVoiceMessaging once`() {
+    fun `on GET Settings success calls getVoiceMessaging once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -463,7 +463,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on get Settings success calls getClaimsFromJWTToken once`() {
+    fun `on GET Settings success calls getClaimsFromJWTToken once`() {
         //Assign
         getSettingsMockSetup()
         getClaimsMockSetup()
@@ -598,6 +598,76 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
+    fun `on PUT DoNotDisturb success calls updateDoNotDisturb once`() {
+        //Assign
+        `when`(settingsService.updateDoNotDisturb(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        val body = PutDoNotDisturbDTO(
+            active = false,
+            ringSplash = false,
+        )
+
+        //Act
+        web.put(
+            "/api/user/settings/donotdisturb",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateDoNotDisturb(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT DoNotDisturb success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updateDoNotDisturb(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        val body = PutDoNotDisturbDTO(
+            active = false,
+            ringSplash = false,
+        )
+
+        //Act
+        web.put(
+            "/api/user/settings/donotdisturb",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT DoNotDisturb on empty body returns Bad Request Status Result`() {
+        //Assign
+        `when`(settingsService.updateDoNotDisturb(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+
+        //Act
+        val response = web.put(
+            "/api/user/settings/donotdisturb",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
+    @Test
     fun `on PUT RemoteOffice success return OK status result`() {
         //Assign
         `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
@@ -618,6 +688,150 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Assert
         response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on PUT RemoteOffice on success calls updateRemoteOffice once`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        val body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = "111"
+        )
+
+        //Act
+        web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateRemoteOffice(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT RemoteOffice on success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        val body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = "111"
+        )
+
+        //Act
+        web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT RemoteOffice with empty number in body returns Bad Request status result`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        val body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = ""
+        )
+
+        //Act
+        val response = web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `on PUT RemoteOffice with empty number does not call updateRemoteOffice`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        val body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = ""
+        )
+
+        //Act
+        web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(settingsService, times(0)).updateRemoteOffice(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT RemoteOffice with empty number does not call getClaimsFromJWTToken`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        val body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = ""
+        )
+
+        //Act
+        web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(authService, times(0)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT RemoteOffice with empty body returns Bad Request status result`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+
+        //Act
+        val response = web.put(
+            "/api/user/settings/personalassistant/exclusionnumber",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
     }
 
     @Test
@@ -696,58 +910,6 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on PUT DoNotDisturb success calls updateDoNotDisturb once`() {
-        //Assign
-        `when`(settingsService.updateDoNotDisturb(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-        val body = PutDoNotDisturbDTO(
-            active = false,
-            ringSplash = false,
-        )
-
-        //Act
-        web.put(
-            "/api/user/settings/donotdisturb",
-            arrayListOf(
-                WebHeader("Authorization", "someToken"),
-            ),
-            body
-        )
-            .returnResult(String::class.java)
-            .responseBody
-            .blockFirst()
-
-        //Assert
-        verify(settingsService, times(1)).updateDoNotDisturb(kAny(), kAny(), kAny())
-    }
-
-    @Test
-    fun `on PUT RemoteOffice on success calls updateRemoteOffice once`() {
-        //Assign
-        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-        val body = PutRemoteOfficeDTO(
-            active = false,
-            remoteOfficeNumber = "111"
-        )
-
-        //Act
-        web.put(
-            "/api/user/settings/remoteoffice",
-        arrayListOf(
-            WebHeader("Authorization", "someToken")
-        ),
-        body
-        )
-        .returnResult(String::class.java)
-            .responseBody
-            .blockFirst()
-
-        //Assert
-        verify(settingsService, times(1)).updateRemoteOffice(kAny(), kAny(), kAny())
-    }
-
-    @Test
     fun `on PUT CallForwarding on success calls updateCallForwardingNoAnswer once`() {
         //Assign
         `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
@@ -784,32 +946,6 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Assert
         verify(settingsService, times(1)).updateCallForwardingNoAnswer(kAny(), kAny(), kAny())
-    }
-
-    @Test
-    fun `on PUT RemoteOffice on success calls getClaimsFromJWTToken once`() {
-        //Assign
-        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-        val body = PutRemoteOfficeDTO(
-            active = false,
-            remoteOfficeNumber = "111"
-        )
-
-        //Act
-        web.put(
-            "/api/user/settings/remoteoffice",
-            arrayListOf(
-                WebHeader("Authorization", "someToken")
-            ),
-            body
-        )
-            .returnResult(String::class.java)
-            .responseBody
-            .blockFirst()
-
-        //Assert
-        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
     }
 
     @Test
@@ -886,80 +1022,6 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     }
 
     @Test
-    fun `on PUT RemoteOffice with empty number in body returns Bad Request status result`() {
-        //Assign
-        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-        val body = PutRemoteOfficeDTO(
-            active = false,
-            remoteOfficeNumber = ""
-        )
-
-        //Act
-        val response = web.put(
-            "/api/user/settings/remoteoffice",
-            arrayListOf(
-                WebHeader("Authorization", "someToken")
-            ),
-            body
-        )
-
-        //Assert
-        response.expectStatus().isBadRequest
-    }
-
-    @Test
-    fun `on PUT RemoteOffice with empty number does not call updateRemoteOffice`() {
-        //Assign
-        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-        val body = PutRemoteOfficeDTO(
-            active = false,
-            remoteOfficeNumber = ""
-        )
-
-        //Act
-        web.put(
-            "/api/user/settings/remoteoffice",
-            arrayListOf(
-                WebHeader("Authorization", "someToken")
-            ),
-            body
-        )
-            .returnResult(String::class.java)
-            .responseBody.blockFirst()
-
-        //Assert
-        verify(settingsService, times(0)).updateRemoteOffice(kAny(), kAny(), kAny())
-    }
-
-    @Test
-    fun `on PUT DoNotDisturb success calls getClaimsFromJWTToken once`() {
-        //Assign
-        `when`(settingsService.updateDoNotDisturb(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-        val body = PutDoNotDisturbDTO(
-            active = false,
-            ringSplash = false,
-        )
-
-        //Act
-        web.put(
-            "/api/user/settings/donotdisturb",
-            arrayListOf(
-                WebHeader("Authorization", "someToken"),
-            ),
-            body
-        )
-            .returnResult(String::class.java)
-            .responseBody
-            .blockFirst()
-
-        //Assert
-        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
-    }
-
-    @Test
     fun `on PUT CallForwarding when PutCallForwardBusy is null then never calls updateCallForwardingBusy`() {
         //Assign
         `when`(settingsService.updateCallForwardingAlways(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
@@ -1028,50 +1090,6 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Assert
         verify(settingsService, times(0)).updateCallForwardingNoAnswer(kAny(), kAny(), kAny())
-    }
-
-    @Test
-    fun `on PUT RemoteOffice with empty number does not call getClaimsFromJWTToken`() {
-        //Assign
-        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-        val body = PutRemoteOfficeDTO(
-            active = false,
-            remoteOfficeNumber = ""
-        )
-
-        //Act
-        web.put(
-            "/api/user/settings/remoteoffice",
-            arrayListOf(
-                WebHeader("Authorization", "someToken")
-            ),
-            body
-        )
-            .returnResult(String::class.java)
-            .responseBody
-            .blockFirst()
-
-        //Assert
-        verify(authService, times(0)).getClaimsFromJWTToken(kAny())
-    }
-
-    @Test
-    fun `on PUT RemoteOffice with empty body returns Bad Request status result`() {
-        //Assign
-        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-
-        //Act
-        val response = web.put(
-            "/api/user/settings/personalassistant/exclusionnumber",
-            arrayListOf(
-                WebHeader("Authorization", "someToken"),
-            ),
-        )
-
-        //Assert
-        response.expectStatus().isBadRequest
     }
 
     @Test
@@ -1509,24 +1527,6 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Assert
         verify(authService, times(1)).getClaimsFromJWTToken(kAny())
-    }
-
-    @Test
-    fun `on PUT DoNotDisturb on empty body returns Bad Request Status Result`() {
-        //Assign
-        `when`(settingsService.updateDoNotDisturb(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-
-        //Act
-        val response = web.put(
-            "/api/user/settings/donotdisturb",
-            arrayListOf(
-                WebHeader("Authorization", "someToken"),
-            ),
-        )
-
-        //Assert
-        response.expectStatus().isBadRequest
     }
 
     @Test
