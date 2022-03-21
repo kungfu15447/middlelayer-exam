@@ -6,6 +6,7 @@ import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.core.models.xsi.AssignedCallToNumbers
 import com.middlelayer.exam.core.models.xsi.ExclusionNumber
 import com.middlelayer.exam.core.models.xsi.PersonalAssistant
+import com.middlelayer.exam.core.models.xsi.RemoteOffice
 import com.middlelayer.exam.core.models.xsi.SimultaneousRingPersonal
 import reactor.core.publisher.Mono
 
@@ -32,5 +33,6 @@ interface ISettingsService {
     fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void>
     fun updateHideNumberStatus(token: String, userId: String, body: NumberDisplayHidden): Mono<Void>
     fun updateNumberPresentationStatus(token: String, userId: String, status: PresentationStatusEnum): Mono<Void>
+    fun updateRemoteOffice(token: String, userId: String, body: RemoteOffice): Mono<Void>
     fun updateSimultaneousRingPersonal(token: String, userId: String, body: SimultaneousRingPersonal): Mono<Void>
 }

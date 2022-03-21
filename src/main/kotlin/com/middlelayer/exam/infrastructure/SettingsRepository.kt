@@ -215,6 +215,11 @@ class SettingsRepository : ISettingsRepository {
         val response = imsClient.put("/nef/clid/user/${userId}/service/mobile", token)
         return response.then()
     }
+    override fun updateRemoteOffice(token: String, userId: String, body: RemoteOffice): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/remoteoffice", token, xmlBody)
+        return response.then()
+    }
 
     override fun updateSimultaneousRingPersonal(
         token: String,
