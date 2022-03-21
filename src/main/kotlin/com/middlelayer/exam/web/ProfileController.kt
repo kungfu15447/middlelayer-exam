@@ -27,9 +27,8 @@ class ProfileController {
     @PostMapping("/login")
     fun getProfile(@RequestBody loginDTO: LoginDTO) : Mono<ResponseEntity<Any>> {
         if (!loginDTO.username.isNullOrEmpty() && !loginDTO.password.isNullOrEmpty()) {
-            val formattedUsername = formatUsername(loginDTO.username)
-            val basicAuthToken = authService.createBasicAuthToken(formattedUsername, loginDTO.password)
-            val profile = profileService.getProfile(basicAuthToken, formattedUsername)
+            val basicAuthToken = authService.createBasicAuthToken(loginDTO.username, loginDTO.password)
+            val profile = profileService.getProfile(basicAuthToken, loginDTO.username)
 
             val response = profile.flatMap { profile ->
                 val userId = profile.details.userId ?: ""
@@ -44,18 +43,5 @@ class ProfileController {
         } else {
             return Mono.just(ResponseEntity("Username and/or password cannot be null or empty", HttpStatus.BAD_REQUEST))
         }
-    }
-
-    private fun formatUsername(username: String): String {
-        var formattedUserName = username
-            .replace("+45", "")
-            .replace(" ", "")
-
-        //Is username numeric?
-        if (formattedUserName.matches(Regex("[0-9]+"))) {
-            formattedUserName = "PA_45$formattedUserName"
-        }
-
-        return formattedUserName
     }
 }

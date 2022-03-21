@@ -44,7 +44,8 @@ class AuthService : IAuthService {
     }
 
     override fun createBasicAuthToken(user: String, password: String): String {
-        val auth = "${user}:${password}"
+        val formattedUserName = formatUsername(user)
+        val auth = "${formattedUserName}:${password}"
         return "Basic ${Base64.getEncoder().encodeToString(auth.toByteArray())}"
     }
 
@@ -62,5 +63,18 @@ class AuthService : IAuthService {
         } catch(ex: Exception) {
             throw ex
         }
+    }
+
+    private fun formatUsername(username: String): String {
+        var formattedUserName = username
+                .replace("+45", "")
+                .replace(" ", "")
+
+        //Is username numeric?
+        if (formattedUserName.matches(Regex("[0-9]+"))) {
+            formattedUserName = "PA_45$formattedUserName"
+        }
+
+        return formattedUserName
     }
 }
