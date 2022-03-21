@@ -233,13 +233,13 @@ class SettingsController {
         @RequestHeader("Authorization") token: String,
         @RequestBody body: PutExclusionNumberDTO
     ): Mono<ResponseEntity<Any>> {
-        val claims = authService.getClaimsFromJWTToken(token)
-        val userId = claims.profileObj.userId
-        val basicToken = claims.basicToken
-
         if (body.newNumber.isNullOrEmpty() || body.oldNumber.isNullOrEmpty()) {
             return Mono.just(ResponseEntity("New and/or old number cannot be null or empty", HttpStatus.BAD_REQUEST))
         }
+
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
 
         val exclusionNumber = ExclusionNumber(
             body.newNumber
