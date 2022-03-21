@@ -858,7 +858,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
-        var body = PutCallForwardDTO(
+        val body = PutCallForwardDTO(
                 always = null,
                 busy = PutCallForwardBusy(
                         active = true,
@@ -966,7 +966,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
-        var body = PutCallForwardDTO(
+        val body = PutCallForwardDTO(
                 always = PutCallForwardAlways(
                         active = true,
                         phoneNumber = "111"
@@ -980,7 +980,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         )
 
         //Act
-        var response = web.put(
+        web.put(
                 "/api/user/settings/callforwarding",
                 arrayListOf(
                         WebHeader("Authorization", "someToken"),
@@ -1002,7 +1002,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
-        var body = PutCallForwardDTO(
+        val body = PutCallForwardDTO(
                 always = PutCallForwardAlways(
                         active = true,
                         phoneNumber = "111"
@@ -1015,7 +1015,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         )
 
         //Act
-        var response = web.put(
+        web.put(
             "/api/user/settings/callforwarding",
             arrayListOf(
                 WebHeader("Authorization", "someToken"),
@@ -1081,7 +1081,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
-        var body = PutCallForwardDTO(
+        val body = PutCallForwardDTO(
                 always = PutCallForwardAlways(
                         active = true,
                         phoneNumber = "111"
@@ -1098,7 +1098,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         )
 
         //Act
-        var response = web.put(
+        web.put(
             "/api/user/settings/callforwarding",
             arrayListOf(
                 WebHeader("Authorization", "someToken"),
@@ -1122,7 +1122,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         getClaimsMockSetup()
 
         //Act
-        var response = web.put(
+        val response = web.put(
                 "/api/user/settings/callforwarding",
                 arrayListOf(
                         WebHeader("Authorization", "someToken"),
@@ -1140,14 +1140,14 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateCallForwardingBusy(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         `when`(settingsService.updateCallForwardingNoAnswer(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
-        var body = PutCallForwardDTO(
+        val body = PutCallForwardDTO(
                 always = null,
                 busy = null,
                 noAnswer = null
         )
 
         //Act
-        var response = web.put(
+        val response = web.put(
                 "/api/user/settings/callforwarding",
                 arrayListOf(
                         WebHeader("Authorization", "someToken"),
