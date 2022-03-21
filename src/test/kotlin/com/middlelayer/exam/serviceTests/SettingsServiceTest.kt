@@ -1,6 +1,7 @@
 package com.middlelayer.exam.serviceTests
 
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
+import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.ims.*
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.service.SettingsService
@@ -24,7 +25,7 @@ class SettingsServiceTest(@Autowired val settingsService: SettingsService) {
         `when`(settingsRepo.getCallForwardingAlways(kAny(), kAny())).thenReturn(
                 Mono.just(
                         CallForwardingAlways(
-                                active =false,
+                                active = false,
                                 forwardToPhoneNumber = ""
                         )
                 )
@@ -113,7 +114,7 @@ class SettingsServiceTest(@Autowired val settingsService: SettingsService) {
                 Mono.just(
                         MWIDeliveryToMobileEndpoint(
                                 active = false,
-                                mobilePhoneNumber = "MobilePhoneNumber"
+                                mobilePhoneNumber = ""
                         )
                 )
         )
@@ -130,7 +131,7 @@ class SettingsServiceTest(@Autowired val settingsService: SettingsService) {
         `when`(settingsRepo.getVoiceMessagingGreeting(kAny(), kAny())).thenReturn(
                 Mono.just(
                         VoiceMessagingGreeting(
-                               noAnswerNumberOfRings = 5
+                               noAnswerNumberOfRings = 0
                         )
                 )
         )
@@ -380,6 +381,7 @@ class SettingsServiceTest(@Autowired val settingsService: SettingsService) {
         //Assert
         verify(settingsRepo, times(1)).updatePresentationToMobile(kAny(), kAny())
     }
+
 
     @Test
     fun `on updateNumberPresentationStatus with MOBILE param does not call updatePresentationToBusiness`() {
