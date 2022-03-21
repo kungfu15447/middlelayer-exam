@@ -2,7 +2,6 @@ package com.middlelayer.exam.web.filters
 
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import io.jsonwebtoken.JwtException
-import io.jsonwebtoken.Jwts
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpServletResponse
 
 class AuthFilter : GenericFilterBean {
 
-    private var whitelisted_urls: RequestMatcher
+    private var whitelistedUrls: RequestMatcher
     private var secretKey: String = ""
     private var authService: IAuthService
 
@@ -25,7 +24,7 @@ class AuthFilter : GenericFilterBean {
     constructor(env: Environment, authService: IAuthService) {
         this.authService = authService
         secretKey = env.getProperty("jwt.secret.key", "")
-        whitelisted_urls = OrRequestMatcher(
+        whitelistedUrls = OrRequestMatcher(
             AntPathRequestMatcher("/api/user/profile/login"),
             AntPathRequestMatcher("/v3/api-docs/**"),
             AntPathRequestMatcher("/swagger-ui/**"),
@@ -37,7 +36,7 @@ class AuthFilter : GenericFilterBean {
         var req = request as HttpServletRequest
         var res = response as HttpServletResponse
 
-        if (whitelisted_urls.matches(req)) {
+        if (whitelistedUrls.matches(req)) {
             chain?.doFilter(req, res)
             return
         }
