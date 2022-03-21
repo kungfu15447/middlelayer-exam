@@ -31,6 +31,9 @@ interface ISettingsService {
     fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void>
     fun updateExclusionNumber(token: String, userId: String, oldNumber: String, body: ExclusionNumber): Mono<Void>
     fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void>
+    fun updateCallForwardingAlways(token: String, userId: String, body: CallForwardingAlways): Mono<Void>
+    fun updateCallForwardingBusy(token: String, userId: String, body: CallForwardingBusy): Mono<Void>
+    fun updateCallForwardingNoAnswer(token: String, userId: String, body: CallForwardingNoAnswer): Mono<Void>
     fun updateHideNumberStatus(token: String, userId: String, body: NumberDisplayHidden): Mono<Void>
     fun updateNumberPresentationStatus(token: String, userId: String, status: PresentationStatusEnum): Mono<Void>
     fun updateRemoteOffice(token: String, userId: String, body: RemoteOffice): Mono<Void>
