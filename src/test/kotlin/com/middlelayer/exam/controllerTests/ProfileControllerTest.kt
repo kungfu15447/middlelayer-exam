@@ -2,8 +2,6 @@ package com.middlelayer.exam.controllerTests
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IProfileService
-import com.middlelayer.exam.core.models.domain.DProfile
-import com.middlelayer.exam.core.models.domain.DService
 import com.middlelayer.exam.core.models.xsi.Profile
 import com.middlelayer.exam.core.models.xsi.Service
 import com.middlelayer.exam.helpers.WebTestHelper

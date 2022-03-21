@@ -6,7 +6,6 @@ import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.ims.PresentationStatusEnum
 import com.middlelayer.exam.core.models.xsi.*
-import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -132,7 +131,7 @@ class SettingsService : ISettingsService {
     }
 
     override fun updatePAAssignedCallToNumbers(token: String, userId: String, body: AssignedCallToNumbers): Mono<Void> {
-        return settingsRepo.updatePAAssignedCallToNumbers(token, userId, body);
+        return settingsRepo.updatePAAssignedCallToNumbers(token, userId, body)
     }
 
     override fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void> {
