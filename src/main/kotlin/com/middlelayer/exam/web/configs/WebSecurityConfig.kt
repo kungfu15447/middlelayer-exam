@@ -18,12 +18,10 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @EnableWebSecurity()
 class WebSecurityConfig : WebSecurityConfigurerAdapter {
 
-    private var env: Environment
     private var authService: IAuthService
 
     @Autowired
-    constructor(env: Environment, authService: IAuthService) {
-        this.env = env
+    constructor(authService: IAuthService) {
         this.authService = authService
     }
 
@@ -36,7 +34,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter {
             ?.csrf()?.disable()
             ?.cors()?.configurationSource(setCors())
             ?.and()
-            ?.addFilterAfter(AuthFilter(env, authService), BasicAuthenticationFilter::class.java)
+            ?.addFilterAfter(AuthFilter(authService), BasicAuthenticationFilter::class.java)
             ?.httpBasic()?.disable()
     }
 

@@ -1,10 +1,7 @@
 package com.middlelayer.exam.web.filters
 
 import com.middlelayer.exam.core.interfaces.service.IAuthService
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.JwtException
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.core.env.Environment
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.security.web.util.matcher.OrRequestMatcher
 import org.springframework.security.web.util.matcher.RequestMatcher
@@ -18,11 +15,10 @@ import javax.servlet.http.HttpServletResponse
 class AuthFilter : GenericFilterBean {
 
     private var whitelistedUrls: RequestMatcher
-    private var secretKey: String = ""
     private var authService: IAuthService
 
     @Autowired
-    constructor(env: Environment, authService: IAuthService) {
+    constructor(authService: IAuthService) {
         this.authService = authService
         whitelistedUrls = OrRequestMatcher(
             AntPathRequestMatcher("/api/user/profile/login"),
@@ -51,10 +47,8 @@ class AuthFilter : GenericFilterBean {
         try {
             token = token.substring(7)
             authService.getClaimsFromJWTToken(token)
-        } catch(ex: JwtException) {
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Could not decrypt token with secret key. Unauthorized access")
-        } catch(ex: ExpiredJwtException) {
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token was too old. Unauthorized access")
+        } catch(ex: Exception) {
+            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token. Unauthorized access")
         }
 
         chain?.doFilter(req, res)

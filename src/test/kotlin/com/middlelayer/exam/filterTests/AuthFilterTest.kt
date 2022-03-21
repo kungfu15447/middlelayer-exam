@@ -4,6 +4,7 @@ import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.models.auth.ProfileTokenObject
 import com.middlelayer.exam.core.models.auth.TokenClaimsObject
 import com.middlelayer.exam.web.filters.AuthFilter
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import org.aspectj.lang.annotation.Before
 import org.junit.jupiter.api.BeforeEach
@@ -36,7 +37,7 @@ class AuthFilterTest {
 
     @BeforeEach
     fun init() {
-        filter = AuthFilter(MockEnvironment(), authService)
+        filter = AuthFilter(authService)
     }
 
     @Test
@@ -258,7 +259,7 @@ class AuthFilterTest {
     fun `on AuthFilter when token could not be parsed then return Unauthorized status result`() {
         //Assign
         `when`(authService.getClaimsFromJWTToken(kAny())).thenThrow(
-                JwtException("Something went wrong with the token")
+                Exception("Something went wrong with the token")
         )
         val req = MockHttpServletRequest()
         req.addHeader("Authorization", "Bearer someToken")
@@ -276,7 +277,7 @@ class AuthFilterTest {
     fun `on AuthFilter when token could not be parsed then return correct error message`() {
         //Assign
         `when`(authService.getClaimsFromJWTToken(kAny())).thenThrow(
-                JwtException("Something went wrong with the token")
+                Exception("Something went wrong with the token")
         )
         val req = MockHttpServletRequest()
         req.addHeader("Authorization", "Bearer someToken")
@@ -294,7 +295,7 @@ class AuthFilterTest {
     fun `on AuthFilter when token could not be parsed should still have called getClaimsFromJWTToken once`() {
         //Assign
         `when`(authService.getClaimsFromJWTToken(kAny())).thenThrow(
-                JwtException("Something went wrong with the token")
+                Exception("Something went wrong with the token")
         )
         val req = MockHttpServletRequest()
         req.addHeader("Authorization", "Bearer someToken")
