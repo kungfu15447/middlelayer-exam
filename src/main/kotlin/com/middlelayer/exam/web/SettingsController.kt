@@ -3,7 +3,10 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
+import com.middlelayer.exam.core.models.ims.stringToPresentationStatusEnum
 import com.middlelayer.exam.core.models.xsi.*
+import com.middlelayer.exam.core.models.xsi.PersonalAssistant
+import com.middlelayer.exam.web.dto.settings.*
 import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
 import com.middlelayer.exam.web.dto.settings.PutRemoteOfficeDTO
 import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
@@ -283,6 +286,27 @@ class SettingsController {
         }
     }
 
+    @PutMapping("/numberdisplay")
+    fun updateNumberDisplay(@RequestHeader("Authorization") token: String, @RequestBody body: PutNumberDisplayDTO): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val basicToken = claims.basicToken
+        val userId = claims.profileObj.userId
+
+        val displayStatus = stringToPresentationStatusEnum(body.presentationStatus)
+        val numberDisplayHidden = NumberDisplayHidden(
+            body.hideNumber
+        )
+
+        val updateHideNumber = settingsService.updateHideNumberStatus(basicToken, userId, numberDisplayHidden)
+        val updateDisplayStatus = settingsService.updateNumberPresentationStatus(basicToken, userId, displayStatus)
+
+        val response = Mono.zip(updateHideNumber, updateDisplayStatus)
+
+        return response.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
+    }
+
     @PutMapping("/remoteoffice")
     fun updateRemoteOffice(@RequestHeader("Authorization") token: String, @RequestBody body: PutRemoteOfficeDTO): Mono<ResponseEntity<Any>> {
         if (body.remoteOfficeNumber.isNullOrEmpty()) {
@@ -297,5 +321,4 @@ class SettingsController {
                 .updateRemoteOffice(claims.basicToken, claims.profileObj.userId, remoteOffice)
                 .then(Mono.just(ResponseEntity(HttpStatus.OK)))
     }
-
 }

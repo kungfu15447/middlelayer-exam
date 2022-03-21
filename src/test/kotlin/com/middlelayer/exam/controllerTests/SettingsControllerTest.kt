@@ -11,6 +11,7 @@ import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.SettingsController
 import com.middlelayer.exam.web.dto.settings.PutExclusionNumberDTO
 import com.middlelayer.exam.web.dto.settings.PutPersonalAssistantDTO
+import com.middlelayer.exam.web.dto.settings.PutNumberDisplayDTO
 import com.middlelayer.exam.web.dto.settings.PutRemoteOfficeDTO
 import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
 import org.junit.jupiter.api.BeforeEach
@@ -589,7 +590,8 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-            "/api/user/settings/remoteoffice",arrayListOf(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
                 WebHeader("Authorization", "someToken")
             ),
             body
@@ -663,7 +665,8 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-            "/api/user/settings/remoteoffice",arrayListOf(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
                 WebHeader("Authorization", "someToken")
             ),
             body
@@ -691,6 +694,9 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
             ),
             body
         )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
 
         //Assert
         verify(settingsService, times(0)).updateRemoteOffice(kAny(), kAny(), kAny())
@@ -759,7 +765,6 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
             )
         )
 
-
         //Act
         var response = web.put(
             "/api/user/settings/personalassistant",
@@ -790,7 +795,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
                         "2",
                         "3"
                 )
-    )
+        )
 
         //Act
         var response = web.put(
@@ -864,18 +869,42 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-                "/api/user/settings/personalassistant",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken"),
-                ),
-                body
+            "/api/user/settings/personalassistant",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
         )
-                .returnResult(String::class.java)
-                .responseBody
-                .blockFirst()
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
 
         //Assert
         verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT NumberDisplay success returns OK Status Result`() {
+        //Assign
+        `when`(settingsService.updateHideNumberStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateNumberPresentationStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutNumberDisplayDTO(
+            hideNumber = false,
+            presentationStatus = "Mobile"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/numberdisplay",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+
+        //Assert
+        response.expectStatus().isOk
     }
 
     @Test
@@ -902,9 +931,35 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
             body
         )
 
-
         //Assert
         verify(settingsService, times(0)).updatePAAssignedCallToNumbers(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT NumberDisplay success calls updateHideNumberStatus once`() {
+        //Assign
+        `when`(settingsService.updateHideNumberStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateNumberPresentationStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutNumberDisplayDTO(
+            hideNumber = false,
+            presentationStatus = "Mobile"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/numberdisplay",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateHideNumberStatus(kAny(), kAny(), kAny())
     }
 
     @Test
@@ -942,6 +997,32 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Assert
         response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on PUT NumberDisplay success calls updateNumberPresentationStatus once`() {
+        //Assign
+        `when`(settingsService.updateHideNumberStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateNumberPresentationStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutNumberDisplayDTO(
+            hideNumber = false,
+            presentationStatus = "Mobile"
+        )
+
+        var response = web.put(
+            "/api/user/settings/numberdisplay",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateNumberPresentationStatus(kAny(), kAny(), kAny())
     }
 
     @Test
@@ -983,6 +1064,32 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
                 .returnResult(String::class.java)
                 .responseBody
                 .blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT NumberDisplay success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updateHideNumberStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateNumberPresentationStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutNumberDisplayDTO(
+            hideNumber = false,
+            presentationStatus = "Mobile"
+        )
+
+        var response = web.put(
+            "/api/user/settings/numberdisplay",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
 
         //Assert
         verify(authService, times(1)).getClaimsFromJWTToken(kAny())

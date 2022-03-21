@@ -3,6 +3,7 @@ package com.middlelayer.exam.service
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
+import com.middlelayer.exam.core.models.ims.PresentationStatusEnum
 import com.middlelayer.exam.core.models.xsi.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -139,6 +140,17 @@ class SettingsService : ISettingsService {
     }
     override fun updateRemoteOffice(token: String, userId: String, body: RemoteOffice): Mono<Void> {
         return settingsRepo.updateRemoteOffice(token, userId, body)
+    }
+
+    override fun updateHideNumberStatus(token: String, userId: String, body: NumberDisplayHidden): Mono<Void> {
+        return settingsRepo.updateNumberDisplayStatus(token, userId, body)
+    }
+
+    override fun updateNumberPresentationStatus(token: String, userId: String, status: PresentationStatusEnum): Mono<Void> {
+        return when (status) {
+            PresentationStatusEnum.BUSINESS -> settingsRepo.updatePresentationToBusiness(token, userId)
+            PresentationStatusEnum.MOBILE -> settingsRepo.updatePresentationToMobile(token, userId)
+        }
     }
 
     override fun updateSimultaneousRingPersonal(
