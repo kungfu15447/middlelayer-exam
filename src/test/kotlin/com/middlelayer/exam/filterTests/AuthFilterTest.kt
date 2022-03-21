@@ -259,7 +259,7 @@ class AuthFilterTest {
     fun `on AuthFilter when token could not be parsed then return Unauthorized status result`() {
         //Assign
         `when`(authService.getClaimsFromJWTToken(kAny())).thenThrow(
-                Exception("Something went wrong with the token")
+                JwtException("Something went wrong with the token")
         )
         val req = MockHttpServletRequest()
         req.addHeader("Authorization", "Bearer someToken")
@@ -277,7 +277,7 @@ class AuthFilterTest {
     fun `on AuthFilter when token could not be parsed then return correct error message`() {
         //Assign
         `when`(authService.getClaimsFromJWTToken(kAny())).thenThrow(
-                Exception("Something went wrong with the token")
+                JwtException("Something went wrong with the token")
         )
         val req = MockHttpServletRequest()
         req.addHeader("Authorization", "Bearer someToken")
@@ -288,14 +288,14 @@ class AuthFilterTest {
         filter.doFilter(req, res, chain)
 
         //Assert
-        assert(res.errorMessage == "Could not decrypt token with secret key. Unauthorized access")
+        assert(res.errorMessage == "Invalid token. Unauthorized access")
     }
 
     @Test
     fun `on AuthFilter when token could not be parsed should still have called getClaimsFromJWTToken once`() {
         //Assign
         `when`(authService.getClaimsFromJWTToken(kAny())).thenThrow(
-                Exception("Something went wrong with the token")
+                JwtException("Something went wrong with the token")
         )
         val req = MockHttpServletRequest()
         req.addHeader("Authorization", "Bearer someToken")
