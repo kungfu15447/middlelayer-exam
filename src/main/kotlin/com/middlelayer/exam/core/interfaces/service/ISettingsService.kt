@@ -21,6 +21,7 @@ interface ISettingsService {
     fun getPushNotification(token: String, userId: String): Mono<DPushNotification>
     fun getSimultaneousRing(token: String, userId: String): Mono<DSimultaneousRing>
     fun getDoNotDisturb(token: String, userId: String): Mono<DDoNotDisturb>
+    fun getSettings(token: String, userId: String): Mono<UserSettings>
     fun updatePersonalAssistant(token: String, userId: String, body: PersonalAssistant): Mono<Void>
     fun updatePAAssignedCallToNumbers(token: String, userId: String, body: AssignedCallToNumbers): Mono<Void>
     fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void>

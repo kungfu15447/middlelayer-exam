@@ -2,6 +2,7 @@ package com.middlelayer.exam.core.models.xsi
 
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonValue
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -22,11 +23,9 @@ data class SimRingLocation(
     val answerConfirmationRequired: Boolean? = null,
 )
 
-enum class IncomingCallsEnum {
-    @JsonProperty("Do not Ring if on a Call")
-    DoNotRing,
-    @JsonProperty("Ring for all Incoming Calls")
-    RingForAll
+enum class IncomingCallsEnum(@JsonValue val value: String) {
+    DoNotRing("Do not Ring if on a Call"),
+    RingForAll("Ring for all Incoming Calls")
 }
 
 fun stringToIncomingCallsEnum(incomingCallString: String): IncomingCallsEnum {
