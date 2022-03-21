@@ -3,12 +3,10 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
+import com.middlelayer.exam.core.models.ims.stringToPresentationStatusEnum
 import com.middlelayer.exam.core.models.xsi.*
-import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
-import com.middlelayer.exam.web.dto.settings.PutDoNotDisturbDTO
-import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
-import com.middlelayer.exam.web.dto.settings.PutExclusionNumberDTO
-import com.middlelayer.exam.web.dto.settings.PutPersonalAssistantDTO
+import com.middlelayer.exam.core.models.xsi.PersonalAssistant
+import com.middlelayer.exam.web.dto.settings.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -230,13 +228,13 @@ class SettingsController {
         @RequestHeader("Authorization") token: String,
         @RequestBody body: PutExclusionNumberDTO
     ): Mono<ResponseEntity<Any>> {
-        val claims = authService.getClaimsFromJWTToken(token)
-        val userId = claims.profileObj.userId
-        val basicToken = claims.basicToken
-
         if (body.newNumber.isNullOrEmpty() || body.oldNumber.isNullOrEmpty()) {
             return Mono.just(ResponseEntity("New and/or old number cannot be null or empty", HttpStatus.BAD_REQUEST))
         }
+
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
 
         val exclusionNumber = ExclusionNumber(
             body.newNumber
@@ -293,10 +291,47 @@ class SettingsController {
             body.active,
             body.ringSplash
         )
-        val updateDoNotDisturb = settingsService.updateDoNotDisturb(claims.basicToken, claims.profileObj.userId, doNotDisturb)
+        val updateDoNotDisturb =
+            settingsService.updateDoNotDisturb(claims.basicToken, claims.profileObj.userId, doNotDisturb)
 
         return updateDoNotDisturb.flatMap {
             Mono.just(ResponseEntity(HttpStatus.OK))
         }
+    }
+
+    @PutMapping("/numberdisplay")
+    fun updateNumberDisplay(@RequestHeader("Authorization") token: String, @RequestBody body: PutNumberDisplayDTO): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val basicToken = claims.basicToken
+        val userId = claims.profileObj.userId
+
+        val displayStatus = stringToPresentationStatusEnum(body.presentationStatus)
+        val numberDisplayHidden = NumberDisplayHidden(
+            body.hideNumber
+        )
+
+        val updateHideNumber = settingsService.updateHideNumberStatus(basicToken, userId, numberDisplayHidden)
+        val updateDisplayStatus = settingsService.updateNumberPresentationStatus(basicToken, userId, displayStatus)
+
+        val response = Mono.zip(updateHideNumber, updateDisplayStatus)
+
+        return response.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
+    }
+
+    @PutMapping("/remoteoffice")
+    fun updateRemoteOffice(@RequestHeader("Authorization") token: String, @RequestBody body: PutRemoteOfficeDTO): Mono<ResponseEntity<Any>> {
+        if (body.remoteOfficeNumber.isNullOrEmpty()) {
+            return Mono.just(ResponseEntity("Remote office number cannot be empty or null!", HttpStatus.BAD_REQUEST))
+        }
+        var claims = authService.getClaimsFromJWTToken(token)
+        var remoteOffice = RemoteOffice(
+            body.active,
+            body.remoteOfficeNumber
+        )
+        return settingsService
+                .updateRemoteOffice(claims.basicToken, claims.profileObj.userId, remoteOffice)
+                .then(Mono.just(ResponseEntity(HttpStatus.OK)))
     }
 }
