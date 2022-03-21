@@ -58,7 +58,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        val response = web.post("/api/user/profile/login", body = requestBody)
 
         //Assert
         response.expectStatus().isBadRequest
@@ -76,7 +76,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        val response = web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -96,7 +96,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -116,7 +116,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -136,7 +136,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -156,7 +156,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         val requestBody = LoginDTO(username, password)
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -177,7 +177,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        val response = web.post("/api/user/profile/login", body = requestBody)
 
         //Assert
         response.expectStatus().isOk
@@ -196,7 +196,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -217,7 +217,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -238,7 +238,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
@@ -259,7 +259,7 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
 
         //Act
-        var response = web.post("/api/user/profile/login", body = requestBody)
+        web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
 
