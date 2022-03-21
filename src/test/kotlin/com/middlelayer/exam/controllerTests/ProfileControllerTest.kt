@@ -174,14 +174,6 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
     fun `on Login with invalid body never calls getCredentialsFromBasicToken`(username: String?, password: String?) {
         //Assign
         val requestBody = LoginDTO(username, password)
-        val profile = Profile()
-        val services = ArrayList<Service>()
-
-        `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
-        `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
-        `when`(authService.createBasicAuthToken(kAny(), kAny())).thenReturn("basicToken")
-        `when`(authService.register(kAny(), kAny(), kAny())).thenReturn("jwtToken")
-        `when`(authService.getCredentialsFromBasicToken(kAny())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         web.post("/api/user/profile/login", body = requestBody)
