@@ -9,6 +9,7 @@ import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.helpers.WebHeader
 import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.SettingsController
+import com.middlelayer.exam.web.dto.settings.PutNumberDisplayDTO
 import com.middlelayer.exam.web.dto.settings.PutRemoteOfficeDTO
 import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
 import org.junit.jupiter.api.BeforeEach
@@ -579,21 +580,72 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
         var body = PutRemoteOfficeDTO(
-                active = false,
-                remoteOfficeNumber = "111"
+            active = false,
+            remoteOfficeNumber = "111"
         )
 
         //Act
         var response = web.put(
-                "/api/user/settings/remoteoffice",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken")
-                ),
-                body
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
         )
 
         //Assert
         response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on PUT RemoteOffice on success calls updateRemoteOffice once`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = "111"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateRemoteOffice(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT RemoteOffice on success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutRemoteOfficeDTO(
+            active = false,
+            remoteOfficeNumber = "111"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody.blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
     }
 
     @Test
@@ -602,17 +654,17 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
         var body = PutRemoteOfficeDTO(
-                active = false,
-                remoteOfficeNumber = ""
+            active = false,
+            remoteOfficeNumber = ""
         )
 
-        //Act
+
         var response = web.put(
-                "/api/user/settings/remoteoffice",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken")
-                ),
-                body
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
         )
 
         //Assert
@@ -625,22 +677,21 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
         var body = PutRemoteOfficeDTO(
-                active = false,
-                remoteOfficeNumber = ""
+            active = false,
+            remoteOfficeNumber = ""
         )
 
         //Act
         var response = web.put(
-                "/api/user/settings/remoteoffice",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken")
-                ),
-                body
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
         )
-                .returnResult(String::class.java)
-                .responseBody.blockFirst()
-
-
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
 
         //Assert
         verify(settingsService, times(0)).updateRemoteOffice(kAny(), kAny(), kAny())
@@ -652,81 +703,26 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
         `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
         getClaimsMockSetup()
         var body = PutRemoteOfficeDTO(
-                active = false,
-                remoteOfficeNumber = ""
+            active = false,
+            remoteOfficeNumber = ""
         )
 
         //Act
         var response = web.put(
-                "/api/user/settings/remoteoffice",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken")
-                ),
-                body
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            ),
+            body
         )
-                .returnResult(String::class.java)
-                .responseBody.blockFirst()
-
-
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
 
         //Assert
         verify(authService, times(0)).getClaimsFromJWTToken(kAny())
     }
-
-    @Test
-    fun `on PUT RemoteOffice on success calls updateRemoteOffice once`() {
-        //Assign
-        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-        var body = PutRemoteOfficeDTO(
-                active = false,
-                remoteOfficeNumber = "111"
-        )
-
-        //Act
-        var response = web.put(
-                "/api/user/settings/remoteoffice",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken")
-                ),
-                body
-        )
-                .returnResult(String::class.java)
-                .responseBody.blockFirst()
-
-
-
-        //Assert
-        verify(settingsService, times(1)).updateRemoteOffice(kAny(), kAny(), kAny())
-    }
-
-    @Test
-    fun `on PUT RemoteOffice on success calls getClaimsFromJWTToken once`() {
-        //Assign
-        `when`(settingsService.updateRemoteOffice(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
-        getClaimsMockSetup()
-        var body = PutRemoteOfficeDTO(
-                active = false,
-                remoteOfficeNumber = "111"
-        )
-
-        //Act
-        var response = web.put(
-                "/api/user/settings/remoteoffice",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken")
-                ),
-                body
-        )
-                .returnResult(String::class.java)
-                .responseBody.blockFirst()
-
-
-
-        //Assert
-        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
-    }
-
+    
     @Test
     fun `on PUT RemoteOffice with empty body returns Bad Request status result`() {
         //Assign
@@ -735,10 +731,132 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
 
         //Act
         var response = web.put(
-                "/api/user/settings/remoteoffice",
-                arrayListOf(
-                        WebHeader("Authorization", "someToken")
-                )
+            "/api/user/settings/remoteoffice",
+            arrayListOf(
+                WebHeader("Authorization", "someToken")
+            )
+        )
+
+        //Assert
+        response.expectStatus().isBadRequest
+    }
+
+    @Test
+    fun `on PUT NumberDisplay success returns OK Status Result`() {
+        //Assign
+        `when`(settingsService.updateHideNumberStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateNumberPresentationStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutNumberDisplayDTO(
+            hideNumber = false,
+            presentationStatus = "Mobile"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/numberdisplay",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+
+        //Assert
+        response.expectStatus().isOk
+    }
+
+    @Test
+    fun `on PUT NumberDisplay success calls updateHideNumberStatus once`() {
+        //Assign
+        `when`(settingsService.updateHideNumberStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateNumberPresentationStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutNumberDisplayDTO(
+            hideNumber = false,
+            presentationStatus = "Mobile"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/numberdisplay",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateHideNumberStatus(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT NumberDisplay success calls updateNumberPresentationStatus once`() {
+        //Assign
+        `when`(settingsService.updateHideNumberStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateNumberPresentationStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutNumberDisplayDTO(
+            hideNumber = false,
+            presentationStatus = "Mobile"
+        )
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/numberdisplay",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(settingsService, times(1)).updateNumberPresentationStatus(kAny(), kAny(), kAny())
+    }
+
+    @Test
+    fun `on PUT NumberDisplay success calls getClaimsFromJWTToken once`() {
+        //Assign
+        `when`(settingsService.updateHideNumberStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateNumberPresentationStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        getClaimsMockSetup()
+        var body = PutNumberDisplayDTO(
+            hideNumber = false,
+            presentationStatus = "Mobile"
+        )
+
+        var response = web.put(
+            "/api/user/settings/numberdisplay",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
+            body
+        )
+            .returnResult(String::class.java)
+            .responseBody
+            .blockFirst()
+
+        //Assert
+        verify(authService, times(1)).getClaimsFromJWTToken(kAny())
+    }
+
+    @Test
+    fun `on PUT NumberDisplay on empty body returns Bad Request Status Result`() {
+        //Assign
+        `when`(settingsService.updateHideNumberStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+        `when`(settingsService.updateNumberPresentationStatus(kAny(), kAny(), kAny())).thenReturn(Mono.empty())
+
+        //Act
+        var response = web.put(
+            "/api/user/settings/numberdisplay",
+            arrayListOf(
+                WebHeader("Authorization", "someToken"),
+            ),
         )
 
         //Assert
