@@ -12,7 +12,7 @@ data class DProfile(val userId: String,
 
     constructor(xsiProfile: Profile) : this(
         userId = xsiProfile.details.userId ?: "",
-        groupId = xsiProfile.details.groupId,
+        groupId = xsiProfile.details.groupId ?: "",
         firstName = xsiProfile.details.firstName?: "",
         lastName = xsiProfile.details.lastName?: "",
         mobile = xsiProfile.additionalDetails.mobile?: "",

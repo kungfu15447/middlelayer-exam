@@ -7,7 +7,7 @@ import com.middlelayer.exam.core.exceptions.NotFoundException
 import com.middlelayer.exam.core.exceptions.UnauthorizedException
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IProfileService
-import com.middlelayer.exam.core.models.domain.DService
+import com.middlelayer.exam.core.models.xsi.Service
 import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.ErrorControllerAdvice
 import com.middlelayer.exam.web.ProfileController
@@ -54,7 +54,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws UnauthorizedException returns Unauthorized status result`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
             throw UnauthorizedException("Something went wrong")
@@ -74,7 +74,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws UnauthorizedException returns correct error message`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = UnauthorizedException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -97,7 +97,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws NotFoundException returns Not Found status result`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
             throw NotFoundException("Something went wrong")
@@ -117,7 +117,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws NotFoundException returns correct error message`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = NotFoundException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -140,7 +140,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws ISEException returns Internal Server Error status result`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = ISEException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -161,7 +161,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws ISEException returns correct error message`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = ISEException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -184,7 +184,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws BadRequestException returns Bad Request status result`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = BadRequestException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -205,7 +205,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws BadRequestException returns correct error message`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = BadRequestException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {

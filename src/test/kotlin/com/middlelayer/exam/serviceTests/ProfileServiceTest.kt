@@ -1,6 +1,5 @@
 package com.middlelayer.exam.serviceTests
 import com.middlelayer.exam.core.interfaces.infrastructure.IProfileRepository
-import com.middlelayer.exam.core.models.domain.DProfile
 import com.middlelayer.exam.core.models.xsi.Profile
 import com.middlelayer.exam.core.models.xsi.ServiceProvider
 import com.middlelayer.exam.core.models.xsi.UserAdditionalDetails
@@ -68,7 +67,7 @@ class ProfileServiceTest(@Autowired val profileService: ProfileService) {
     }
 
     @Test
-    fun `on GetProfile returns DomainProfile`() {
+    fun `on GetProfile returns Profile`() {
         //Assign
         val profile = createXsiProfile()
         `when`(profileRepo.getProfileXsi(kAny(), kAny())).thenReturn(Mono.just(profile))
@@ -78,21 +77,7 @@ class ProfileServiceTest(@Autowired val profileService: ProfileService) {
 
         //Assert
         mono.subscribe {
-            assertThat(it).isEqualTo(DProfile(profile))
-        }
-    }
-
-    @Test
-    fun `on GetProfile returns DomainProfile with empty values if XsiProfile has null values`() {
-        val profile = Profile()
-        `when`(profileRepo.getProfileXsi(kAny(), kAny())).thenReturn(Mono.just(profile))
-
-        //Act
-        val mono = profileService.getProfile("", "")
-
-        //Assert
-        mono.subscribe {
-            assertThat(it).isEqualTo(DProfile("", "", "", "", "", "", ""))
+            assertThat(it).isEqualTo(profile)
         }
     }
 

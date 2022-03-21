@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.models.auth.ProfileTokenObject
 import com.middlelayer.exam.core.models.auth.TokenClaimsObject
-import com.middlelayer.exam.core.models.domain.DProfile
-import com.middlelayer.exam.core.models.domain.DService
+import com.middlelayer.exam.core.models.xsi.Profile
+import com.middlelayer.exam.core.models.xsi.Service as xsiService
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import org.springframework.beans.factory.annotation.Value
@@ -18,20 +18,23 @@ class AuthService : IAuthService {
     @Value("\${jwt.secret.key}")
     private val secretKey: String = ""
 
-    override fun register(basicAuthToken: String, profile: DProfile, services: List<DService>): String {
+    @Value("\${jwt.issuer}")
+    private val issuer: String = ""
+
+    override fun register(basicAuthToken: String, profile: Profile, services: List<xsiService>): String {
         val profileClaim = ProfileTokenObject(
-            profile.userId,
-            profile.groupId,
-            "${profile.firstName} ${profile.lastName}",
-            profile.email
+            profile.details.userId ?: "",
+            profile.details.groupId ?: "",
+            "${profile.details.firstName} ${profile.details.lastName}",
+            profile.additionalDetails.emailAddress ?: ""
         )
 
-        val servicesString = services.map {
+        val servicesString = services.mapNotNull {
             it.name
-        }.filterNotNull()
+        }
 
         return Jwts.builder()
-            .setIssuer(profile.userId)
+            .setIssuer(issuer)
             .setExpiration(Date(System.currentTimeMillis() + 60 * 60 * 1000))
             .signWith(SignatureAlgorithm.HS256, secretKey)
             .claim("basicToken", basicAuthToken)

@@ -5,6 +5,7 @@ import com.middlelayer.exam.core.interfaces.service.IProfileService
 import com.middlelayer.exam.core.models.domain.DProfile
 import com.middlelayer.exam.core.models.domain.DService
 import com.middlelayer.exam.core.models.xsi.Profile
+import com.middlelayer.exam.core.models.xsi.Service
 import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.ProfileController
 import com.middlelayer.exam.web.dto.profile.LoginDTO
@@ -168,8 +169,8 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
     fun `on Login success returns OK status`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val profile = DProfile(Profile())
-        val services = ArrayList<DService>()
+        val profile = Profile()
+        val services = ArrayList<Service>()
 
         `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
         `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
@@ -187,8 +188,8 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
     fun `on Login success calls getProfile once`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val profile = DProfile(Profile())
-        val services = ArrayList<DService>()
+        val profile = Profile()
+        val services = ArrayList<Service>()
 
         `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
         `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
@@ -208,8 +209,8 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
     fun `on Login success calls getServicesFromProfile once`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val profile = DProfile(Profile())
-        val services = ArrayList<DService>()
+        val profile = Profile()
+        val services = ArrayList<Service>()
 
         `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
         `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
@@ -229,8 +230,8 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
     fun `on Login success calls createBasicAuthToken twice`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val profile = DProfile(Profile())
-        val services = ArrayList<DService>()
+        val profile = Profile()
+        val services = ArrayList<Service>()
 
         `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
         `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
@@ -250,8 +251,8 @@ class ProfileControllerTest(@Autowired val webTestClient: WebTestClient) {
     fun `on Login success calls register once`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val profile = DProfile(Profile())
-        val services = ArrayList<DService>()
+        val profile = Profile()
+        val services = ArrayList<Service>()
 
         `when`(profileService.getProfile(kAny(), kAny())).thenReturn(Mono.just(profile))
         `when`(profileService.getServicesFromProfile(kAny(), kAny())).thenReturn(Mono.just(services))
