@@ -26,6 +26,9 @@ interface ISettingsRepository {
     fun updateExclusionNumber(token: String, userId: String, oldNumber: String, body: ExclusionNumber): Mono<Void>
     fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void>
     fun updateDoNotDisturb(token: String, userId: String, body: DoNotDisturb): Mono<Void>
+    fun updateCallForwardingAlways(token: String, userId: String, body: CallForwardingAlways): Mono<Void>
+    fun updateCallForwardingBusy(token: String, userId: String, body: CallForwardingBusy): Mono<Void>
+    fun updateCallForwardingNoAnswer(token: String, userId: String, body: CallForwardingNoAnswer): Mono<Void>
     fun updateNumberDisplayStatus(token: String, userId: String, body: NumberDisplayHidden): Mono<Void>
     fun updatePresentationToBusiness(token: String, userId: String): Mono<Void>
     fun updatePresentationToMobile(token: String, userId: String): Mono<Void>

@@ -3,7 +3,7 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
-import com.middlelayer.exam.core.models.ims.stringToPresentationStatusEnum
+import com.middlelayer.exam.core.models.ims.*
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.core.models.xsi.PersonalAssistant
 import com.middlelayer.exam.web.dto.settings.*
@@ -240,7 +240,8 @@ class SettingsController {
             body.newNumber
         )
 
-        val updateExclusionNumber = settingsService.updateExclusionNumber(basicToken, userId, body.oldNumber, exclusionNumber)
+        val updateExclusionNumber =
+            settingsService.updateExclusionNumber(basicToken, userId, body.oldNumber, exclusionNumber)
 
         return updateExclusionNumber.then(
             Mono.just(ResponseEntity(HttpStatus.OK))
@@ -299,8 +300,61 @@ class SettingsController {
         }
     }
 
+    @PutMapping("/callforwarding")
+    fun updateCallForwarding(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutCallForwardDTO
+    ): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+
+        val always = body.always
+        val busy = body.busy
+        val noAnswer = body.noAnswer
+
+        var listOfUpdates = ArrayList<Mono<Void>>()
+
+        always?.let {
+            val xsiAlways = CallForwardingAlways(
+                it.active,
+                it.phoneNumber
+            )
+            val update = settingsService.updateCallForwardingAlways(basicToken, userId, xsiAlways)
+            listOfUpdates.add(update)
+        }
+
+        busy?.let {
+            val xsiBusy = CallForwardingBusy(
+                it.active,
+                it.phoneNumber
+            )
+            val update = settingsService.updateCallForwardingBusy(basicToken, userId, xsiBusy)
+            listOfUpdates.add(update)
+        }
+
+        noAnswer?.let {
+            val xsiNoAnswer = CallForwardingNoAnswer(
+                it.active,
+                it.phoneNumber,
+                it.numberOfRings
+            )
+            val update = settingsService.updateCallForwardingNoAnswer(basicToken, userId, xsiNoAnswer)
+            listOfUpdates.add(update)
+        }
+
+        val response = Mono.zip(listOfUpdates) { }
+
+        return response.then(
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        )
+    }
+
     @PutMapping("/numberdisplay")
-    fun updateNumberDisplay(@RequestHeader("Authorization") token: String, @RequestBody body: PutNumberDisplayDTO): Mono<ResponseEntity<Any>> {
+    fun updateNumberDisplay(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutNumberDisplayDTO
+    ): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         val basicToken = claims.basicToken
         val userId = claims.profileObj.userId
@@ -321,7 +375,10 @@ class SettingsController {
     }
 
     @PutMapping("/remoteoffice")
-    fun updateRemoteOffice(@RequestHeader("Authorization") token: String, @RequestBody body: PutRemoteOfficeDTO): Mono<ResponseEntity<Any>> {
+    fun updateRemoteOffice(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutRemoteOfficeDTO
+    ): Mono<ResponseEntity<Any>> {
         if (body.remoteOfficeNumber.isNullOrEmpty()) {
             return Mono.just(ResponseEntity("Remote office number cannot be empty or null!", HttpStatus.BAD_REQUEST))
         }
@@ -331,7 +388,7 @@ class SettingsController {
             body.remoteOfficeNumber
         )
         return settingsService
-                .updateRemoteOffice(claims.basicToken, claims.profileObj.userId, remoteOffice)
-                .then(Mono.just(ResponseEntity(HttpStatus.OK)))
+            .updateRemoteOffice(claims.basicToken, claims.profileObj.userId, remoteOffice)
+            .then(Mono.just(ResponseEntity(HttpStatus.OK)))
     }
 }

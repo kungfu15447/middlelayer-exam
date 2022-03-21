@@ -3,12 +3,6 @@ package com.middlelayer.exam.core.interfaces.service
 import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.ims.PresentationStatusEnum
 import com.middlelayer.exam.core.models.xsi.*
-import com.middlelayer.exam.core.models.xsi.AssignedCallToNumbers
-import com.middlelayer.exam.core.models.xsi.DoNotDisturb
-import com.middlelayer.exam.core.models.xsi.ExclusionNumber
-import com.middlelayer.exam.core.models.xsi.PersonalAssistant
-import com.middlelayer.exam.core.models.xsi.RemoteOffice
-import com.middlelayer.exam.core.models.xsi.SimultaneousRingPersonal
 import reactor.core.publisher.Mono
 
 interface ISettingsService {
@@ -33,6 +27,9 @@ interface ISettingsService {
     fun updateExclusionNumber(token: String, userId: String, oldNumber: String, body: ExclusionNumber): Mono<Void>
     fun deleteExclusionNumber(token: String, userId: String, number: String): Mono<Void>
     fun updateDoNotDisturb(token: String, userId: String, body: DoNotDisturb): Mono<Void>
+    fun updateCallForwardingAlways(token: String, userId: String, body: CallForwardingAlways): Mono<Void>
+    fun updateCallForwardingBusy(token: String, userId: String, body: CallForwardingBusy): Mono<Void>
+    fun updateCallForwardingNoAnswer(token: String, userId: String, body: CallForwardingNoAnswer): Mono<Void>
     fun updateHideNumberStatus(token: String, userId: String, body: NumberDisplayHidden): Mono<Void>
     fun updateNumberPresentationStatus(token: String, userId: String, status: PresentationStatusEnum): Mono<Void>
     fun updateRemoteOffice(token: String, userId: String, body: RemoteOffice): Mono<Void>

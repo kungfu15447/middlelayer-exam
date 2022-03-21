@@ -180,7 +180,11 @@ class SettingsRepository : ISettingsRepository {
         body: ExclusionNumber
     ): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
-        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber/${oldNumber}", token, xmlBody)
+        val response = xsiClient.put(
+            "/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/personalassistant/exclusionnumber/${oldNumber}",
+            token,
+            xmlBody
+        )
         return response.then()
     }
 
@@ -215,15 +219,45 @@ class SettingsRepository : ISettingsRepository {
         val response = imsClient.put("/nef/clid/user/${userId}/service/mobile", token)
         return response.then()
     }
+
     override fun updateRemoteOffice(token: String, userId: String, body: RemoteOffice): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
-        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/remoteoffice", token, xmlBody)
+        val response =
+            xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/remoteoffice", token, xmlBody)
         return response.then()
     }
 
     override fun updateDoNotDisturb(token: String, userId: String, body: DoNotDisturb): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
-        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/donotdisturb", token, xmlBody)
+        val response =
+            xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/donotdisturb", token, xmlBody)
+        return response.then()
+    }
+
+    override fun updateCallForwardingAlways(token: String, userId: String, body: CallForwardingAlways): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put(
+            "/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/callforwardingalways",
+            token,
+            xmlBody
+        )
+        return response.then()
+    }
+
+    override fun updateCallForwardingBusy(token: String, userId: String, body: CallForwardingBusy): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response =
+            xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/callforwardingbusy", token, xmlBody)
+        return response.then()
+    }
+
+    override fun updateCallForwardingNoAnswer(token: String, userId: String, body: CallForwardingNoAnswer): Mono<Void> {
+        val xmlBody = objectParser.tryMapToXmlString(body)
+        val response = xsiClient.put(
+            "/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/callforwardingnoanswer",
+            token,
+            xmlBody
+        )
         return response.then()
     }
 
@@ -233,7 +267,11 @@ class SettingsRepository : ISettingsRepository {
         body: SimultaneousRingPersonal
     ): Mono<Void> {
         val xmlBody = objectParser.tryMapToXmlString(body)
-        val response = xsiClient.put("/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/SimultaneousRingPersonal", token, xmlBody)
+        val response = xsiClient.put(
+            "/com.broadsoft.xsi-actions/v2.0/user/${userId}/services/SimultaneousRingPersonal",
+            token,
+            xmlBody
+        )
         return response.then()
     }
 }
