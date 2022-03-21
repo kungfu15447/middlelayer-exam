@@ -3,16 +3,10 @@ package com.middlelayer.exam.web
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
-import com.middlelayer.exam.core.models.ims.stringToPresentationStatusEnum
+import com.middlelayer.exam.core.models.ims.*
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.core.models.xsi.PersonalAssistant
 import com.middlelayer.exam.web.dto.settings.*
-import com.middlelayer.exam.web.dto.settings.GetSettingsResponseDTO
-import com.middlelayer.exam.web.dto.settings.PutCallForwardDTO
-import com.middlelayer.exam.web.dto.settings.PutRemoteOfficeDTO
-import com.middlelayer.exam.web.dto.settings.PutSimultaneousCallDTO
-import com.middlelayer.exam.web.dto.settings.PutExclusionNumberDTO
-import com.middlelayer.exam.web.dto.settings.PutPersonalAssistantDTO
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -284,6 +278,24 @@ class SettingsController {
             claims.profileObj.userId,
             simultaneousRingPersonal
         ).flatMap {
+            Mono.just(ResponseEntity(HttpStatus.OK))
+        }
+    }
+
+    @PutMapping("/donotdisturb")
+    fun updateDoNotDisturb(
+        @RequestHeader("Authorization") token: String,
+        @RequestBody body: PutDoNotDisturbDTO
+    ): Mono<ResponseEntity<Any>> {
+        val claims = authService.getClaimsFromJWTToken(token)
+        val doNotDisturb = DoNotDisturb(
+            body.active,
+            body.ringSplash
+        )
+        val updateDoNotDisturb =
+            settingsService.updateDoNotDisturb(claims.basicToken, claims.profileObj.userId, doNotDisturb)
+
+        return updateDoNotDisturb.flatMap {
             Mono.just(ResponseEntity(HttpStatus.OK))
         }
     }

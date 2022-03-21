@@ -153,6 +153,10 @@ class SettingsService : ISettingsService {
         }
     }
 
+    override fun updateDoNotDisturb(token: String, userId: String, body: DoNotDisturb): Mono<Void> {
+        return settingsRepo.updateDoNotDisturb(token, userId, body)
+    }
+
     override fun updateCallForwardingAlways(token: String, userId: String, body: CallForwardingAlways): Mono<Void> {
         return settingsRepo.updateCallForwardingAlways(token, userId, body)
     }
@@ -163,7 +167,6 @@ class SettingsService : ISettingsService {
 
     override fun updateCallForwardingNoAnswer(token: String, userId: String, body: CallForwardingNoAnswer): Mono<Void> {
         return settingsRepo.updateCallForwardingNoAnswer(token, userId, body)
-
     }
 
     override fun updateSimultaneousRingPersonal(
