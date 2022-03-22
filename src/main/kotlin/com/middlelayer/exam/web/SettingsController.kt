@@ -255,12 +255,12 @@ class SettingsController {
     ): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
         var simRingLocations: SimRingLocations? = null
-        body.simRingLocations?.let {
+        body.simRingLocations?.let { simRings ->
             simRingLocations = SimRingLocations(
-                body.simRingLocations.map {
+                simRings.map { elem ->
                     SimRingLocation(
-                        it.address,
-                        it.answerConfirmedRequired
+                        elem.address,
+                        elem.answerConfirmedRequired
                     )
                 }
             )
