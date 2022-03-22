@@ -27,13 +27,15 @@ class ProfileController {
     @PostMapping("/login")
     fun getProfile(@RequestBody loginDTO: LoginDTO) : Mono<ResponseEntity<Any>> {
         if (!loginDTO.username.isNullOrEmpty() && !loginDTO.password.isNullOrEmpty()) {
-            val formattedUsername = formatUsername(loginDTO.username)
-            val basicAuthToken = authService.createBasicAuthToken(formattedUsername, loginDTO.password)
-            val profile = profileService.getProfile(basicAuthToken, formattedUsername)
+            val basicAuthToken = authService.createBasicAuthToken(loginDTO.username, loginDTO.password)
+            val credentials = authService.getCredentialsFromBasicToken(basicAuthToken)
+            val profile = profileService.getProfile(basicAuthToken, credentials.username)
 
-            val response = profile.flatMap { profile->
-                val newToken = authService.createBasicAuthToken(profile.userId, loginDTO.password)
-                profileService.getServicesFromProfile(newToken, profile.userId).flatMap { services ->
+            val response = profile.flatMap { profile ->
+                val userId = profile.details.userId ?: ""
+
+                val newToken = authService.createBasicAuthToken(userId, loginDTO.password)
+                profileService.getServicesFromProfile(newToken, userId).flatMap { services ->
                     var jwt = authService.register(newToken, profile, services)
                     Mono.just(ResponseEntity<Any>(LoginDTOResponse(jwt, profile, services), HttpStatus.OK))
                 }
@@ -42,23 +44,5 @@ class ProfileController {
         } else {
             return Mono.just(ResponseEntity("Username and/or password cannot be null or empty", HttpStatus.BAD_REQUEST))
         }
-    }
-
-    @GetMapping("/test")
-    fun getTest(): String {
-        return "This is a test"
-    }
-
-    private fun formatUsername(username: String): String {
-        var formattedUserName = username
-            .replace("+45", "")
-            .replace(" ", "")
-
-        //Is username numeric?
-        if (formattedUserName.matches(Regex("[0-9]+"))) {
-            formattedUserName = "PA_45$formattedUserName"
-        }
-
-        return formattedUserName
     }
 }

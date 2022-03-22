@@ -1,13 +1,11 @@
 package com.middlelayer.exam.controllerTests
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.middlelayer.exam.core.exceptions.BadRequestException
-import com.middlelayer.exam.core.exceptions.ISEException
-import com.middlelayer.exam.core.exceptions.NotFoundException
-import com.middlelayer.exam.core.exceptions.UnauthorizedException
+import com.middlelayer.exam.core.exceptions.*
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IProfileService
-import com.middlelayer.exam.core.models.domain.DService
+import com.middlelayer.exam.core.models.auth.BasicTokenObject
+import com.middlelayer.exam.core.models.xsi.Service
 import com.middlelayer.exam.helpers.WebTestHelper
 import com.middlelayer.exam.web.ErrorControllerAdvice
 import com.middlelayer.exam.web.ProfileController
@@ -54,7 +52,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws UnauthorizedException returns Unauthorized status result`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
             throw UnauthorizedException("Something went wrong")
@@ -62,6 +60,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(any())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         var response = web.post("/api/user/profile/login", body = requestBody)
@@ -74,7 +73,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws UnauthorizedException returns correct error message`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = UnauthorizedException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -83,6 +82,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(any())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         var response = web.post("/api/user/profile/login", body = requestBody)
@@ -97,7 +97,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws NotFoundException returns Not Found status result`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
             throw NotFoundException("Something went wrong")
@@ -105,6 +105,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(any())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         var response = web.post("/api/user/profile/login", body = requestBody)
@@ -117,7 +118,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws NotFoundException returns correct error message`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = NotFoundException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -126,6 +127,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(any())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         var response = web.post("/api/user/profile/login", body = requestBody)
@@ -140,7 +142,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws ISEException returns Internal Server Error status result`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = ISEException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -149,6 +151,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(any())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         var response = web.post("/api/user/profile/login", body = requestBody)
@@ -161,7 +164,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws ISEException returns correct error message`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = ISEException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -170,6 +173,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(any())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         var response = web.post("/api/user/profile/login", body = requestBody)
@@ -184,7 +188,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws BadRequestException returns Bad Request status result`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = BadRequestException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -193,6 +197,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(any())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         var response = web.post("/api/user/profile/login", body = requestBody)
@@ -205,7 +210,7 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
     fun `Throws BadRequestException returns correct error message`() {
         //Assign
         val requestBody = LoginDTO("username", "password")
-        val services = ArrayList<DService>()
+        val services = ArrayList<Service>()
         val ex = BadRequestException("Something went wrong")
 
         `when`(profileService.getProfile(any(), any())).thenAnswer {
@@ -214,11 +219,58 @@ class ErrorControllerAdviceTest(@Autowired val webTestClient: WebTestClient) {
         `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
         `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
         `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(any())).thenReturn(BasicTokenObject("username", "password"))
 
         //Act
         var response = web.post("/api/user/profile/login", body = requestBody)
             .returnResult(String::class.java)
             .responseBody.blockFirst()
+
+        //Assert
+        assert(response == ex.message)
+    }
+
+    @Test
+    fun `Throws InvalidMapException returns Internal Server Error status result`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val services = ArrayList<Service>()
+        val ex = InvalidMapException("Something went wrong")
+
+        `when`(profileService.getProfile(any(), any())).thenAnswer {
+            throw ex
+        }
+        `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
+        `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(any())).thenReturn(BasicTokenObject("username", "password"))
+
+        //Act
+        var response = web.post("/api/user/profile/login", body = requestBody)
+
+        //Assert
+        response.expectStatus().is5xxServerError
+    }
+
+    @Test
+    fun `Throws InvalidMapException returns correct error message`() {
+        //Assign
+        val requestBody = LoginDTO("username", "password")
+        val services = ArrayList<Service>()
+        val ex = InvalidMapException("Something went wrong")
+
+        `when`(profileService.getProfile(any(), any())).thenAnswer {
+            throw ex
+        }
+        `when`(profileService.getServicesFromProfile(any(), any())).thenReturn(Mono.just(services))
+        `when`(authService.createBasicAuthToken(any(), any())).thenReturn("basicToken")
+        `when`(authService.register(any(), any(), any())).thenReturn("jwtToken")
+        `when`(authService.getCredentialsFromBasicToken(any())).thenReturn(BasicTokenObject("username", "password"))
+
+        //Act
+        var response = web.post("/api/user/profile/login", body = requestBody)
+                .returnResult(String::class.java)
+                .responseBody.blockFirst()
 
         //Assert
         assert(response == ex.message)
