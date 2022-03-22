@@ -52,7 +52,7 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
     private fun getSettingsMockSetup() {
         `when`(settingsService.getSettings(kAny(), kAny())).thenReturn(Mono.just(
                 UserSettings(
-                        PersonalAssistantSettings(
+                        personalAssistant = PersonalAssistantSettings(
                                 presence = "Presence",
                                 expiration = null,
                                 transferCalls = false,
@@ -62,13 +62,21 @@ class SettingsControllerTest(@Autowired val webTestClient: WebTestClient) {
                                 availableNumbers = emptyList(),
                                 exclusionNumbers = emptyList()
                         ),
-                        remoteOffice = RemoteOffice(),
+                        remoteOffice = RemoteOfficeSettings(RemoteOffice()),
                         callForwarding = CallForwardingSettings(
-                                always = CallForwardingAlways(),
-                                busy = CallForwardingBusy(),
-                                noAnswer = CallForwardingNoAnswer()
+                                always = CallForwardingAlwaysSettings(
+                                        CallForwardingAlways()
+                                ),
+                                busy = CallForwardingBusySettings(
+                                        CallForwardingBusy()
+                                ),
+                                noAnswer = CallForwardingNoAnswerSettings(
+                                        CallForwardingNoAnswer()
+                                )
                         ),
-                        numberDisplay = NumberDisplay(),
+                        numberDisplay = NumberDisplaySettings(
+                                NumberDisplay()
+                        ),
                         voicemail = VoicemailSettings(
                                 active = false,
                                 alwaysRedirectToVoiceMail = false,

@@ -6,9 +6,9 @@ import java.util.*
 
 data class UserSettings(
         var personalAssistant: PersonalAssistantSettings,
-        var remoteOffice: RemoteOffice,
+        var remoteOffice: RemoteOfficeSettings,
         var callForwarding: CallForwardingSettings,
-        var numberDisplay: NumberDisplay,
+        var numberDisplay: NumberDisplaySettings,
         var voicemail: VoicemailSettings,
         var simultaneousCall: SimultaneousCallSettings,
         var doNotDisturb: Boolean,
@@ -19,7 +19,7 @@ data class UserSettings(
             assignedNumbers: List<CallToNumber>,
             availableNumbers: List<CallToNumber>,
             exclusionNumbers: List<ExclusionNumber>,
-            dRemoteOffice: RemoteOffice,
+            remoteOffice: RemoteOffice,
             callForwardingAlways: CallForwardingAlways,
             callForwardingBusy: CallForwardingBusy,
             callForwardingNoAnswer: CallForwardingNoAnswer,
@@ -37,8 +37,8 @@ data class UserSettings(
                     assignedNumbers,
                     exclusionNumbers
             ),
-            remoteOffice = dRemoteOffice,
-            numberDisplay = numberDisplay,
+            remoteOffice = RemoteOfficeSettings(remoteOffice),
+            numberDisplay = NumberDisplaySettings(numberDisplay),
             callForwarding = CallForwardingSettings(
                     callForwardingAlways,
                     callForwardingBusy,
@@ -111,10 +111,80 @@ data class VoicemailSettings(
 }
 
 data class CallForwardingSettings(
-        var always: CallForwardingAlways,
-        var busy: CallForwardingBusy,
-        var noAnswer: CallForwardingNoAnswer
-)
+        var always: CallForwardingAlwaysSettings,
+        var busy: CallForwardingBusySettings,
+        var noAnswer: CallForwardingNoAnswerSettings
+) {
+    constructor(
+            xsiAlways: CallForwardingAlways,
+            xsiBusy: CallForwardingBusy,
+            xsiNoAnswer: CallForwardingNoAnswer
+    ) : this(
+            always = CallForwardingAlwaysSettings(xsiAlways),
+            busy = CallForwardingBusySettings(xsiBusy),
+            noAnswer = CallForwardingNoAnswerSettings(xsiNoAnswer)
+    )
+}
+
+data class CallForwardingAlwaysSettings(
+        var active: Boolean,
+        var phoneNumber: String?,
+) {
+    constructor(
+            always: CallForwardingAlways
+    ) : this(
+            active = always.active ?: false,
+            phoneNumber = always.forwardToPhoneNumber
+    )
+}
+
+data class CallForwardingBusySettings(
+        var active: Boolean,
+        var phoneNumber: String?,
+) {
+    constructor(
+            busy: CallForwardingBusy
+    ) : this(
+            active = busy.active ?: false,
+            phoneNumber = busy.forwardToPhoneNumber
+    )
+}
+
+data class CallForwardingNoAnswerSettings(
+        var active: Boolean,
+        var phoneNumber: String?,
+        var numberOfRings: Int
+) {
+    constructor(
+            noAnswer: CallForwardingNoAnswer
+    ) : this(
+            active = noAnswer.active ?: false,
+            phoneNumber = noAnswer.forwardToPhoneNumber,
+            numberOfRings = noAnswer.numberOfRings ?: 0
+    )
+}
+
+data class NumberDisplaySettings(
+        var type: String,
+        var currentNumber: String
+) {
+    constructor(
+            numberDisplay: NumberDisplay
+    ) : this(
+            type = numberDisplay.presentationStatus?.value ?: PresentationStatusEnum.MOBILE.value,
+            currentNumber = numberDisplay.presentationNumber ?: ""
+    )
+}
+
+data class RemoteOfficeSettings(
+        var active: Boolean,
+        var number: String?
+) {
+    constructor(remoteOffice: RemoteOffice) : this(
+            active = remoteOffice.active ?: false,
+            number = remoteOffice.remoteOfficeNumber
+    )
+}
 
 data class SimultaneousCallSettings(
         var active: Boolean,
