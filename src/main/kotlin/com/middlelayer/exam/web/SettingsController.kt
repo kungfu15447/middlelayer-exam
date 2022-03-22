@@ -254,18 +254,16 @@ class SettingsController {
         @RequestBody body: PutSimultaneousCallDTO
     ): Mono<ResponseEntity<Any>> {
         val claims = authService.getClaimsFromJWTToken(token)
-        var simRingLocations: SimRingLocations? = null
+        var simRingLocations = SimRingLocations()
         body.simRingLocations?.let {
-            if (body.simRingLocations.isNotEmpty()) {
-                simRingLocations = SimRingLocations(
-                    body.simRingLocations.map {
-                        SimRingLocation(
-                            it.address,
-                            it.answerConfirmedRequired
-                        )
-                    }
-                )
-            }
+            simRingLocations = SimRingLocations(
+                body.simRingLocations.map {
+                    SimRingLocation(
+                        it.address,
+                        it.answerConfirmedRequired
+                    )
+                }
+            )
         }
 
         var simultaneousRingPersonal = SimultaneousRingPersonal(
