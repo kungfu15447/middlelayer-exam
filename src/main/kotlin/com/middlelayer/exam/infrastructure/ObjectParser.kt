@@ -34,4 +34,8 @@ class ObjectParser {
         }
         throw InvalidMapException("Could not parse JSON to object since JSON string was null")
     }
+
+    fun tryMapToJsonString(obj: Any): String {
+        return jsonMapper.writeValueAsString(obj)
+    }
 }

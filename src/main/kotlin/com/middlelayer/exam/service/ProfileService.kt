@@ -2,8 +2,8 @@ package com.middlelayer.exam.service
 
 import com.middlelayer.exam.core.interfaces.infrastructure.IProfileRepository
 import com.middlelayer.exam.core.interfaces.service.IProfileService
-import com.middlelayer.exam.core.models.domain.DProfile
-import com.middlelayer.exam.core.models.domain.DService
+import com.middlelayer.exam.core.models.xsi.Profile
+import com.middlelayer.exam.core.models.xsi.Service as xsiService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -17,17 +17,11 @@ class ProfileService : IProfileService {
     constructor(profileRepository: IProfileRepository) {
         this.profileRepository = profileRepository
     }
-    override fun getProfile(authorization: String, userid: String): Mono<DProfile> {
-        return profileRepository.getProfileXsi(authorization, userid).flatMap {
-            Mono.just(DProfile(it))
+    override fun getProfile(token: String, userid: String): Mono<Profile> {
+        return profileRepository.getProfileXsi(token, userid)
         }
-    }
 
-    override fun getServicesFromProfile(basicAuthToken: String, userId: String): Mono<List<DService>> {
-        return profileRepository.getServicesFromProfileXsi(basicAuthToken, userId).flatMap { services ->
-            Mono.just(services.map { service ->
-                DService(service)
-            })
-        }
+    override fun getServicesFromProfile(token: String, userId: String): Mono<List<xsiService>> {
+        return profileRepository.getServicesFromProfileXsi(token, userId)
     }
 }

@@ -20,7 +20,7 @@ data class UserDetails(
     val lastName: String? = null,
     val hiranganaLastName: String? = null,
     val hiranganaFirstName: String? = null,
-    val groupId: String = "",
+    val groupId: String? = null,
     val serviceProvider: ServiceProvider? = null,
     val number: String? = null,
     val extension: String? = null,

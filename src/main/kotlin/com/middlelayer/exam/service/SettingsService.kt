@@ -3,6 +3,7 @@ package com.middlelayer.exam.service
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
 import com.middlelayer.exam.core.interfaces.service.ISettingsService
 import com.middlelayer.exam.core.models.domain.*
+import com.middlelayer.exam.core.models.ims.NumberDisplay
 import com.middlelayer.exam.core.models.ims.PresentationStatusEnum
 import com.middlelayer.exam.core.models.xsi.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,99 +19,110 @@ class SettingsService : ISettingsService {
         this.settingsRepo = settingsRepo
     }
 
-    override fun getPersonalAssistant(token: String, userId: String): Mono<DPersonalAssistant> {
-        return settingsRepo.getPersonalAssistant(token, userId).flatMap {
-            Mono.just(DPersonalAssistant(it))
-        }
-    }
+    override fun getSettings(token: String, userId: String): Mono<UserSettings> {
+        val personalAssistant = settingsRepo.getPersonalAssistant(token, userId)
+        val exclusionNumbers = settingsRepo.getPAExclusionNumbers(token, userId)
+        val assignedCallToNumbers = settingsRepo.getPAAssignedCallToNumbers(token, userId)
+        val availableCallToNumbers = settingsRepo.getPAAvailableCallToNumbers(token, userId)
+        val remoteOffice = settingsRepo.getRemoteOffice(token, userId)
+        val numberDisplayStatus = settingsRepo.getNumberDisplayStatus(token, userId)
+        val numberDisplay = settingsRepo.getNumberDisplay(token, userId)
+        val callForwardingAlways = settingsRepo.getCallForwardingAlways(token, userId)
+        val callForwardingBusy = settingsRepo.getCallForwardingBusy(token, userId)
+        val callForwardingNoAnswer = settingsRepo.getCallForwardingNoAnswer(token, userId)
+        val voiceMessaging = settingsRepo.getVoiceMessaging(token, userId)
+        val voiceMessagingGreeting = settingsRepo.getVoiceMessagingGreeting(token, userId)
+        val pushNotification = settingsRepo.getMWIDeliveryToMobileEndpoint(token, userId)
+        val simultaneousRing = settingsRepo.getSimultaneousRingPersonal(token, userId)
+        val doNotDisturb = settingsRepo.getDoNotDisturb(token, userId)
 
-    override fun getPAExclusionNumbers(token: String, userId: String): Mono<List<DExclusionNumber>> {
-        return settingsRepo.getPAExclusionNumbers(token, userId).flatMap {
-            Mono.just(it.map { en ->
-                DExclusionNumber(en)
-            })
-        }
-    }
+        val personalAssistantZip = Mono.zip(
+                personalAssistant,
+                exclusionNumbers,
+                assignedCallToNumbers,
+                availableCallToNumbers
+        )
 
-    override fun getPAAssignedCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
-        return settingsRepo.getPAAssignedCallToNumbers(token, userId).flatMap {
-            Mono.just(it.callToNumberList.callToNumber.map { ctn ->
-                DCallToNumber(ctn.type?.value ?: "")
-            })
-        }
-    }
+        val numberDisplayZip = Mono.zip(
+                numberDisplayStatus,
+                numberDisplay
+        )
 
-    override fun getPAAvailableCallToNumbers(token: String, userId: String): Mono<List<DCallToNumber>> {
-        return settingsRepo.getPAAvailableCallToNumbers(token, userId).flatMap {
-            Mono.just(it.callToNumbers.map { ctn ->
-                DCallToNumber(ctn.type?.value ?: "")
-            })
-        }
-    }
+        val callForwardZip = Mono.zip(
+                callForwardingAlways,
+                callForwardingBusy,
+                callForwardingNoAnswer
+        )
 
-    override fun getRemoteOffice(token: String, userId: String): Mono<DRemoteOffice> {
-        return settingsRepo.getRemoteOffice(token, userId).flatMap {
-            Mono.just(DRemoteOffice(it))
-        }
-    }
+        val voiceMessagingZip = Mono.zip(
+                voiceMessaging,
+                voiceMessagingGreeting,
+                pushNotification,
+        )
 
-    override fun getNumberDisplayStatus(token: String, userId: String): Mono<DNumberDisplayHidden> {
-        return settingsRepo.getNumberDisplayStatus(token, userId).flatMap {
-            Mono.just(DNumberDisplayHidden(it))
-        }
-    }
+        val settings = Mono.zip(
+                personalAssistantZip,
+                remoteOffice,
+                numberDisplayZip,
+                callForwardZip,
+                voiceMessagingZip,
+                simultaneousRing,
+                doNotDisturb
+        )
+        return settings.flatMap {
+            val paZip = it.t1
+            val ndZip = it.t3
+            val cfZip = it.t4
+            val vmZip = it.t5
 
-    override fun getNumberDisplay(token: String, userId: String): Mono<DNumberDisplay> {
-        return settingsRepo.getNumberDisplay(token, userId).flatMap {
-            Mono.just(DNumberDisplay(it))
-        }
-    }
+            //Personal Assistant settings
+            val pa: PersonalAssistant = paZip.t1
+            val en: List<ExclusionNumber> = paZip.t2
+            val asctn: AssignedCallToNumbers = paZip.t3
+            val avctn: AvailableCallToNumbers = paZip.t4
 
-    override fun getCallForwardingAlways(token: String, userId: String): Mono<DCallForwardingAlways> {
-        return settingsRepo.getCallForwardingAlways(token, userId).flatMap {
-            Mono.just(DCallForwardingAlways(it))
-        }
-    }
+            //Number Display settings
+            val ndh: NumberDisplayHidden = ndZip.t1
+            val nd: NumberDisplay = ndZip.t2
 
-    override fun getCallForwardingNoAnswer(token: String, userId: String): Mono<DCallForwardingNoAnswer> {
-        return settingsRepo.getCallForwardingNoAnswer(token, userId).flatMap {
-            Mono.just(DCallForwardingNoAnswer(it))
-        }
-    }
+            //Remote Office settings
+            val ro: RemoteOffice = it.t2
 
-    override fun getCallForwardingBusy(token: String, userId: String): Mono<DCallForwardingBusy> {
-        return settingsRepo.getCallForwardingBusy(token, userId).flatMap {
-            Mono.just(DCallForwardingBusy(it))
-        }
-    }
+            //Call Forwarding settings
+            val cfa: CallForwardingAlways = cfZip.t1
+            val cfb: CallForwardingBusy = cfZip.t2
+            val cfna: CallForwardingNoAnswer = cfZip.t3
 
-    override fun getVoiceMessaging(token: String, userId: String): Mono<DVoiceMessaging> {
-        return settingsRepo.getVoiceMessaging(token, userId).flatMap {
-            Mono.just(DVoiceMessaging(it))
-        }
-    }
+            //Voice Messaging settings
+            val vm: VoiceMessaging = vmZip.t1
+            val vmg: VoiceMessagingGreeting = vmZip.t2
+            val pn: MWIDeliveryToMobileEndpoint = vmZip.t3
 
-    override fun getVoiceMessagingGreeting(token: String, userId: String): Mono<DVoiceMessagingGreeting> {
-        return settingsRepo.getVoiceMessagingGreeting(token, userId).flatMap {
-            Mono.just(DVoiceMessagingGreeting(it))
-        }
-    }
+            //Simultaneous Ring settings
+            val sr: SimultaneousRingPersonal = it.t6
 
-    override fun getPushNotification(token: String, userId: String): Mono<DPushNotification> {
-        return settingsRepo.getMWIDeliveryToMobileEndpoint(token, userId).flatMap {
-            Mono.just(DPushNotification(it))
-        }
-    }
+            //Do Not Disturbs settings
+            val dnd: DoNotDisturb = it.t7
 
-    override fun getSimultaneousRing(token: String, userId: String): Mono<DSimultaneousRing> {
-        return settingsRepo.getSimultaneousRingPersonal(token, userId).flatMap {
-            Mono.just(DSimultaneousRing(it))
-        }
-    }
+            val userSettings = UserSettings(
+                    pa,
+                    asctn.callToNumberList.callToNumber,
+                    avctn.callToNumbers,
+                    en,
+                    ro,
+                    cfa,
+                    cfb,
+                    cfna,
+                    ndh,
+                    nd,
+                    vm,
+                    vmg,
+                    pn,
+                    sr,
+                    dnd
+            )
 
-    override fun getDoNotDisturb(token: String, userId: String): Mono<DDoNotDisturb> {
-        return settingsRepo.getDoNotDisturb(token, userId).flatMap {
-            Mono.just(DDoNotDisturb(it))
+            Mono.just(userSettings)
         }
     }
 
@@ -119,7 +131,7 @@ class SettingsService : ISettingsService {
     }
 
     override fun updatePAAssignedCallToNumbers(token: String, userId: String, body: AssignedCallToNumbers): Mono<Void> {
-        return settingsRepo.updatePAAssignedCallToNumbers(token, userId, body);
+        return settingsRepo.updatePAAssignedCallToNumbers(token, userId, body)
     }
 
     override fun addExclusionNumber(token: String, userId: String, body: ExclusionNumber): Mono<Void> {
