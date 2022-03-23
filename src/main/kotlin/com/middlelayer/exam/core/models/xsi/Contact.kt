@@ -1,16 +1,12 @@
 package com.middlelayer.exam.core.models.xsi
 
 
-data class Enterprise (
+data class Contact (
     val startIndex: String? = "",
     val numberOfRecords: String? = "",
-    val totalAvailableRecords: String? = "",
+    val totalAvailableRecords: Int = 0,
     val enterpriseDirectory: List<DirectoryDetails> = emptyList(),
     val xmlns: String? = "",
-)
-
-data class EnterpriseDirectory (
-    val directoryDetails: List<DirectoryDetails> = emptyList()
 )
 
 data class DirectoryDetails (
@@ -42,5 +38,4 @@ data class AdditionalDetails (
     val impId: String? = null,
     val bridgeId: String? = null,
     val roomId: String? = null
-
 )

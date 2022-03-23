@@ -2,9 +2,9 @@ package com.middlelayer.exam.service
 
 import com.middlelayer.exam.core.interfaces.infrastructure.IContactRepository
 import com.middlelayer.exam.core.interfaces.service.IContactService
-import com.middlelayer.exam.core.models.domain.DEnterprise
-import com.middlelayer.exam.core.models.domain.DService
-import com.middlelayer.exam.core.models.xsi.Enterprise
+import com.middlelayer.exam.core.models.xsi.Contact
+import com.middlelayer.exam.web.socket.ContactHandler
+import okhttp3.internal.wait
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
@@ -13,15 +13,21 @@ import reactor.core.publisher.Mono
 class ContactService : IContactService{
 
 
+
     private val contactRepository: IContactRepository
 
     @Autowired
     constructor(contactRepository: IContactRepository) {
         this.contactRepository = contactRepository
     }
-    override fun getEnterpriseContacts(basicAuthToken: String, userId: String): Mono<Enterprise> {
-        return contactRepository.getEnterpriseContacts(basicAuthToken, userId).flatMap {
+
+    override fun getEnterpriseContacts(basicAuthToken: String, userId: String, start: Int, contactRetrieveAmount: Int): Mono<Contact> {
+        return contactRepository.getEnterpriseContacts(basicAuthToken, userId, start, contactRetrieveAmount).flatMap {
             Mono.just(it)
         }
+    }
+
+    override fun sendMessage(contact: Contact) {
+        TODO("Not yet implemented")
     }
 }
