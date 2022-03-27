@@ -21,3 +21,17 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'build'
+- task: Gradle@2
+  displayName: 'Build docker image'
+  inputs:
+    gradleWrapperFile: 'gradlew'
+    tasks: 'bootBuildImage'
+    publishJUnitResults: false
+    jdkVersionOption: '1.11'
+- task: Docker@2
+  displayName: 'Push docker image'
+  inputs:
+    containerRegistry: 'dockerhub-connect'
+    repository: 'kungfu15447/middlelayer-repo'
+    command: 'push'
+    tags: 'latest'

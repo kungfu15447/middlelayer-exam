@@ -8,4 +8,6 @@ class ExamApplication
 
 fun main(args: Array<String>) {
 	runApplication<ExamApplication>(*args)
+
 }
+
