@@ -7,6 +7,7 @@ import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IContactService
 import com.middlelayer.exam.core.models.xsi.Contact
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
@@ -19,6 +20,17 @@ import kotlin.math.floor
 class ContactController {
     private val contactService: IContactService
     private val authService: IAuthService
+
+
+    @Value("\${mqtt.host}")
+    private val mqttHost: String = ""
+
+    @Value("\${mqtt.username}")
+    private val mqttUsername: String = ""
+
+    @Value("\${mqtt.password}")
+    private val mqttPassword: String = ""
+
 
     @Autowired
     constructor(contactService: IContactService, authService: IAuthService) {
@@ -34,13 +46,9 @@ class ContactController {
         val basicToken = claims.basicToken
         val password = authService.getCredentialsFromBasicToken(basicToken).password
 
-        val host = "32bc2eb4ea0d49d7b647c5b1d263236b.s2.eu.hivemq.cloud"
-        val mqttusername = "Testing"
-        val mqttpassword = "Mqtt1234"
-
         val mqttClient = MqttClient.builder()
             .useMqttVersion5()
-            .serverHost(host)
+            .serverHost(mqttHost)
             .serverPort(8884)
             .webSocketConfig()
             .serverPath("mqtt")
@@ -50,8 +58,8 @@ class ContactController {
 
         mqttClient.connectWith()
             .simpleAuth()
-            .username(mqttusername)
-            .password(Charsets.UTF_8.encode(mqttpassword))
+            .username(mqttUsername)
+            .password(Charsets.UTF_8.encode(mqttPassword))
             .applySimpleAuth()
             .send();
 

@@ -18,8 +18,6 @@ class ContactService : IContactService{
     }
 
     override fun getEnterpriseContacts(basicAuthToken: String, userId: String, start: Int, contactRetrieveAmount: Int): Mono<Contact> {
-        return contactRepository.getEnterpriseContacts(basicAuthToken, userId, start, contactRetrieveAmount).flatMap {
-            Mono.just(it)
-        }
+        return contactRepository.getEnterpriseContacts(basicAuthToken, userId, start, contactRetrieveAmount)
     }
 }
