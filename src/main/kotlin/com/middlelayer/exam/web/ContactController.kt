@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.Disposable
@@ -35,7 +36,12 @@ class ContactController {
     }
 
     @GetMapping("/api/user/contact")
-    fun getContacts(@RequestParam userId: String, @RequestParam password: String): Any {
+    fun getContacts(@RequestHeader("Authorization") token: String): Any {
+
+        val claims = authService.getClaimsFromJWTToken(token)
+        val userId = claims.profileObj.userId
+        val basicToken = claims.basicToken
+        val password = authService.getCredentialsFromBasicToken(basicToken).password
 
         val host = "32bc2eb4ea0d49d7b647c5b1d263236b.s2.eu.hivemq.cloud"
         val mqttusername = "Testing"

@@ -1,7 +1,5 @@
 package com.middlelayer.exam.infrastructure
-
 import com.middlelayer.exam.core.interfaces.infrastructure.IContactRepository
-import com.middlelayer.exam.core.interfaces.infrastructure.IXsiClient
 import com.middlelayer.exam.core.models.xsi.Contact
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
@@ -9,16 +7,14 @@ import reactor.core.publisher.Mono
 
 @Component
 class ContactRepository : IContactRepository {
-
-    private val xsiClient: IXsiClient
-    private val xmlParser: XmlParser
+    private val xsiClient: XsiClient
+    private val xmlParser: ObjectParser
 
     @Autowired
-    constructor(xsiClient: IXsiClient, xmlParser: XmlParser) {
+    constructor(xsiClient: XsiClient, xmlParser: ObjectParser) {
         this.xsiClient = xsiClient
         this.xmlParser = xmlParser
     }
-
 
     override fun getEnterpriseContacts(basicAuthToken: String, userId: String, start: Int, contactRetrieveAmount: Int) : Mono<Contact> {
         val responseBody = xsiClient.get(
