@@ -38,4 +38,12 @@ class ObjectParser {
     fun tryMapToJsonString(obj: Any): String {
         return jsonMapper.writeValueAsString(obj)
     }
+
+    final inline fun <reified T>tryMapValue(response: String?): T {
+        response?.let {
+            val mapper = XmlMapper()
+            return mapper.readValue(it)
+        }
+        throw InvalidMapException("No body to map was returned")
+    }
 }
