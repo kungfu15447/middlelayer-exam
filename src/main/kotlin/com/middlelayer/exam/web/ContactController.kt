@@ -6,17 +6,12 @@ import com.hivemq.client.mqtt.mqtt5.Mqtt5BlockingClient
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.interfaces.service.IContactService
 import com.middlelayer.exam.core.models.xsi.Contact
-import com.middlelayer.exam.web.socket.ContactHandler
-import okhttp3.internal.wait
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import reactor.core.Disposable
-import reactor.core.publisher.Mono
 import kotlin.math.floor
 
 
@@ -24,15 +19,11 @@ import kotlin.math.floor
 class ContactController {
     private val contactService: IContactService
     private val authService: IAuthService
-    private val contactHandler: ContactHandler
-
-
 
     @Autowired
-    constructor(contactService: IContactService, authService: IAuthService, contactHandler: ContactHandler) {
+    constructor(contactService: IContactService, authService: IAuthService) {
         this.contactService = contactService
         this.authService = authService
-        this.contactHandler = contactHandler
     }
 
     @GetMapping("/api/user/contact")

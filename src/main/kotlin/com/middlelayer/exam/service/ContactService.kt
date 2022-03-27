@@ -3,16 +3,12 @@ package com.middlelayer.exam.service
 import com.middlelayer.exam.core.interfaces.infrastructure.IContactRepository
 import com.middlelayer.exam.core.interfaces.service.IContactService
 import com.middlelayer.exam.core.models.xsi.Contact
-import com.middlelayer.exam.web.socket.ContactHandler
-import okhttp3.internal.wait
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
 class ContactService : IContactService{
-
-
 
     private val contactRepository: IContactRepository
 
@@ -25,9 +21,5 @@ class ContactService : IContactService{
         return contactRepository.getEnterpriseContacts(basicAuthToken, userId, start, contactRetrieveAmount).flatMap {
             Mono.just(it)
         }
-    }
-
-    override fun sendMessage(contact: Contact) {
-        TODO("Not yet implemented")
     }
 }
