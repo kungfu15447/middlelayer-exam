@@ -93,6 +93,6 @@ class ContactController {
         mqttClient.publishWith()
             .topic("contacts/$userId")
             .payload(Charsets.UTF_8.encode(gson.toJson(payload)))
-            .send();
+            .send()
     }
 }
