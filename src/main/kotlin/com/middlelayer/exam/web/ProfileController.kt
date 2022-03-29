@@ -26,6 +26,10 @@ class ProfileController {
     @SecurityRequirements
     @PostMapping("/login")
     fun getProfile(@RequestBody loginDTO: LoginDTO) : Mono<ResponseEntity<Any>> {
+        var someCode = 2
+        if (someCode > 3) {
+            println("No way")
+        }
         if (!loginDTO.username.isNullOrEmpty() && !loginDTO.password.isNullOrEmpty()) {
             val basicAuthToken = authService.createBasicAuthToken(loginDTO.username, loginDTO.password)
             val credentials = authService.getCredentialsFromBasicToken(basicAuthToken)
