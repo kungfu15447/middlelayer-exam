@@ -1,10 +1,10 @@
 package com.middlelayer.exam.serviceTests
 
 import com.middlelayer.exam.core.interfaces.infrastructure.ISettingsRepository
-import com.middlelayer.exam.core.models.domain.*
 import com.middlelayer.exam.core.models.ims.*
 import com.middlelayer.exam.core.models.xsi.*
 import com.middlelayer.exam.service.SettingsService
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.Mockito.*
@@ -430,4 +430,10 @@ class SettingsServiceTest(@Autowired val settingsService: SettingsService) {
         //Assert
         verify(settingsRepo, times(0)).updatePresentationToMobile(kAny(), kAny())
     }
+
+    @Test
+    fun `Some test`() {
+        assertThat(2).isEqualTo(2)
+    }
+
 }
