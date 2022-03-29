@@ -44,7 +44,6 @@ class ContactController {
         val claims = authService.getClaimsFromJWTToken(token)
         val userId = claims.profileObj.userId
         val basicToken = claims.basicToken
-        val password = authService.getCredentialsFromBasicToken(basicToken).password
 
         val mqttClient = MqttClient.builder()
             .useMqttVersion5()
@@ -61,38 +60,39 @@ class ContactController {
             .username(mqttUsername)
             .password(Charsets.UTF_8.encode(mqttPassword))
             .applySimpleAuth()
-            .send();
+            .send()
 
-        getContact(userId, password, mqttClient)
+        getContact(userId, basicToken, mqttClient)
 
         return HttpStatus.OK
     }
 
-    fun getContact(userId: String, password: String, mqttClient: Mqtt5BlockingClient): Disposable {
+    fun getContact(userId: String, token: String, mqttClient: Mqtt5BlockingClient): Disposable {
         val contactRetrieveAmount = 100
-        return contactService.getEnterpriseContacts(authService.createBasicAuthToken(userId, password), userId, start = 1, contactRetrieveAmount).subscribe {
+        val start = 1
+        return contactService.getEnterpriseContacts(token, userId, start, contactRetrieveAmount).subscribe {
             var totalAvailableRecords = it.totalAvailableRecords
             publishToMqtt(userId, it, mqttClient)
 
-            val totalRecursions = floor((totalAvailableRecords/100).toDouble())
+            val totalRecursions = floor((totalAvailableRecords / 100).toDouble())
             var i = 1
-            while(totalRecursions >= i) {
-                kotlin.run {
-                    contactService.getEnterpriseContacts(authService.createBasicAuthToken(userId, password),userId, (i * 100) + 1, contactRetrieveAmount).subscribe { nextIt ->
+            while (totalRecursions >= i) {
+                contactService.getEnterpriseContacts(token, userId, (i * 100) + 1, contactRetrieveAmount)
+                    .subscribe { nextIt ->
                         totalAvailableRecords = nextIt.totalAvailableRecords
                         publishToMqtt(userId, nextIt, mqttClient)
-                        }
-                }
+                    }
                 i++
             }
 
         }
     }
-    fun publishToMqtt(userId: String, payload: Contact, mqttClient: Mqtt5BlockingClient ) {
+
+    fun publishToMqtt(userId: String, payload: Contact, mqttClient: Mqtt5BlockingClient) {
         val gson = Gson()
         mqttClient.publishWith()
             .topic("contacts/$userId")
             .payload(Charsets.UTF_8.encode(gson.toJson(payload)))
-            .send();
+            .send()
     }
 }
