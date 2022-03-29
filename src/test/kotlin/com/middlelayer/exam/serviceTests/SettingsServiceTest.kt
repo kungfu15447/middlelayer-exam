@@ -430,10 +430,4 @@ class SettingsServiceTest(@Autowired val settingsService: SettingsService) {
         //Assert
         verify(settingsRepo, times(0)).updatePresentationToMobile(kAny(), kAny())
     }
-
-    @Test
-    fun `Some test`() {
-        assertThat(2).isEqualTo(2)
-    }
-
 }
