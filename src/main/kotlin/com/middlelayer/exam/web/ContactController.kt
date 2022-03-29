@@ -82,7 +82,7 @@ class ContactController {
                         totalAvailableRecords = nextIt.totalAvailableRecords
                         publishToMqtt(userId, nextIt, mqttClient)
                         }
-                    }
+                }
                 i++
             }
 
