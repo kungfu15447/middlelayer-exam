@@ -4,15 +4,14 @@ import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.web.filters.AuthFilter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
-import org.springframework.core.env.Environment
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
 
 @Configuration
 @EnableWebSecurity()
@@ -30,12 +29,21 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter {
     }
 
     override fun configure(http: HttpSecurity?) {
-        http
-            ?.csrf()?.disable()
-            ?.cors()?.configurationSource(setCors())
-            ?.and()
-            ?.addFilterAfter(AuthFilter(authService), BasicAuthenticationFilter::class.java)
-            ?.httpBasic()?.disable()
+        http?.let {
+            it.cors { cors ->
+                cors.configurationSource(setCors())
+            }
+            it.addFilterAfter(AuthFilter(authService), CorsFilter::class.java)
+            it.logout { logout ->
+                logout.disable()
+            }
+            it.httpBasic { basic ->
+                basic.disable()
+            }
+            it.csrf { csrf ->
+                csrf.disable()
+            }
+        }
     }
 
     private fun setCors(): CorsConfigurationSource {
