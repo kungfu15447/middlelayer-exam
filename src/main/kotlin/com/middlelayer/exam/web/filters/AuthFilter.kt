@@ -2,6 +2,8 @@ package com.middlelayer.exam.web.filters
 
 import com.middlelayer.exam.core.interfaces.service.IAuthService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.security.web.util.matcher.OrRequestMatcher
 import org.springframework.security.web.util.matcher.RequestMatcher
@@ -40,7 +42,9 @@ class AuthFilter : GenericFilterBean {
         var token = req.getHeader("Authorization")
 
         if (token == null || !token.startsWith("Bearer ")) {
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No token/invalid Bearer token in Authorization header")
+            res.status = HttpStatus.UNAUTHORIZED.value()
+            res.outputStream.print("No token/invalid Bearer token in Authorization header")
+            res.contentType = MediaType.APPLICATION_JSON_VALUE
             return
         }
 
@@ -48,7 +52,10 @@ class AuthFilter : GenericFilterBean {
             token = token.substring(7)
             authService.getClaimsFromJWTToken(token)
         } catch(ex: Exception) {
-            res.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid token. Unauthorized access")
+            res.status = HttpStatus.UNAUTHORIZED.value()
+            res.outputStream.print("Invalid token. Unauthorized access")
+            res.contentType = MediaType.APPLICATION_JSON_VALUE
+            return
         }
 
         chain?.doFilter(req, res)
