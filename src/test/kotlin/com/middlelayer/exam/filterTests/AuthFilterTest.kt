@@ -4,23 +4,17 @@ import com.middlelayer.exam.core.interfaces.service.IAuthService
 import com.middlelayer.exam.core.models.auth.ProfileTokenObject
 import com.middlelayer.exam.core.models.auth.TokenClaimsObject
 import com.middlelayer.exam.web.filters.AuthFilter
-import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
-import org.aspectj.lang.annotation.Before
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.CsvSource
-import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.core.env.Environment
-import org.springframework.mock.env.MockEnvironment
 import org.springframework.mock.web.MockFilterChain
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
@@ -310,4 +304,69 @@ class AuthFilterTest {
         verify(authService, times(1)).getClaimsFromJWTToken(kAny())
     }
 
+    @ParameterizedTest
+    @CsvSource(
+        "/api/user/profile/login",
+        "/v3/api-docs/",
+        "/v3/api-docs/something",
+        "/swagger-ui/**",
+        "/swagger-ui/something",
+        "/swagger-ui.html"
+    )
+    fun `on AuthFilter if path is whitelisted then return 200 OK`(path: String) {
+        //Assign
+        `when`(authService.getClaimsFromJWTToken(kAny())).thenReturn(TokenClaimsObject(
+            services = emptyList(),
+            profileObj = ProfileTokenObject(
+                userId = "UserId",
+                groupId = "GroupId",
+                fullName = "FullName",
+                email = "Email"
+            ),
+            basicToken = "BasicToken"
+        ))
+        val req = MockHttpServletRequest()
+        req.pathInfo = path
+        val res = MockHttpServletResponse()
+        val chain = MockFilterChain()
+
+        //Act
+        filter.doFilter(req, res, chain)
+
+        //Assert
+        assert(res.status == 200)
+    }
+
+    @ParameterizedTest
+    @CsvSource(
+        "/api/user/profile/login",
+        "/v3/api-docs/",
+        "/v3/api-docs/something",
+        "/swagger-ui/**",
+        "/swagger-ui/something",
+        "/swagger-ui.html"
+    )
+    fun `on AuthFilter if path is whitelisted then do not call getClaimsFromJWTToken`(path: String) {
+        //Assign
+        `when`(authService.getClaimsFromJWTToken(kAny())).thenReturn(TokenClaimsObject(
+            services = emptyList(),
+            profileObj = ProfileTokenObject(
+                userId = "UserId",
+                groupId = "GroupId",
+                fullName = "FullName",
+                email = "Email"
+            ),
+            basicToken = "BasicToken"
+        ))
+        val req = MockHttpServletRequest()
+        req.pathInfo = path
+        val res = MockHttpServletResponse()
+        val chain = MockFilterChain()
+
+        //Act
+        filter.doFilter(req, res, chain)
+
+        //Assert
+        verify(authService, times(0)).getClaimsFromJWTToken(kAny())
+    }
 }
