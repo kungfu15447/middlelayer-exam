@@ -309,7 +309,7 @@ class AuthFilterTest {
         "/api/user/profile/login",
         "/v3/api-docs/",
         "/v3/api-docs/something",
-        "/swagger-ui/**",
+        "/swagger-ui/",
         "/swagger-ui/something",
         "/swagger-ui.html"
     )
@@ -342,7 +342,7 @@ class AuthFilterTest {
         "/api/user/profile/login",
         "/v3/api-docs/",
         "/v3/api-docs/something",
-        "/swagger-ui/**",
+        "/swagger-ui/",
         "/swagger-ui/something",
         "/swagger-ui.html"
     )
