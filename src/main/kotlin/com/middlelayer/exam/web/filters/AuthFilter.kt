@@ -42,9 +42,7 @@ class AuthFilter : GenericFilterBean {
         var token = req.getHeader("Authorization")
 
         if (token == null || !token.startsWith("Bearer ")) {
-            res.status = HttpStatus.UNAUTHORIZED.value()
-            res.outputStream.print("No token/invalid Bearer token in Authorization header")
-            res.contentType = MediaType.APPLICATION_JSON_VALUE
+            setResponseWithBody(res, "No token/invalid Bearer token in Authorization header")
             return
         }
 
@@ -52,12 +50,16 @@ class AuthFilter : GenericFilterBean {
             token = token.substring(7)
             authService.getClaimsFromJWTToken(token)
         } catch(ex: Exception) {
-            res.status = HttpStatus.UNAUTHORIZED.value()
-            res.outputStream.print("Invalid token. Unauthorized access")
-            res.contentType = MediaType.APPLICATION_JSON_VALUE
+            setResponseWithBody(res, "Invalid token. Unauthorized access")
             return
         }
 
         chain?.doFilter(req, res)
+    }
+
+    private fun setResponseWithBody(response: HttpServletResponse, body: String) {
+        response.status = HttpStatus.UNAUTHORIZED.value()
+        response.outputStream.print(body)
+        response.contentType = MediaType.APPLICATION_JSON_VALUE
     }
 }
