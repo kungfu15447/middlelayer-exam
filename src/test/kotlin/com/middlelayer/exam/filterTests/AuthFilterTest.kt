@@ -84,8 +84,9 @@ class AuthFilterTest {
         //Act
         filter.doFilter(req, res, chain)
 
+
         //Assert
-        assert(res.errorMessage == "No token/invalid Bearer token in Authorization header")
+        assert(res.contentAsString == "No token/invalid Bearer token in Authorization header")
     }
 
     @Test
@@ -171,7 +172,7 @@ class AuthFilterTest {
         filter.doFilter(req, res, chain)
 
         //Assert
-        assert(res.errorMessage == "No token/invalid Bearer token in Authorization header")
+        assert(res.contentAsString == "No token/invalid Bearer token in Authorization header")
     }
 
     @ParameterizedTest
@@ -288,7 +289,7 @@ class AuthFilterTest {
         filter.doFilter(req, res, chain)
 
         //Assert
-        assert(res.errorMessage == "Invalid token. Unauthorized access")
+        assert(res.contentAsString == "Invalid token. Unauthorized access")
     }
 
     @Test
